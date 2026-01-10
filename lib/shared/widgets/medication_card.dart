@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_dimensions.dart';
 import '../../core/constants/app_text_styles.dart';
-
-enum MedicationStatus { upcoming, taken, missed }
+import '../../features/medication/data/models/medication_model.dart'
+    show MedicationStatus;
 
 /// Medication card widget for displaying medication information
 class MedicationCard extends StatelessWidget {

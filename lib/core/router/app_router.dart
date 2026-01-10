@@ -6,6 +6,9 @@ import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/signup_page.dart';
 import '../../features/auth/presentation/pages/set_password_page.dart';
 import '../../features/demo/demo_page.dart';
+import '../../features/medication/presentation/pages/medication_list_page.dart';
+import '../../features/medication/presentation/pages/add_medication_page.dart';
+import '../../features/medication/presentation/pages/medication_report_page.dart';
 
 /// App routes configuration using GoRouter
 class AppRouter {
@@ -15,6 +18,9 @@ class AppRouter {
   static const String signup = '/signup';
   static const String setPassword = '/set-password';
   static const String demo = '/demo';
+  static const String medicationList = '/medication-list';
+  static const String addMedication = '/add-medication';
+  static const String medicationReport = '/medication-report';
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
@@ -83,6 +89,39 @@ class AppRouter {
           context: context,
           state: state,
           child: const DemoPage(),
+        ),
+      ),
+
+      // Medication List Page
+      GoRoute(
+        path: medicationList,
+        name: 'medicationList',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const MedicationListPage(),
+        ),
+      ),
+
+      // Add Medication Page
+      GoRoute(
+        path: addMedication,
+        name: 'addMedication',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const AddMedicationPage(),
+        ),
+      ),
+
+      // Medication Report Page
+      GoRoute(
+        path: medicationReport,
+        name: 'medicationReport',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const MedicationReportPage(),
         ),
       ),
     ],
