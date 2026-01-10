@@ -5,6 +5,7 @@ import '../../features/onboarding/presentation/pages/onboarding_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/signup_page.dart';
 import '../../features/auth/presentation/pages/set_password_page.dart';
+import '../../features/demo/demo_page.dart';
 
 /// App routes configuration using GoRouter
 class AppRouter {
@@ -13,6 +14,7 @@ class AppRouter {
   static const String login = '/login';
   static const String signup = '/signup';
   static const String setPassword = '/set-password';
+  static const String demo = '/demo';
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
@@ -70,6 +72,17 @@ class AppRouter {
           context: context,
           state: state,
           child: const SetPasswordPage(),
+        ),
+      ),
+
+      // Demo Page (for testing shared components)
+      GoRoute(
+        path: demo,
+        name: 'demo',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const DemoPage(),
         ),
       ),
     ],
