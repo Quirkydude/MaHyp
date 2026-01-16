@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:mahyp_app/features/medication/data/models/medication_model.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../shared/widgets/main_layout.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
+import '../../../../shared/widgets/medication_details_modal.dart';
 import '../../../../shared/widgets/tab_selector.dart';
 import '../../../../shared/widgets/medication_card.dart';
+import '../../../../shared/widgets/report_card.dart';
 import '../providers/medication_provider.dart';
-import '../../data/models/medication_model.dart' as models;
+import '../widgets/medication_details_modal.dart';
+import '../../data/models/medication_model.dart';
 
 /// Medication List Page with Today and Upcoming tabs
 class MedicationListPage extends ConsumerStatefulWidget {
@@ -52,12 +54,11 @@ class _MedicationListPageState extends ConsumerState<MedicationListPage>
   @override
   Widget build(BuildContext context) {
     final medications = ref.watch(medicationProvider);
-    final todayMeds = medications
-        .where((m) => m.status != models.MedicationStatus.missed)
-        .toList();
-    final upcomingMeds = medications
-        .where((m) => m.status == models.MedicationStatus.upcoming)
-        .toList();
+    final stats = ref.watch(adherenceStatsProvider);
+    final todayMeds = ref.read(medicationProvider.notifier).todayMedications;
+    final upcomingMeds = ref
+        .read(medicationProvider.notifier)
+        .upcomingMedications;
 
     return MainLayout(
       currentIndex: 2,
@@ -70,15 +71,34 @@ class _MedicationListPageState extends ConsumerState<MedicationListPage>
           children: [
             // Tab Selector
             Padding(
-              padding: const EdgeInsets.all(
+              padding: const EdgeInsets.fromLTRB(
                 AppDimensions.screenPaddingHorizontal,
+                AppDimensions.spacing16,
+                AppDimensions.screenPaddingHorizontal,
+                0,
               ),
-              child: TabSelector(
-                tabs: const ['Today', 'Upcoming'],
-                selectedIndex: _selectedTab,
-                onTabSelected: (index) {
-                  setState(() => _selectedTab = index);
-                },
+              child: Column(
+                children: [
+                  TabSelector(
+                    tabs: const ['Today', 'Upcoming'],
+                    selectedIndex: _selectedTab,
+                    onTabSelected: (index) {
+                      setState(() => _selectedTab = index);
+                    },
+                  ),
+
+                  // Report Card (only in Today tab)
+                  if (_selectedTab == 0) ...[
+                    const SizedBox(height: AppDimensions.spacing16),
+                    ReportCard(
+                      adherencePercentage: stats['adherence'] ?? 0,
+                      dosesTaken: stats['taken'] ?? 0,
+                      totalDoses: stats['total'] ?? 0,
+                      missedDoses: stats['missed'] ?? 0,
+                      onViewReport: () => context.push('/medication-report'),
+                    ),
+                  ],
+                ],
               ),
             ),
 
@@ -138,14 +158,17 @@ class _MedicationListPageState extends ConsumerState<MedicationListPage>
             name: med.name,
             dosage: med.dosage,
             frequency: med.frequencyString,
-            nextDose: _formatNextDose(med.nextDose),
-            status: med.status,
-            onTap: () {
-              // TODO: Navigate to medication details
-            },
+            nextDose: _formatNextDose(med.nextDose?.scheduledTime),
+            status: med.overallStatus,
+            onTap: () => _showMedicationDetails(med),
             onMarkAsTaken: () {
-              ref.read(medicationProvider.notifier).markAsTaken(med.id);
-              _showSnackBar('Medication marked as taken');
+              final nextDose = med.nextDose;
+              if (nextDose != null && nextDose.canTake) {
+                ref
+                    .read(medicationProvider.notifier)
+                    .markDoseAsTaken(med.id, nextDose.id);
+                _showSnackBar('Medication marked as taken');
+              }
             },
           ),
         );
@@ -178,11 +201,9 @@ class _MedicationListPageState extends ConsumerState<MedicationListPage>
             name: med.name,
             dosage: med.dosage,
             frequency: med.frequencyString,
-            nextDose: _formatNextDose(med.nextDose),
-            status: med.status,
-            onTap: () {
-              // TODO: Navigate to medication details
-            },
+            nextDose: _formatNextDose(med.nextDose?.scheduledTime),
+            status: med.overallStatus,
+            onTap: () => _showMedicationDetails(med),
           ),
         );
       },
@@ -241,6 +262,74 @@ class _MedicationListPageState extends ConsumerState<MedicationListPage>
     } else {
       return DateFormat('h:mm a').format(nextDose);
     }
+  }
+
+  void _showMedicationDetails(MedicationModel medication) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: MedicationDetailsModal(
+          medication: medication,
+          onMarkAsTaken: (doseId) {
+            ref
+                .read(medicationProvider.notifier)
+                .markDoseAsTaken(medication.id, doseId);
+          },
+          onSkip: (doseId) {
+            ref
+                .read(medicationProvider.notifier)
+                .skipDose(medication.id, doseId);
+          },
+          onSnooze: (doseId, minutes) {
+            ref
+                .read(medicationProvider.notifier)
+                .snoozeDose(medication.id, doseId, minutes);
+          },
+          onEdit: () {
+            Navigator.pop(context);
+            // TODO: Navigate to edit medication
+          },
+          onDelete: () {
+            Navigator.pop(context);
+            _showDeleteConfirmation(medication.id);
+          },
+        ),
+      ),
+    );
+  }
+
+  void _showDeleteConfirmation(String medicationId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Medication?'),
+        content: const Text(
+          'Are you sure you want to delete this medication? This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              ref
+                  .read(medicationProvider.notifier)
+                  .deleteMedication(medicationId);
+              Navigator.pop(context);
+              _showSnackBar('Medication deleted');
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showSnackBar(String message) {
