@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'bottom_nav_bar.dart';
 
 /// Main layout wrapper with bottom navigation
@@ -22,19 +23,19 @@ class _MainLayoutState extends State<MainLayout> {
     // Navigation logic based on index
     switch (index) {
       case 0:
-        // TODO: Navigate to Home
+        context.go('/bp-history'); // TODO: Change to home Joel Pushes ready
         break;
       case 1:
-        // TODO: Navigate to Health/BP Monitoring
+        context.go('/bp-history');
         break;
       case 2:
-        // TODO: Navigate to Medication
+        context.go('/medication-list');
         break;
       case 3:
-        // TODO: Navigate to Education
+        context.go('/education');
         break;
       case 4:
-        // TODO: Navigate to More/Settings
+        context.go('/support');
         break;
     }
   }

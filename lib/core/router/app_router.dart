@@ -14,6 +14,9 @@ import '../../features/bp_monitoring/presentation/pages/bp_history_page.dart';
 import '../../features/bp_monitoring/presentation/pages/bp_analysis_page.dart';
 import '../../features/bp_monitoring/presentation/pages/bp_emergency_page.dart';
 import '../../features/bp_monitoring/data/models/bp_reading_model.dart';
+import '../../features/support/presentation/pages/support_page.dart';
+import '../../features/education/presentation/pages/education_page.dart';
+import '../../features/education/presentation/pages/education_detail_page.dart';
 
 /// App routes configuration using GoRouter
 class AppRouter {
@@ -30,6 +33,9 @@ class AppRouter {
   static const String bpHistory = '/bp-history';
   static const String bpAnalysis = '/bp-analysis';
   static const String bpEmergency = '/bp-emergency';
+  static const String support = '/support';
+  static const String education = '/education';
+  static const String educationDetail = '/education-detail';
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
@@ -175,6 +181,39 @@ class AppRouter {
           context: context,
           state: state,
           child: BPEmergencyPage(reading: state.extra as BPReadingModel),
+        ),
+      ),
+
+      // Support & Help Page
+      GoRoute(
+        path: support,
+        name: 'support',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const SupportPage(),
+        ),
+      ),
+
+      // Education Page
+      GoRoute(
+        path: education,
+        name: 'education',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const EducationPage(),
+        ),
+      ),
+
+      // Education Detail Page
+      GoRoute(
+        path: educationDetail,
+        name: 'educationDetail',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: EducationDetailPage(type: state.extra as EducationType),
         ),
       ),
     ],
