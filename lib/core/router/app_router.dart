@@ -9,6 +9,11 @@ import '../../features/demo/demo_page.dart';
 import '../../features/medication/presentation/pages/medication_list_page.dart';
 import '../../features/medication/presentation/pages/add_medication_page.dart';
 import '../../features/medication/presentation/pages/medication_report_page.dart';
+import '../../features/bp_monitoring/presentation/pages/record_bp_page.dart';
+import '../../features/bp_monitoring/presentation/pages/bp_history_page.dart';
+import '../../features/bp_monitoring/presentation/pages/bp_analysis_page.dart';
+import '../../features/bp_monitoring/presentation/pages/bp_emergency_page.dart';
+import '../../features/bp_monitoring/data/models/bp_reading_model.dart';
 
 /// App routes configuration using GoRouter
 class AppRouter {
@@ -21,6 +26,10 @@ class AppRouter {
   static const String medicationList = '/medication-list';
   static const String addMedication = '/add-medication';
   static const String medicationReport = '/medication-report';
+  static const String recordBP = '/record-bp';
+  static const String bpHistory = '/bp-history';
+  static const String bpAnalysis = '/bp-analysis';
+  static const String bpEmergency = '/bp-emergency';
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
@@ -122,6 +131,50 @@ class AppRouter {
           context: context,
           state: state,
           child: const MedicationReportPage(),
+        ),
+      ),
+
+      // Record BP Page
+      GoRoute(
+        path: recordBP,
+        name: 'recordBP',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const RecordBPPage(),
+        ),
+      ),
+
+      // BP History Page
+      GoRoute(
+        path: bpHistory,
+        name: 'bpHistory',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const BPHistoryPage(),
+        ),
+      ),
+
+      // BP Analysis Page
+      GoRoute(
+        path: bpAnalysis,
+        name: 'bpAnalysis',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: BPAnalysisPage(reading: state.extra as BPReadingModel),
+        ),
+      ),
+
+      // BP Emergency Page
+      GoRoute(
+        path: bpEmergency,
+        name: 'bpEmergency',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: BPEmergencyPage(reading: state.extra as BPReadingModel),
         ),
       ),
     ],
