@@ -245,7 +245,7 @@ class _RecordBPPageState extends ConsumerState<RecordBPPage>
 
                 const SizedBox(height: AppDimensions.spacing24),
 
-                // Measurement Time
+                // Measurement Time with icons for visual recognition
                 Text('Measurement Time', style: AppTextStyles.inputLabel),
                 const SizedBox(height: AppDimensions.spacing12),
                 Wrap(
@@ -254,6 +254,13 @@ class _RecordBPPageState extends ConsumerState<RecordBPPage>
                   children: MeasurementTime.values.map((time) {
                     final isSelected = _selectedTime == time;
                     return ChoiceChip(
+                      avatar: Icon(
+                        _getTimeIcon(time),
+                        size: 18,
+                        color: isSelected
+                            ? AppColors.white
+                            : AppColors.primaryTurquoise,
+                      ),
                       label: Text(_getTimeLabel(time)),
                       selected: isSelected,
                       onSelected: (selected) {
@@ -271,43 +278,35 @@ class _RecordBPPageState extends ConsumerState<RecordBPPage>
 
                 const SizedBox(height: AppDimensions.spacing24),
 
-                // Symptoms Check
+                // Symptoms with icon chips for quick visual selection
                 Text('Any symptoms?', style: AppTextStyles.inputLabel),
-                const SizedBox(height: AppDimensions.spacing8),
-                Text(
-                  'all apply for 5 minutes before measuring',
-                  style: AppTextStyles.caption.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
                 const SizedBox(height: AppDimensions.spacing12),
-
-                CheckboxListTile(
-                  title: const Text('Felt dizzy'),
-                  value: _feltDizzy,
-                  onChanged: (value) =>
-                      setState(() => _feltDizzy = value ?? false),
-                  controlAffinity: ListTileControlAffinity.leading,
-                  activeColor: AppColors.primaryTurquoise,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                CheckboxListTile(
-                  title: const Text('Had headache'),
-                  value: _hadHeadache,
-                  onChanged: (value) =>
-                      setState(() => _hadHeadache = value ?? false),
-                  controlAffinity: ListTileControlAffinity.leading,
-                  activeColor: AppColors.primaryTurquoise,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                CheckboxListTile(
-                  title: const Text('Felt nausea'),
-                  value: _feltNausea,
-                  onChanged: (value) =>
-                      setState(() => _feltNausea = value ?? false),
-                  controlAffinity: ListTileControlAffinity.leading,
-                  activeColor: AppColors.primaryTurquoise,
-                  contentPadding: EdgeInsets.zero,
+                Wrap(
+                  spacing: AppDimensions.spacing12,
+                  runSpacing: AppDimensions.spacing12,
+                  children: [
+                    _buildSymptomChip(
+                      icon: Icons.rotate_right,
+                      label: 'Dizzy',
+                      isSelected: _feltDizzy,
+                      onSelected: (selected) =>
+                          setState(() => _feltDizzy = selected),
+                    ),
+                    _buildSymptomChip(
+                      icon: Icons.sick_outlined,
+                      label: 'Headache',
+                      isSelected: _hadHeadache,
+                      onSelected: (selected) =>
+                          setState(() => _hadHeadache = selected),
+                    ),
+                    _buildSymptomChip(
+                      icon: Icons.sentiment_very_dissatisfied,
+                      label: 'Nausea',
+                      isSelected: _feltNausea,
+                      onSelected: (selected) =>
+                          setState(() => _feltNausea = selected),
+                    ),
+                  ],
                 ),
 
                 const SizedBox(height: AppDimensions.spacing20),
@@ -340,6 +339,49 @@ class _RecordBPPageState extends ConsumerState<RecordBPPage>
         ),
       ),
     );
+  }
+
+  /// Builds a symptom selection chip with icon for visual recognition
+  Widget _buildSymptomChip({
+    required IconData icon,
+    required String label,
+    required bool isSelected,
+    required ValueChanged<bool> onSelected,
+  }) {
+    return FilterChip(
+      avatar: Icon(
+        icon,
+        size: 20,
+        color: isSelected ? AppColors.white : AppColors.primaryTurquoise,
+      ),
+      label: Text(label),
+      selected: isSelected,
+      onSelected: onSelected,
+      selectedColor: AppColors.primaryTurquoise,
+      backgroundColor: AppColors.inputBackground,
+      labelStyle: AppTextStyles.bodyMedium.copyWith(
+        color: isSelected ? AppColors.white : AppColors.textPrimary,
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppDimensions.spacing8,
+        vertical: AppDimensions.spacing4,
+      ),
+      showCheckmark: false,
+    );
+  }
+
+  /// Returns the icon for each time of day
+  IconData _getTimeIcon(MeasurementTime time) {
+    switch (time) {
+      case MeasurementTime.morning:
+        return Icons.wb_twilight; // Sunrise icon
+      case MeasurementTime.afternoon:
+        return Icons.wb_sunny; // Sun icon
+      case MeasurementTime.evening:
+        return Icons.wb_cloudy; // Sunset/cloudy icon
+      case MeasurementTime.night:
+        return Icons.nightlight_round; // Moon icon
+    }
   }
 
   String _getTimeLabel(MeasurementTime time) {

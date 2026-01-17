@@ -131,12 +131,23 @@ class MedicationCard extends StatelessWidget {
             color: AppColors.primaryTurquoise,
             borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
           ),
-          child: Text(
-            'Upcoming',
-            style: AppTextStyles.caption.copyWith(
-              color: AppColors.white,
-              fontWeight: FontWeight.w600,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.schedule,
+                color: AppColors.white,
+                size: 14,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                'Upcoming',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         );
 
@@ -150,12 +161,23 @@ class MedicationCard extends StatelessWidget {
             color: AppColors.success,
             borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
           ),
-          child: Text(
-            'Taken',
-            style: AppTextStyles.caption.copyWith(
-              color: AppColors.white,
-              fontWeight: FontWeight.w600,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.check_circle,
+                color: AppColors.white,
+                size: 14,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                'Taken',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         );
 
@@ -169,14 +191,26 @@ class MedicationCard extends StatelessWidget {
             color: AppColors.error,
             borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
           ),
-          child: Text(
-            'Missed',
-            style: AppTextStyles.caption.copyWith(
-              color: AppColors.white,
-              fontWeight: FontWeight.w600,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.warning_rounded,
+                color: AppColors.white,
+                size: 14,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                'Missed',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         );
+
       case MedicationStatus.ready:
         return Container(
           padding: const EdgeInsets.symmetric(
@@ -187,14 +221,26 @@ class MedicationCard extends StatelessWidget {
             color: AppColors.info,
             borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
           ),
-          child: Text(
-            'Ready',
-            style: AppTextStyles.caption.copyWith(
-              color: AppColors.white,
-              fontWeight: FontWeight.w600,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.notifications_active,
+                color: AppColors.white,
+                size: 14,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                'Ready',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         );
+
       case MedicationStatus.skipped:
         return Container(
           padding: const EdgeInsets.symmetric(
@@ -205,12 +251,23 @@ class MedicationCard extends StatelessWidget {
             color: AppColors.textSecondary,
             borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
           ),
-          child: Text(
-            'Skipped',
-            style: AppTextStyles.caption.copyWith(
-              color: AppColors.white,
-              fontWeight: FontWeight.w600,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.skip_next,
+                color: AppColors.white,
+                size: 14,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                'Skipped',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         );
     }

@@ -52,7 +52,7 @@ class _SplashPageState extends State<SplashPage>
   Future<void> _navigateToOnboarding() async {
     await Future.delayed(const Duration(milliseconds: 2500));
     if (mounted) {
-      context.go('/medication-list');
+      context.go('/onboarding');
     }
   }
 

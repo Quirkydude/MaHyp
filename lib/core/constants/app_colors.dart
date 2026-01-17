@@ -44,6 +44,31 @@ class AppColors {
   static const Color google = Color(0xFFDB4437);
   static const Color facebook = Color(0xFF4267B2);
   static const Color twitter = Color(0xFF1DA1F2);
+  static const Color apple = Color(0xFF000000);
+
+  // Dashboard Colors
+  static const LinearGradient bpCardGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFFF8A8A), Color(0xFFFF5252)],
+  );
+
+  static const LinearGradient medicationCardGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF81D4FA), Color(0xFF29B6F6)],
+  );
+
+  static const LinearGradient nextMedCardGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFFFD54F), Color(0xFFFFB300)],
+  );
+
+  static const Color cardTeal = Color(0xFF009688);
+  static const Color cardBlue = Color(0xFF2196F3);
+  static const Color calendarSelected = Color(0xFF00BBD3);
+  static const Color calendarUnselected = Color(0xFFE0E0E0);
 
   // Shadow
   static const Color shadow = Color(0x1A000000);

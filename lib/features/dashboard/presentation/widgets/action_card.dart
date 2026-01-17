@@ -3,7 +3,9 @@ import '../../../../core/constants/app_colors.dart';
 
 enum ActionCardType { nextMedication, recordBp }
 
-class ActionCard extends StatelessWidget {
+/// Action card with elderly-friendly press feedback animation.
+/// Provides subtle scale animation (0.97) on press for clear tactile feedback.
+class ActionCard extends StatefulWidget {
   final ActionCardType type;
   final String? medicationName;
   final String? medicationTime;
@@ -18,29 +20,52 @@ class ActionCard extends StatelessWidget {
   });
 
   @override
+  State<ActionCard> createState() => _ActionCardState();
+}
+
+class _ActionCardState extends State<ActionCard> {
+  bool _isPressed = false;
+
+  @override
   Widget build(BuildContext context) {
     return Expanded(
       child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            gradient: type == ActionCardType.nextMedication
-                ? AppColors.nextMedCardGradient
-                : null,
-            color: type == ActionCardType.recordBp ? AppColors.white : null,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.shadow.withOpacity(0.1),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
+        onTapDown: widget.onTap != null
+            ? (_) => setState(() => _isPressed = true)
+            : null,
+        onTapUp: widget.onTap != null
+            ? (_) {
+                setState(() => _isPressed = false);
+                widget.onTap?.call();
+              }
+            : null,
+        onTapCancel: widget.onTap != null
+            ? () => setState(() => _isPressed = false)
+            : null,
+        child: AnimatedScale(
+          scale: _isPressed ? 0.97 : 1.0,
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.easeInOut,
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              gradient: widget.type == ActionCardType.nextMedication
+                  ? AppColors.nextMedCardGradient
+                  : null,
+              color: widget.type == ActionCardType.recordBp ? AppColors.white : null,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.shadow.withOpacity(0.1),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: widget.type == ActionCardType.nextMedication
+                ? _buildMedicationContent()
+                : _buildRecordBpContent(),
           ),
-          child: type == ActionCardType.nextMedication
-              ? _buildMedicationContent()
-              : _buildRecordBpContent(),
         ),
       ),
     );
@@ -78,7 +103,7 @@ class ActionCard extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          medicationName ?? 'Amlodipine',
+          widget.medicationName ?? 'Amlodipine',
           style: const TextStyle(
             color: AppColors.white,
             fontSize: 18,
@@ -87,7 +112,7 @@ class ActionCard extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          medicationTime ?? 'Today At 6:00 PM',
+          widget.medicationTime ?? 'Today At 6:00 PM',
           style: TextStyle(
             color: AppColors.white.withOpacity(0.9),
             fontSize: 12,

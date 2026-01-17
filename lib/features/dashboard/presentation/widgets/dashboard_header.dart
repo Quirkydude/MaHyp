@@ -26,12 +26,9 @@ class DashboardHeader extends StatelessWidget {
         bottom: false,
         child: Row(
           children: [
-            IconButton(
-              onPressed: onBackPressed ?? () => Navigator.of(context).pop(),
-              icon: const Icon(Icons.arrow_back_ios, color: AppColors.white),
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-            ),
+            // Back button removed for Dashboard (Home)
+            // If needed for other screens, we can add a showBackButton flag
+            const SizedBox(width: 16), // Left padding
             Expanded(
               child: Center(
                 child: Text(
