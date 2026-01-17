@@ -12,7 +12,7 @@ import '../../../../shared/widgets/tab_selector.dart';
 import '../../../../shared/widgets/medication_card.dart';
 import '../../../../shared/widgets/report_card.dart';
 import '../providers/medication_provider.dart';
-import '../widgets/medication_details_modal.dart';
+
 import '../../data/models/medication_model.dart';
 
 /// Medication List Page with Today and Upcoming tabs

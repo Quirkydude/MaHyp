@@ -60,6 +60,7 @@ class _LoginPageState extends State<LoginPage> {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('Login successful!')));
+        context.go(AppRouter.dashboard);
       }
     }
   }

@@ -93,7 +93,7 @@ class EducationDetailPage extends StatelessWidget {
           ),
           _buildIconPoint(Icons.psychology, 'Protects\nBrain', Colors.purple),
           _buildIconPoint(Icons.visibility, 'Protects\nEyes', Colors.blue),
-          _buildIconPoint(Icons.kidney, 'Protects\nKidneys', Colors.orange),
+          _buildIconPoint(Icons.water_drop, 'Protects\nKidneys', Colors.orange),
         ]),
 
         const SizedBox(height: AppDimensions.spacing24),

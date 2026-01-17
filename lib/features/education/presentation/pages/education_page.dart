@@ -119,7 +119,7 @@ class EducationPage extends StatelessWidget {
                 type: EducationType.results,
               ),
 
-              const SizedBox(height: AppDimensions.spacing80),
+              const SizedBox(height: AppDimensions.spacing64 + AppDimensions.spacing16),
             ],
           ),
         ),

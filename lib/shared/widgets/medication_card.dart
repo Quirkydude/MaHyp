@@ -110,6 +110,10 @@ class MedicationCard extends StatelessWidget {
         return AppColors.white;
       case MedicationStatus.taken:
         return AppColors.success.withOpacity(0.05);
+      case MedicationStatus.ready:
+        return AppColors.info.withOpacity(0.05);
+      case MedicationStatus.skipped:
+        return AppColors.textSecondary.withOpacity(0.05);
       case MedicationStatus.missed:
         return AppColors.error.withOpacity(0.05);
     }
@@ -167,6 +171,42 @@ class MedicationCard extends StatelessWidget {
           ),
           child: Text(
             'Missed',
+            style: AppTextStyles.caption.copyWith(
+              color: AppColors.white,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        );
+      case MedicationStatus.ready:
+        return Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimensions.spacing12,
+            vertical: AppDimensions.spacing8,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.info,
+            borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
+          ),
+          child: Text(
+            'Ready',
+            style: AppTextStyles.caption.copyWith(
+              color: AppColors.white,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        );
+      case MedicationStatus.skipped:
+        return Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimensions.spacing12,
+            vertical: AppDimensions.spacing8,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.textSecondary,
+            borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
+          ),
+          child: Text(
+            'Skipped',
             style: AppTextStyles.caption.copyWith(
               color: AppColors.white,
               fontWeight: FontWeight.w600,

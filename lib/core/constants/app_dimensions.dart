@@ -13,6 +13,7 @@ class AppDimensions {
   static const double spacing40 = 40.0;
   static const double spacing48 = 48.0;
   static const double spacing64 = 64.0;
+  static const double spacing80 = 80.0;
 
   // Border Radius
   static const double radiusSmall = 8.0;

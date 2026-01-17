@@ -17,6 +17,7 @@ import '../../features/bp_monitoring/data/models/bp_reading_model.dart';
 import '../../features/support/presentation/pages/support_page.dart';
 import '../../features/education/presentation/pages/education_page.dart';
 import '../../features/education/presentation/pages/education_detail_page.dart';
+import '../../features/dashboard/presentation/pages/dashboard_page.dart';
 
 /// App routes configuration using GoRouter
 class AppRouter {
@@ -36,6 +37,7 @@ class AppRouter {
   static const String support = '/support';
   static const String education = '/education';
   static const String educationDetail = '/education-detail';
+  static const String dashboard = '/dashboard';
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
@@ -49,6 +51,17 @@ class AppRouter {
           context: context,
           state: state,
           child: const SplashPage(),
+        ),
+      ),
+
+      // Dashboard Screen
+      GoRoute(
+        path: dashboard,
+        name: 'dashboard',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const DashboardPage(),
         ),
       ),
 

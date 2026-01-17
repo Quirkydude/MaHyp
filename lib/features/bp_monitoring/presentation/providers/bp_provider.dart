@@ -109,7 +109,7 @@ List<BPReadingModel> _generateDummyReadings() {
       recordedAt: now.subtract(const Duration(days: 3, hours: 12)),
       timeOfDay: MeasurementTime.afternoon,
       notes: 'After stressful meeting',
-      feltHeadache: true,
+      hadHeadache: true,
     ),
   );
 

@@ -293,10 +293,10 @@ class _MedicationReportPageState extends ConsumerState<MedicationReportPage>
 
   Map<String, int> _calculateStats(List<MedicationModel> medications) {
     final taken = medications
-        .where((m) => m.status == MedicationStatus.taken)
+        .where((m) => m.overallStatus == MedicationStatus.taken)
         .length;
     final missed = medications
-        .where((m) => m.status == MedicationStatus.missed)
+        .where((m) => m.overallStatus == MedicationStatus.missed)
         .length;
     final total = medications.length;
     final adherence = total > 0 ? ((taken / total) * 100).round() : 0;

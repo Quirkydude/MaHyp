@@ -23,7 +23,7 @@ class _MainLayoutState extends State<MainLayout> {
     // Navigation logic based on index
     switch (index) {
       case 0:
-        context.go('/bp-history'); // TODO: Change to home Joel Pushes ready
+        context.go('/dashboard');
         break;
       case 1:
         context.go('/bp-history');
