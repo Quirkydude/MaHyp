@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/router/app_router.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
+import '../../providers/auth_provider.dart';
 
-class SetPasswordPage extends StatefulWidget {
-  const SetPasswordPage({super.key});
+class SetPasswordPage extends ConsumerStatefulWidget {
+  final String? email;
+  final String? fullName;
+
+  const SetPasswordPage({
+    super.key, 
+    this.email,
+    this.fullName,
+  });
 
   @override
-  State<SetPasswordPage> createState() => _SetPasswordPageState();
+  ConsumerState<SetPasswordPage> createState() => _SetPasswordPageState();
 }
 
-class _SetPasswordPageState extends State<SetPasswordPage> {
+class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -59,16 +71,68 @@ class _SetPasswordPageState extends State<SetPasswordPage> {
 
   Future<void> _handleCreatePassword() async {
     if (_formKey.currentState!.validate()) {
+      // Validate that we received the necessary info from previous page
+      if (widget.email == null || widget.email!.isEmpty) {
+         ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error: Missing email address. Please sign up again.')),
+        );
+        return;
+      }
+
       setState(() => _isLoading = true);
 
-      await Future.delayed(const Duration(seconds: 2));
-
-      setState(() => _isLoading = false);
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Password created successfully!')),
+      try {
+        // Create user with email and password
+        await ref.read(authServiceProvider).createUserWithEmailAndPassword(
+          widget.email!,
+          _passwordController.text,
         );
+        
+        // TODO: If we want to save full name, we would update the profile or save to Firestore here.
+        // For now, we'll just update the display name on the user object if possible or skip.
+        if (widget.fullName != null) {
+          final user = ref.read(currentUserProvider);
+          await user?.updateDisplayName(widget.fullName);
+        }
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Account created successfully!')),
+          );
+          // Navigate to dashboard
+          context.go(AppRouter.dashboard);
+        }
+      } on FirebaseAuthException catch (e) {
+        if (mounted) {
+          String message = 'Registration failed';
+          if (e.code == 'weak-password') {
+            message = 'The password provided is too weak.';
+          } else if (e.code == 'email-already-in-use') {
+            message = 'The account already exists for that email.';
+          } else {
+             message = e.message ?? 'Registration error';
+          }
+          
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(message),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('An unexpected error occurred: $e'),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
       }
     }
   }
@@ -125,7 +189,7 @@ class _SetPasswordPageState extends State<SetPasswordPage> {
                 const SizedBox(height: AppDimensions.spacing16),
 
                 Text(
-                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                  'Please create a secure password for your account linked to ${widget.email ?? "your email"}.',
                   style: AppTextStyles.bodySmall,
                 ),
 
@@ -204,7 +268,7 @@ class _SetPasswordPageState extends State<SetPasswordPage> {
                 const SizedBox(height: AppDimensions.spacing40),
 
                 CustomButton(
-                  text: 'Create New Password',
+                  text: 'Create New Account',
                   onPressed: _handleCreatePassword,
                   isLoading: _isLoading,
                 ),

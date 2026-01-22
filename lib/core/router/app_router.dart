@@ -102,11 +102,17 @@ class AppRouter {
       GoRoute(
         path: setPassword,
         name: 'setPassword',
-        pageBuilder: (context, state) => _buildPageWithTransition(
-          context: context,
-          state: state,
-          child: const SetPasswordPage(),
-        ),
+        pageBuilder: (context, state) {
+          final extras = state.extra as Map<String, dynamic>?;
+          return _buildPageWithTransition(
+            context: context,
+            state: state,
+            child: SetPasswordPage(
+              email: extras?['email'],
+              fullName: extras?['name'],
+            ),
+          );
+        },
       ),
 
       // Demo Page (for testing shared components)

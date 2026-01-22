@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "820250335949",
+    "project_id": "cashzone-7dd34",
+    "storage_bucket": "cashzone-7dd34.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:820250335949:android:471e591efe4c404f402784",
+        "android_client_info": {
+          "package_name": "com.example.mahyp_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "820250335949-c31noq82li27avri186jbud64idd259o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mahyp_app",
+            "certificate_hash": "3dea7802742303752b2a1fd947ea962e980132e7"
+          }
+        },
+        {
+          "client_id": "820250335949-omrm3esdrppcgj3tj4mr7g53cfo9rp3m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLoOYuVxzN7FcOzRkG0eTw9JAQDfIuxNg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "820250335949-omrm3esdrppcgj3tj4mr7g53cfo9rp3m.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "820250335949-975f60k7bo3ta1b0dk9vmo5lmko47g7s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mahypApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:820250335949:android:4b68025d59ae5395402784",
+        "android_client_info": {
+          "package_name": "com.mahyp.ucc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "820250335949-cs136m2jqaslms5vc8mpvmmbos7if9jp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mahyp.ucc",
+            "certificate_hash": "3dea7802742303752b2a1fd947ea962e980132e7"
+          }
+        },
+        {
+          "client_id": "820250335949-omrm3esdrppcgj3tj4mr7g53cfo9rp3m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLoOYuVxzN7FcOzRkG0eTw9JAQDfIuxNg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "820250335949-omrm3esdrppcgj3tj4mr7g53cfo9rp3m.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "820250335949-975f60k7bo3ta1b0dk9vmo5lmko47g7s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mahypApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

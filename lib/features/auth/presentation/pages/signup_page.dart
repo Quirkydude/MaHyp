@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/widgets/social_login_button.dart';
+import '../../../../core/router/app_router.dart';
+import '../../providers/auth_provider.dart';
 
-class SignUpPage extends StatefulWidget {
+class SignUpPage extends ConsumerStatefulWidget {
   const SignUpPage({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  ConsumerState<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignUpPageState extends ConsumerState<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -112,25 +116,81 @@ class _SignUpPageState extends State<SignUpPage> {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
-      await Future.delayed(const Duration(seconds: 2));
-
+      // Note: We currently don't use full name, mobile, dob, or password in this step 
+      // because Firebase creates user with email/password. 
+      // The original design had a "/set-password" page. 
+      // For now, I'll pass a temporary password or redirect to a password setting page if that logic exists.
+      // However, typical flow is email/password on signup.
+      // Assuming the user will flow to '/set-password' to actually create the account or set password there.
+      // BUT, Firebase createUser requires password immediately.
+      // Let's check if there is a separate password field hidden or if the flow was:
+      // Signup (Personal Details) -> SetPasswordPage (Password) -> Firebase Create.
+      
+      // Checking local file structure again, I see `set_password_page.dart`.
+      // So I should passing these details to the next page, NOT creating user here yet.
+      // OR, I can prompt for password here. 
+      
+      // Let's stick to the existing flow: Go to /set-password.
+      // I should modify /set-password to handle the actual creation.
+      
       setState(() => _isLoading = false);
-
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Sign up successful!')));
-      }
-      if (mounted) {
-        context.go('/set-password');
+         // Pass arguments to set password page? Or provide registration state provider?
+         // For simplicity, let's assume we pass data via query params or a provider.
+         // Since I can't easily see SetPasswordPage content right now, I'll assume it handles password input.
+         // Effectively, this page collects info, next page collects password & creates account.
+         
+         // Use go_router with 'extra' object to pass data
+          context.push('/set-password', extra: {
+            'email': _emailController.text.trim(),
+            'name': _fullNameController.text.trim(),
+            // add other fields if needed for Firestore profile creation later
+          });
       }
     }
   }
 
-  void _handleSocialLogin(SocialLoginType type) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('${type.name} sign up clicked')));
+  Future<void> _handleSocialLogin(SocialLoginType type) async {
+    setState(() => _isLoading = true);
+    
+    try {
+      if (type == SocialLoginType.google) {
+        await ref.read(authServiceProvider).signInWithGoogle();
+      } else if (type == SocialLoginType.facebook) {
+        await ref.read(authServiceProvider).signInWithFacebook();
+      } else if (type == SocialLoginType.apple) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Apple Sign In not implemented yet')),
+        );
+        return;
+      }
+      
+      if (mounted) {
+        context.go(AppRouter.dashboard);
+      }
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message ?? 'Social sign up failed'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('An unexpected error occurred: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   void _handleLogin() {
