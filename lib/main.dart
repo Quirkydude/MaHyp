@@ -6,6 +6,7 @@ import 'firebase_options.dart';
 import 'core/theme/app_theme.dart';
 import 'core/router/app_router.dart';
 import 'core/services/notification_service.dart';
+import 'core/services/connectivity_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,6 +18,9 @@ void main() async {
 
   // Initialize Notification Service
   await NotificationService().initialize();
+
+  // Initialize Connectivity Monitoring
+  await ConnectivityService().initialize();
 
   // Set preferred orientations (portrait only for elderly users)
   await SystemChrome.setPreferredOrientations([
