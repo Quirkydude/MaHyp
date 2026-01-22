@@ -109,7 +109,7 @@ class _RecordBPPageState extends ConsumerState<RecordBPPage>
       setState(() => _isLoading = true);
 
       final reading = BPReadingModel(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        id: '', // Will be set by Firestore
         systolic: int.parse(_systolicController.text),
         diastolic: int.parse(_diastolicController.text),
         recordedAt: DateTime.now(),
@@ -122,20 +122,30 @@ class _RecordBPPageState extends ConsumerState<RecordBPPage>
         feltNausea: _feltNausea,
       );
 
-      await Future.delayed(const Duration(milliseconds: 800));
+      try {
+        await ref.read(bpProvider.notifier).addReading(reading);
 
-      ref.read(bpProvider.notifier).addReading(reading);
+        setState(() => _isLoading = false);
 
-      setState(() => _isLoading = false);
-
-      if (mounted) {
-        // Check if emergency
-        if (reading.isEmergency) {
-          context.go('/bp-emergency', extra: reading);
-        } else if (reading.needsAttention) {
-          context.go('/bp-analysis', extra: reading);
-        } else {
-          _showSuccessDialog();
+        if (mounted) {
+          // Check if emergency
+          if (reading.isEmergency) {
+            context.go('/bp-emergency', extra: reading);
+          } else if (reading.needsAttention) {
+            context.go('/bp-analysis', extra: reading);
+          } else {
+            _showSuccessDialog();
+          }
+        }
+      } catch (e) {
+        setState(() => _isLoading = false);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error saving reading: $e'),
+              backgroundColor: AppColors.error,
+            ),
+          );
         }
       }
     }

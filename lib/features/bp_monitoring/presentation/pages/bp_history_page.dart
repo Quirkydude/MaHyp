@@ -16,12 +16,7 @@ class BPHistoryPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final readings = ref.watch(bpProvider);
-    final weekReadings = readings.where((r) {
-      return r.recordedAt.isAfter(
-        DateTime.now().subtract(const Duration(days: 7)),
-      );
-    }).toList();
+    final readingsAsync = ref.watch(bpProvider);
 
     return MainLayout(
       currentIndex: 1,
@@ -30,48 +25,80 @@ class BPHistoryPage extends ConsumerWidget {
           title: 'Blood Pressure History',
           showBackButton: false,
         ),
-        body: readings.isEmpty
-            ? _buildEmptyState(context)
-            : SingleChildScrollView(
-                padding: const EdgeInsets.all(
-                  AppDimensions.screenPaddingHorizontal,
+        body: readingsAsync.when(
+          loading: () => const Center(
+            child: CircularProgressIndicator(
+              color: AppColors.primaryTurquoise,
+            ),
+          ),
+          error: (error, _) => Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 48, color: AppColors.error),
+                const SizedBox(height: AppDimensions.spacing16),
+                Text('Error loading readings', style: AppTextStyles.bodyMedium),
+                const SizedBox(height: AppDimensions.spacing8),
+                TextButton(
+                  onPressed: () => ref.read(bpProvider.notifier).refresh(),
+                  child: const Text('Retry'),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: AppDimensions.spacing16),
+              ],
+            ),
+          ),
+          data: (readings) {
+            final weekReadings = readings.where((r) {
+              return r.recordedAt.isAfter(
+                DateTime.now().subtract(const Duration(days: 7)),
+              );
+            }).toList();
 
-                    // Trend Chart
-                    Text('Blood Pressure Trend', style: AppTextStyles.h3),
-                    const SizedBox(height: AppDimensions.spacing16),
-                    _buildTrendChart(weekReadings),
+            if (readings.isEmpty) {
+              return _buildEmptyState(context);
+            }
 
-                    const SizedBox(height: AppDimensions.spacing32),
-
-                    // Recent Readings
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Recent Readings', style: AppTextStyles.h3),
-                        TextButton(
-                          onPressed: () {
-                            // TODO: View all
-                          },
-                          child: const Text('View All'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppDimensions.spacing16),
-
-                    // Readings List
-                    ...readings.take(10).map((reading) {
-                      return _buildReadingCard(context, ref, reading);
-                    }),
-
-                    const SizedBox(height: AppDimensions.spacing80),
-                  ],
-                ),
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(
+                AppDimensions.screenPaddingHorizontal,
               ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: AppDimensions.spacing16),
+
+                  // Trend Chart
+                  Text('Blood Pressure Trend', style: AppTextStyles.h3),
+                  const SizedBox(height: AppDimensions.spacing16),
+                  _buildTrendChart(weekReadings),
+
+                  const SizedBox(height: AppDimensions.spacing32),
+
+                  // Recent Readings
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Recent Readings', style: AppTextStyles.h3),
+                      TextButton(
+                        onPressed: () {
+                          // TODO: View all
+                        },
+                        child: const Text('View All'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppDimensions.spacing16),
+
+                  // Readings List
+                  ...readings.take(10).map((reading) {
+                    return _buildReadingCard(context, ref, reading);
+                  }),
+
+                  const SizedBox(height: AppDimensions.spacing80),
+                ],
+              ),
+            );
+          },
+        ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () => context.push('/record-bp'),
           backgroundColor: AppColors.primaryTurquoise,
