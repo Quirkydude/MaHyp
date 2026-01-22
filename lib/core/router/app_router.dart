@@ -110,6 +110,8 @@ class AppRouter {
             child: SetPasswordPage(
               email: extras?['email'],
               fullName: extras?['name'],
+              mobile: extras?['mobile'],
+              dob: extras?['dob'] as DateTime?,
             ),
           );
         },
@@ -260,7 +262,8 @@ class AppRouter {
     ),
   );
 
-  /// Build page with smooth fade transition
+  /// Build page with smooth fade + slide transition.
+  /// Gentle animation provides predictable navigation cues for elderly users.
   static Page _buildPageWithTransition({
     required BuildContext context,
     required GoRouterState state,
@@ -269,10 +272,29 @@ class AppRouter {
     return CustomTransitionPage(
       key: state.pageKey,
       child: child,
+      transitionDuration: const Duration(milliseconds: 300),
+      reverseTransitionDuration: const Duration(milliseconds: 250),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        // Fade transition
+        final fadeAnimation = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeInOut,
+        );
+        // Subtle slide from right (5% offset)
+        final slideAnimation = Tween<Offset>(
+          begin: const Offset(0.05, 0),
+          end: Offset.zero,
+        ).animate(CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOut,
+        ));
+
         return FadeTransition(
-          opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
-          child: child,
+          opacity: fadeAnimation,
+          child: SlideTransition(
+            position: slideAnimation,
+            child: child,
+          ),
         );
       },
     );

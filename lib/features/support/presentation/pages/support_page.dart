@@ -308,7 +308,7 @@ class _SupportPageState extends State<SupportPage> {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              _showSuccessMessage('Message sent successfully');
+              _showSuccessDialog('Message Sent!', 'Your clinician will respond soon.');
             },
             child: const Text('Send'),
           ),
@@ -382,7 +382,7 @@ class _SupportPageState extends State<SupportPage> {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              _showSuccessMessage('Pharmacist will contact you shortly');
+              _showSuccessDialog('Request Sent!', 'A pharmacist will contact you shortly.');
             },
             child: const Text('Connect'),
           ),
@@ -391,12 +391,65 @@ class _SupportPageState extends State<SupportPage> {
     );
   }
 
-  void _showSuccessMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.success,
-        behavior: SnackBarBehavior.floating,
+  /// Shows an animated success dialog with bouncing checkmark.
+  /// Provides clear visual confirmation for elderly users.
+  void _showSuccessDialog(String title, String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0.0, end: 1.0),
+              duration: const Duration(milliseconds: 600),
+              curve: Curves.elasticOut,
+              builder: (context, value, child) {
+                return Transform.scale(scale: value, child: child);
+              },
+              child: Container(
+                width: 80,
+                height: 80,
+                decoration: const BoxDecoration(
+                  color: AppColors.success,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.check,
+                  size: 50,
+                  color: AppColors.white,
+                ),
+              ),
+            ),
+            const SizedBox(height: AppDimensions.spacing24),
+            Text(title, style: AppTextStyles.h3),
+            const SizedBox(height: AppDimensions.spacing8),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryTurquoise,
+                padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacing16),
+              ),
+              child: const Text('Done', style: TextStyle(color: AppColors.white)),
+            ),
+          ),
+        ],
       ),
     );
   }

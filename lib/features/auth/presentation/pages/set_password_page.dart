@@ -9,15 +9,20 @@ import '../../../../core/constants/app_text_styles.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/user_profile_provider.dart';
 
 class SetPasswordPage extends ConsumerStatefulWidget {
   final String? email;
   final String? fullName;
+  final String? mobile;
+  final DateTime? dob;
 
   const SetPasswordPage({
     super.key, 
     this.email,
     this.fullName,
+    this.mobile,
+    this.dob,
   });
 
   @override
@@ -83,16 +88,25 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
 
       try {
         // Create user with email and password
-        await ref.read(authServiceProvider).createUserWithEmailAndPassword(
+        final userCredential = await ref.read(authServiceProvider).createUserWithEmailAndPassword(
           widget.email!,
           _passwordController.text,
         );
         
-        // TODO: If we want to save full name, we would update the profile or save to Firestore here.
-        // For now, we'll just update the display name on the user object if possible or skip.
-        if (widget.fullName != null) {
-          final user = ref.read(currentUserProvider);
-          await user?.updateDisplayName(widget.fullName);
+        // Save user profile to Firestore
+        if (userCredential.user != null) {
+          await ref.read(userProfileServiceProvider).createUserProfile(
+            uid: userCredential.user!.uid,
+            fullName: widget.fullName ?? '',
+            email: widget.email!,
+            mobile: widget.mobile,
+            dob: widget.dob,
+          );
+          
+          // Update display name on Firebase Auth user
+          if (widget.fullName != null) {
+            await userCredential.user!.updateDisplayName(widget.fullName);
+          }
         }
 
         if (mounted) {

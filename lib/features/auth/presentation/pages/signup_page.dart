@@ -103,6 +103,21 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
     }
   }
 
+  /// Parse the DOB string back to DateTime
+  DateTime? _parseDob() {
+    if (_dobController.text.isEmpty) return null;
+    try {
+      final parts = _dobController.text.split(' / ');
+      if (parts.length == 3) {
+        final day = int.parse(parts[0]);
+        final month = int.parse(parts[1]);
+        final year = int.parse(parts[2]);
+        return DateTime(year, month, day);
+      }
+    } catch (_) {}
+    return null;
+  }
+
   Future<void> _handleSignUp() async {
     if (!_agreedToTerms) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -115,37 +130,16 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
-
-      // Note: We currently don't use full name, mobile, dob, or password in this step 
-      // because Firebase creates user with email/password. 
-      // The original design had a "/set-password" page. 
-      // For now, I'll pass a temporary password or redirect to a password setting page if that logic exists.
-      // However, typical flow is email/password on signup.
-      // Assuming the user will flow to '/set-password' to actually create the account or set password there.
-      // BUT, Firebase createUser requires password immediately.
-      // Let's check if there is a separate password field hidden or if the flow was:
-      // Signup (Personal Details) -> SetPasswordPage (Password) -> Firebase Create.
-      
-      // Checking local file structure again, I see `set_password_page.dart`.
-      // So I should passing these details to the next page, NOT creating user here yet.
-      // OR, I can prompt for password here. 
-      
-      // Let's stick to the existing flow: Go to /set-password.
-      // I should modify /set-password to handle the actual creation.
       
       setState(() => _isLoading = false);
       if (mounted) {
-         // Pass arguments to set password page? Or provide registration state provider?
-         // For simplicity, let's assume we pass data via query params or a provider.
-         // Since I can't easily see SetPasswordPage content right now, I'll assume it handles password input.
-         // Effectively, this page collects info, next page collects password & creates account.
-         
-         // Use go_router with 'extra' object to pass data
-          context.push('/set-password', extra: {
-            'email': _emailController.text.trim(),
-            'name': _fullNameController.text.trim(),
-            // add other fields if needed for Firestore profile creation later
-          });
+        // Pass all user data to set password page for Firestore profile creation
+        context.push('/set-password', extra: {
+          'email': _emailController.text.trim(),
+          'name': _fullNameController.text.trim(),
+          'mobile': _mobileController.text.trim(),
+          'dob': _parseDob(),
+        });
       }
     }
   }

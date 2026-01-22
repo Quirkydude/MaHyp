@@ -5,8 +5,9 @@ import '../../core/constants/app_text_styles.dart';
 import '../../features/medication/data/models/medication_model.dart'
     show MedicationStatus;
 
-/// Medication card widget for displaying medication information
-class MedicationCard extends StatelessWidget {
+/// Medication card widget for displaying medication information.
+/// Includes elderly-friendly press animation for clear touch feedback.
+class MedicationCard extends StatefulWidget {
   final String name;
   final String dosage;
   final String frequency;
@@ -27,18 +28,33 @@ class MedicationCard extends StatelessWidget {
   });
 
   @override
+  State<MedicationCard> createState() => _MedicationCardState();
+}
+
+class _MedicationCardState extends State<MedicationCard> {
+  bool _isPressed = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppDimensions.spacing12),
-      decoration: BoxDecoration(
-        color: _getBackgroundColor(),
-        borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-        border: Border.all(color: AppColors.inputBorder, width: 1),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-        child: Padding(
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) {
+        setState(() => _isPressed = false);
+        widget.onTap?.call();
+      },
+      onTapCancel: () => setState(() => _isPressed = false),
+      child: AnimatedScale(
+        scale: _isPressed ? 0.97 : 1.0,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeInOut,
+        child: Container(
+          margin: const EdgeInsets.only(bottom: AppDimensions.spacing12),
+          decoration: BoxDecoration(
+            color: _getBackgroundColor(),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+            border: Border.all(color: AppColors.inputBorder, width: 1),
+          ),
+          child: Padding(
           padding: const EdgeInsets.all(AppDimensions.spacing16),
           child: Row(
             children: [
@@ -68,7 +84,7 @@ class MedicationCard extends StatelessWidget {
                   children: [
                     // Name
                     Text(
-                      name,
+                      widget.name,
                       style: AppTextStyles.bodyLarge.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -77,14 +93,14 @@ class MedicationCard extends StatelessWidget {
 
                     // Dosage and Frequency
                     Text(
-                      '$dosage • $frequency',
+                      '${widget.dosage} • ${widget.frequency}',
                       style: AppTextStyles.bodySmall,
                     ),
                     const SizedBox(height: AppDimensions.spacing4),
 
                     // Next Dose
                     Text(
-                      'Next dose: $nextDose',
+                      'Next dose: ${widget.nextDose}',
                       style: AppTextStyles.bodySmall.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -101,11 +117,12 @@ class MedicationCard extends StatelessWidget {
           ),
         ),
       ),
+    ),
     );
   }
 
   Color _getBackgroundColor() {
-    switch (status) {
+    switch (widget.status) {
       case MedicationStatus.upcoming:
         return AppColors.white;
       case MedicationStatus.taken:
@@ -120,7 +137,7 @@ class MedicationCard extends StatelessWidget {
   }
 
   Widget _buildStatusWidget() {
-    switch (status) {
+    switch (widget.status) {
       case MedicationStatus.upcoming:
         return Container(
           padding: const EdgeInsets.symmetric(
