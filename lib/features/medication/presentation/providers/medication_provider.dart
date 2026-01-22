@@ -1,126 +1,186 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/services/medication_service.dart';
 import '../../data/models/medication_model.dart';
 
-/// Medication list state notifier
-class MedicationNotifier extends StateNotifier<List<MedicationModel>> {
-  MedicationNotifier() : super(_dummyMedications);
+/// Medication Service Provider
+final medicationServiceProvider = Provider<MedicationService>((ref) {
+  return MedicationService();
+});
 
-  // Add medication
-  void addMedication(MedicationModel medication) {
-    state = [...state, medication];
+/// Medication Notifier - manages state and Firestore sync
+class MedicationNotifier extends StateNotifier<AsyncValue<List<MedicationModel>>> {
+  final MedicationService _service;
+
+  MedicationNotifier(this._service) : super(const AsyncValue.loading()) {
+    _loadMedications();
   }
 
-  // Update medication
-  void updateMedication(MedicationModel medication) {
-    state = [
-      for (final med in state)
-        if (med.id == medication.id) medication else med,
-    ];
+  /// Load medications from Firestore
+  Future<void> _loadMedications() async {
+    try {
+      final medications = await _service.getAllMedications();
+      // Generate doses for each medication based on frequency
+      final withDoses = medications.map((med) => _generateDoses(med)).toList();
+      state = AsyncValue.data(withDoses);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
   }
 
-  // Delete medication
-  void deleteMedication(String id) {
-    state = state.where((med) => med.id != id).toList();
+  /// Refresh medications
+  Future<void> refresh() async {
+    state = const AsyncValue.loading();
+    await _loadMedications();
   }
 
-  // Mark dose as taken
-  void markDoseAsTaken(String medicationId, String doseId) {
-    state = [
-      for (final med in state)
-        if (med.id == medicationId)
-          med.copyWith(
-            doses: [
-              for (final dose in med.doses)
-                if (dose.id == doseId)
-                  dose.copyWith(
-                    status: MedicationStatus.taken,
-                    takenTime: DateTime.now(),
-                  )
-                else
-                  dose,
-            ],
-          )
-        else
-          med,
-    ];
+  /// Add medication
+  Future<void> addMedication(MedicationModel medication) async {
+    try {
+      final id = await _service.addMedication(medication);
+      final newMed = _generateDoses(medication.copyWith(id: id));
+      
+      state.whenData((medications) {
+        state = AsyncValue.data([...medications, newMed]);
+      });
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
   }
 
-  // Skip dose
-  void skipDose(String medicationId, String doseId) {
-    state = [
-      for (final med in state)
-        if (med.id == medicationId)
-          med.copyWith(
-            doses: [
-              for (final dose in med.doses)
-                if (dose.id == doseId)
-                  dose.copyWith(status: MedicationStatus.skipped)
-                else
-                  dose,
-            ],
-          )
-        else
-          med,
-    ];
+  /// Update medication
+  Future<void> updateMedication(MedicationModel medication) async {
+    try {
+      await _service.updateMedication(medication.id, medication);
+      state.whenData((medications) {
+        state = AsyncValue.data([
+          for (final med in medications)
+            if (med.id == medication.id) _generateDoses(medication) else med,
+        ]);
+      });
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
   }
 
-  // Snooze dose (reschedule)
-  void snoozeDose(String medicationId, String doseId, int minutes) {
-    state = [
-      for (final med in state)
-        if (med.id == medicationId)
-          med.copyWith(
-            doses: [
-              for (final dose in med.doses)
-                if (dose.id == doseId)
-                  dose.copyWith(
-                    scheduledTime: dose.scheduledTime.add(
-                      Duration(minutes: minutes),
-                    ),
-                  )
-                else
-                  dose,
-            ],
-          )
-        else
-          med,
-    ];
+  /// Delete medication
+  Future<void> deleteMedication(String id) async {
+    try {
+      await _service.deleteMedication(id);
+      state.whenData((medications) {
+        state = AsyncValue.data(medications.where((med) => med.id != id).toList());
+      });
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
   }
 
-  // Undo taken (within 5 minutes)
-  void undoTaken(String medicationId, String doseId) {
-    state = [
-      for (final med in state)
-        if (med.id == medicationId)
-          med.copyWith(
-            doses: [
-              for (final dose in med.doses)
-                if (dose.id == doseId)
-                  dose.copyWith(
-                    status: MedicationStatus.upcoming,
-                    takenTime: null,
-                  )
-                else
-                  dose,
-            ],
-          )
-        else
-          med,
-    ];
+  /// Mark dose as taken and log to Firestore
+  Future<void> markDoseAsTaken(String medicationId, String doseId) async {
+    state.whenData((medications) async {
+      final med = medications.firstWhere((m) => m.id == medicationId);
+      final dose = med.doses.firstWhere((d) => d.id == doseId);
+      
+      // Log to Firestore
+      await _service.logDoseEvent(
+        medicationId: medicationId,
+        medicationName: med.name,
+        scheduledTime: dose.scheduledTime,
+        status: MedicationStatus.taken,
+        takenTime: DateTime.now(),
+      );
+
+      // Update local state
+      state = AsyncValue.data([
+        for (final m in medications)
+          if (m.id == medicationId)
+            m.copyWith(
+              doses: [
+                for (final d in m.doses)
+                  if (d.id == doseId)
+                    d.copyWith(status: MedicationStatus.taken, takenTime: DateTime.now())
+                  else
+                    d,
+              ],
+            )
+          else
+            m,
+      ]);
+    });
   }
 
-  // Get today's medications
+  /// Skip dose and log to Firestore
+  Future<void> skipDose(String medicationId, String doseId) async {
+    state.whenData((medications) async {
+      final med = medications.firstWhere((m) => m.id == medicationId);
+      final dose = med.doses.firstWhere((d) => d.id == doseId);
+      
+      await _service.logDoseEvent(
+        medicationId: medicationId,
+        medicationName: med.name,
+        scheduledTime: dose.scheduledTime,
+        status: MedicationStatus.skipped,
+      );
+
+      state = AsyncValue.data([
+        for (final m in medications)
+          if (m.id == medicationId)
+            m.copyWith(
+              doses: [
+                for (final d in m.doses)
+                  if (d.id == doseId)
+                    d.copyWith(status: MedicationStatus.skipped)
+                  else
+                    d,
+              ],
+            )
+          else
+            m,
+      ]);
+    });
+  }
+
+  /// Generate doses for a medication based on frequency (client-side)
+  MedicationModel _generateDoses(MedicationModel med) {
+    final now = DateTime.now();
+    final doses = <MedicationDose>[];
+    
+    // Map TimeOfDay to hours
+    int getHour(TimeOfDay tod) {
+      switch (tod) {
+        case TimeOfDay.morning: return 8;
+        case TimeOfDay.afternoon: return 14;
+        case TimeOfDay.evening: return 18;
+        case TimeOfDay.night: return 21;
+      }
+    }
+    
+    // Generate doses for past 2 days and next 7 days
+    for (int day = -2; day < 7; day++) {
+      final date = now.add(Duration(days: day));
+      for (final tod in med.timesOfDay) {
+        final hour = getHour(tod);
+        final scheduledTime = DateTime(date.year, date.month, date.day, hour, 0);
+        
+        doses.add(MedicationDose(
+          id: '${med.id}_${scheduledTime.millisecondsSinceEpoch}',
+          scheduledTime: scheduledTime,
+          status: MedicationStatus.upcoming,
+        ));
+      }
+    }
+    
+    doses.sort((a, b) => a.scheduledTime.compareTo(b.scheduledTime));
+    return med.copyWith(doses: doses);
+  }
+
+  /// Get today's medications from state
   List<MedicationModel> get todayMedications {
-    return state.where((med) => med.todayDoses.isNotEmpty).toList();
+    return state.value?.where((med) => med.todayDoses.isNotEmpty).toList() ?? [];
   }
 
-  // Get upcoming medications
-  List<MedicationModel> get upcomingMedications {
-    return state.where((med) => med.nextDose != null).toList();
-  }
-
-  // Get adherence stats
+  /// Get adherence stats from notifier
   Map<String, int> get adherenceStats {
+    final meds = state.value ?? [];
     final now = DateTime.now();
     final sevenDaysAgo = now.subtract(const Duration(days: 7));
 
@@ -128,24 +188,18 @@ class MedicationNotifier extends StateNotifier<List<MedicationModel>> {
     int takenDoses = 0;
     int missedDoses = 0;
 
-    for (final med in state) {
+    for (final med in meds) {
       final recentDoses = med.doses.where((dose) {
         return dose.scheduledTime.isAfter(sevenDaysAgo) &&
             dose.scheduledTime.isBefore(now);
       });
 
       totalDoses += recentDoses.length;
-      takenDoses += recentDoses
-          .where((d) => d.status == MedicationStatus.taken)
-          .length;
-      missedDoses += recentDoses
-          .where((d) => d.status == MedicationStatus.missed)
-          .length;
+      takenDoses += recentDoses.where((d) => d.status == MedicationStatus.taken).length;
+      missedDoses += recentDoses.where((d) => d.status == MedicationStatus.missed).length;
     }
 
-    final adherence = totalDoses > 0
-        ? ((takenDoses / totalDoses) * 100).round()
-        : 100;
+    final adherence = totalDoses > 0 ? ((takenDoses / totalDoses) * 100).round() : 100;
 
     return {
       'adherence': adherence,
@@ -156,10 +210,11 @@ class MedicationNotifier extends StateNotifier<List<MedicationModel>> {
   }
 }
 
-/// Medication provider
+/// Medication provider - async-aware
 final medicationProvider =
-    StateNotifierProvider<MedicationNotifier, List<MedicationModel>>((ref) {
-      return MedicationNotifier();
+    StateNotifierProvider<MedicationNotifier, AsyncValue<List<MedicationModel>>>((ref) {
+      final service = ref.watch(medicationServiceProvider);
+      return MedicationNotifier(service);
     });
 
 /// Adherence stats provider
@@ -168,101 +223,9 @@ final adherenceStatsProvider = Provider<Map<String, int>>((ref) {
   return notifier.adherenceStats;
 });
 
-/// Generate dummy medications with proper dose scheduling
-List<MedicationModel> get _dummyMedications {
-  final now = DateTime.now();
+/// Stream provider for real-time updates
+final medicationsStreamProvider = StreamProvider<List<MedicationModel>>((ref) {
+  final service = ref.watch(medicationServiceProvider);
+  return service.medicationsStream();
+});
 
-  // Helper to create doses
-  List<MedicationDose> createDoses(List<int> hours, int days) {
-    final doses = <MedicationDose>[];
-    for (int day = -2; day < days; day++) {
-      for (final hour in hours) {
-        final date = now.add(Duration(days: day));
-        final scheduledTime = DateTime(
-          date.year,
-          date.month,
-          date.day,
-          hour,
-          0,
-        );
-
-        MedicationStatus status = MedicationStatus.upcoming;
-        DateTime? takenTime;
-
-        // For past doses, randomly mark as taken or missed
-        if (scheduledTime.isBefore(now)) {
-          if (day == -1 || (day == 0 && hour < now.hour - 2)) {
-            status = MedicationStatus.missed;
-          } else if (DateTime.now().difference(scheduledTime).inHours < 2) {
-            // Recent doses - some taken
-            status = hour % 2 == 0
-                ? MedicationStatus.taken
-                : MedicationStatus.missed;
-            if (status == MedicationStatus.taken) {
-              takenTime = scheduledTime.add(const Duration(minutes: 5));
-            }
-          } else {
-            status = MedicationStatus.taken;
-            takenTime = scheduledTime.add(const Duration(minutes: 5));
-          }
-        }
-
-        doses.add(
-          MedicationDose(
-            id: '${scheduledTime.millisecondsSinceEpoch}',
-            scheduledTime: scheduledTime,
-            takenTime: takenTime,
-            status: status,
-          ),
-        );
-      }
-    }
-    return doses;
-  }
-
-  return [
-    MedicationModel(
-      id: '1',
-      name: 'Amlodipine',
-      dosage: '10mg',
-      frequency: MedicationFrequency.onceDaily,
-      timesOfDay: [TimeOfDay.morning],
-      doses: createDoses([8], 30),
-      reminderEnabled: true,
-      createdAt: now.subtract(const Duration(days: 30)),
-    ),
-    MedicationModel(
-      id: '2',
-      name: 'Lisinopril',
-      dosage: '10mg',
-      frequency: MedicationFrequency.twiceDaily,
-      timesOfDay: [TimeOfDay.morning, TimeOfDay.evening],
-      doses: createDoses([8, 18], 30),
-      reminderEnabled: true,
-      notes: 'Take with food',
-      createdAt: now.subtract(const Duration(days: 25)),
-    ),
-    MedicationModel(
-      id: '3',
-      name: 'HCTZ',
-      dosage: '25mg',
-      frequency: MedicationFrequency.onceDaily,
-      timesOfDay: [TimeOfDay.morning],
-      doses: createDoses([8], 30),
-      reminderEnabled: true,
-      notes: 'Take in the morning',
-      createdAt: now.subtract(const Duration(days: 20)),
-    ),
-    MedicationModel(
-      id: '4',
-      name: 'Metformin',
-      dosage: '500mg',
-      frequency: MedicationFrequency.twiceDaily,
-      timesOfDay: [TimeOfDay.morning, TimeOfDay.evening],
-      doses: createDoses([8, 18], 30),
-      reminderEnabled: true,
-      notes: 'Take with meals',
-      createdAt: now.subtract(const Duration(days: 15)),
-    ),
-  ];
-}

@@ -53,12 +53,8 @@ class _MedicationListPageState extends ConsumerState<MedicationListPage>
 
   @override
   Widget build(BuildContext context) {
-    final medications = ref.watch(medicationProvider);
+    final medicationsAsync = ref.watch(medicationProvider);
     final stats = ref.watch(adherenceStatsProvider);
-    final todayMeds = ref.read(medicationProvider.notifier).todayMedications;
-    final upcomingMeds = ref
-        .read(medicationProvider.notifier)
-        .upcomingMedications;
 
     return MainLayout(
       currentIndex: 2,
@@ -67,53 +63,80 @@ class _MedicationListPageState extends ConsumerState<MedicationListPage>
           title: 'Medication List',
           showBackButton: false,
         ),
-        body: Column(
-          children: [
-            // Tab Selector
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppDimensions.screenPaddingHorizontal,
-                AppDimensions.spacing16,
-                AppDimensions.screenPaddingHorizontal,
-                0,
-              ),
-              child: Column(
-                children: [
-                  TabSelector(
-                    tabs: const ['Today', 'Upcoming'],
-                    selectedIndex: _selectedTab,
-                    onTabSelected: (index) {
-                      setState(() => _selectedTab = index);
-                    },
+        body: medicationsAsync.when(
+          loading: () => const Center(
+            child: CircularProgressIndicator(
+              color: AppColors.primaryTurquoise,
+            ),
+          ),
+          error: (error, _) => Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 48, color: AppColors.error),
+                const SizedBox(height: AppDimensions.spacing16),
+                Text('Error loading medications', style: AppTextStyles.bodyMedium),
+                const SizedBox(height: AppDimensions.spacing8),
+                TextButton(
+                  onPressed: () => ref.read(medicationProvider.notifier).refresh(),
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          ),
+          data: (medications) {
+            final todayMeds = medications.where((med) => med.todayDoses.isNotEmpty).toList();
+            final upcomingMeds = medications.where((med) => med.nextDose != null).toList();
+
+            return Column(
+              children: [
+                // Tab Selector
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppDimensions.screenPaddingHorizontal,
+                    AppDimensions.spacing16,
+                    AppDimensions.screenPaddingHorizontal,
+                    0,
                   ),
+                  child: Column(
+                    children: [
+                      TabSelector(
+                        tabs: const ['Today', 'Upcoming'],
+                        selectedIndex: _selectedTab,
+                        onTabSelected: (index) {
+                          setState(() => _selectedTab = index);
+                        },
+                      ),
 
-                  // Report Card (only in Today tab)
-                  if (_selectedTab == 0) ...[
-                    const SizedBox(height: AppDimensions.spacing16),
-                    ReportCard(
-                      adherencePercentage: stats['adherence'] ?? 0,
-                      dosesTaken: stats['taken'] ?? 0,
-                      totalDoses: stats['total'] ?? 0,
-                      missedDoses: stats['missed'] ?? 0,
-                      onViewReport: () => context.push('/medication-report'),
-                    ),
-                  ],
-                ],
-              ),
-            ),
+                      // Report Card (only in Today tab)
+                      if (_selectedTab == 0) ...[
+                        const SizedBox(height: AppDimensions.spacing16),
+                        ReportCard(
+                          adherencePercentage: stats['adherence'] ?? 0,
+                          dosesTaken: stats['taken'] ?? 0,
+                          totalDoses: stats['total'] ?? 0,
+                          missedDoses: stats['missed'] ?? 0,
+                          onViewReport: () => context.push('/medication-report'),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
 
-            // Medication List
-            Expanded(
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                switchInCurve: Curves.easeInOut,
-                switchOutCurve: Curves.easeInOut,
-                child: _selectedTab == 0
-                    ? _buildTodayList(todayMeds)
-                    : _buildUpcomingList(upcomingMeds),
-              ),
-            ),
-          ],
+                // Medication List
+                Expanded(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    switchInCurve: Curves.easeInOut,
+                    switchOutCurve: Curves.easeInOut,
+                    child: _selectedTab == 0
+                        ? _buildTodayList(todayMeds)
+                        : _buildUpcomingList(upcomingMeds),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
         floatingActionButton: ScaleTransition(
           scale: _fabScaleAnimation,
