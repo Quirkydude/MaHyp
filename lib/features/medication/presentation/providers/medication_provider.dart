@@ -139,6 +139,56 @@ class MedicationNotifier extends StateNotifier<AsyncValue<List<MedicationModel>>
     });
   }
 
+  /// Snooze dose (reschedule locally)
+  void snoozeDose(String medicationId, String doseId, int minutes) {
+    state.whenData((medications) {
+      state = AsyncValue.data([
+        for (final med in medications)
+          if (med.id == medicationId)
+            med.copyWith(
+              doses: [
+                for (final dose in med.doses)
+                  if (dose.id == doseId)
+                    dose.copyWith(
+                      scheduledTime: dose.scheduledTime.add(Duration(minutes: minutes)),
+                      status: MedicationStatus.upcoming, // Reset status if it was ready
+                    )
+                  else
+                    dose,
+              ],
+            )
+          else
+            med,
+      ]);
+    });
+  }
+
+  /// Undo taken (revert locally)
+  Future<void> undoTaken(String medicationId, String doseId) async {
+    state.whenData((medications) {
+      state = AsyncValue.data([
+        for (final med in medications)
+          if (med.id == medicationId)
+            med.copyWith(
+              doses: [
+                for (final dose in med.doses)
+                  if (dose.id == doseId)
+                    dose.copyWith(
+                      status: MedicationStatus.upcoming,
+                      takenTime: null,
+                    )
+                  else
+                    dose,
+              ],
+            )
+          else
+            med,
+      ]);
+    });
+    // Note: This strictly reverts local state. 
+    // Ideally we should also delete the Firestore log, but that requires log ID tracking.
+  }
+
   /// Generate doses for a medication based on frequency (client-side)
   MedicationModel _generateDoses(MedicationModel med) {
     final now = DateTime.now();

@@ -46,15 +46,20 @@ class NotificationService {
     if (_isInitialized) return;
 
     // Set up background message handler
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    // On Web, this is handled by the service worker, but calling it doesn't hurt (no-op or registers handler)
+    try {
+      FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    } catch (e) {
+      debugPrint('Error setting background handler: $e');
+    }
 
-    // Request permission
-    await _requestPermission();
+    // Request permission (don't await to avoid blocking app launch on web)
+    requestPermission();
 
     // Initialize local notifications
     await _initializeLocalNotifications();
 
-    // Create notification channels (Android)
+    // Create notification channels (Android only)
     await _createNotificationChannels();
 
     // Set up foreground message handler
@@ -64,9 +69,13 @@ class NotificationService {
     FirebaseMessaging.onMessageOpenedApp.listen(_handleNotificationTap);
 
     // Check if app was opened from a notification
-    final initialMessage = await _messaging.getInitialMessage();
-    if (initialMessage != null) {
-      _handleNotificationTap(initialMessage);
+    try {
+      final initialMessage = await _messaging.getInitialMessage();
+      if (initialMessage != null) {
+        _handleNotificationTap(initialMessage);
+      }
+    } catch (e) {
+      debugPrint('Error getting initial message: $e');
     }
 
     _isInitialized = true;
@@ -74,22 +83,30 @@ class NotificationService {
   }
 
   /// Request notification permissions
-  Future<bool> _requestPermission() async {
-    final settings = await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-      provisional: false,
-    );
+  Future<bool> requestPermission() async {
+    try {
+      final settings = await _messaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+        provisional: false,
+      );
 
-    final granted = settings.authorizationStatus == AuthorizationStatus.authorized;
-    debugPrint('Notification permission: ${settings.authorizationStatus}');
-    return granted;
+      final granted = settings.authorizationStatus == AuthorizationStatus.authorized;
+      debugPrint('Notification permission: ${settings.authorizationStatus}');
+      return granted;
+    } catch (e) {
+      debugPrint('Error requesting permission: $e');
+      return false;
+    }
   }
 
   /// Initialize local notifications plugin
   Future<void> _initializeLocalNotifications() async {
+    // Android settings
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    
+    // iOS/macOS settings
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
@@ -99,6 +116,8 @@ class NotificationService {
     const initSettings = InitializationSettings(
       android: androidSettings,
       iOS: iosSettings,
+      // macOS: macosSettings, // Add if needed
+      // linux: linuxSettings, // Add if needed
     );
 
     await _localNotifications.initialize(
@@ -109,7 +128,7 @@ class NotificationService {
 
   /// Create notification channels for Android
   Future<void> _createNotificationChannels() async {
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       final androidPlugin = _localNotifications
           .resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin>();

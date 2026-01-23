@@ -41,8 +41,7 @@ class _MedicationReportPageState extends ConsumerState<MedicationReportPage>
 
   @override
   Widget build(BuildContext context) {
-    final medications = ref.watch(medicationProvider);
-    final stats = _calculateStats(medications);
+    final medicationsAsync = ref.watch(medicationProvider);
 
     return MainLayout(
       currentIndex: 2,
@@ -51,93 +50,105 @@ class _MedicationReportPageState extends ConsumerState<MedicationReportPage>
           title: 'Medication Report',
           showBackButton: true,
         ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppDimensions.screenPaddingHorizontal),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: AppDimensions.spacing20),
-
-              // Summary Statistics
-              Text('Summary Statistics', style: AppTextStyles.h3),
-              const SizedBox(height: AppDimensions.spacing16),
-
-              // Stats Cards
-              Row(
+        body: medicationsAsync.when(
+          loading: () => const Center(
+            child: CircularProgressIndicator(color: AppColors.primaryTurquoise),
+          ),
+          error: (error, _) => Center(
+            child: Text('Error: $error', style: AppTextStyles.error),
+          ),
+          data: (medications) {
+            final stats = _calculateStats(medications);
+            
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(AppDimensions.screenPaddingHorizontal),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: _buildStatCard(
-                      label: 'Adherence',
-                      value: '${stats['adherence']}%',
-                      color: AppColors.success,
-                      delay: 0,
+                  const SizedBox(height: AppDimensions.spacing20),
+
+                  // Summary Statistics
+                  Text('Summary Statistics', style: AppTextStyles.h3),
+                  const SizedBox(height: AppDimensions.spacing16),
+
+                  // Stats Cards
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildStatCard(
+                          label: 'Adherence',
+                          value: '${stats['adherence']}%',
+                          color: AppColors.success,
+                          delay: 0,
+                        ),
+                      ),
+                      const SizedBox(width: AppDimensions.spacing16),
+                      Expanded(
+                        child: _buildStatCard(
+                          label: 'Doses Taken',
+                          value: '${stats['taken']}/${stats['total']}',
+                          color: AppColors.primaryTurquoise,
+                          delay: 100,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppDimensions.spacing16),
+                  _buildStatCard(
+                    label: 'Missed',
+                    value: '${stats['missed']}',
+                    color: AppColors.error,
+                    delay: 200,
+                    isFullWidth: true,
+                  ),
+
+                  const SizedBox(height: AppDimensions.spacing32),
+
+                  // Medication Adherence Overview
+                  Text(
+                    'Medication Adherence Overview',
+                    style: AppTextStyles.bodyLarge.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(width: AppDimensions.spacing16),
-                  Expanded(
-                    child: _buildStatCard(
-                      label: 'Doses Taken',
-                      value: '${stats['taken']}/${stats['total']}',
-                      color: AppColors.primaryTurquoise,
-                      delay: 100,
+                  const SizedBox(height: AppDimensions.spacing12),
+
+                  // Period Selector
+                  Container(
+                    padding: const EdgeInsets.all(AppDimensions.spacing4),
+                    decoration: BoxDecoration(
+                      color: AppColors.inputBackground,
+                      borderRadius: BorderRadius.circular(
+                        AppDimensions.radiusSmall,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(child: _buildPeriodButton('Past Week')),
+                        Expanded(child: _buildPeriodButton('Past Month')),
+                      ],
                     ),
                   ),
+
+                  const SizedBox(height: AppDimensions.spacing24),
+
+                  // Chart
+                  _buildChart(stats),
+
+                  const SizedBox(height: AppDimensions.spacing32),
+
+                  // View Medication List Button
+                  CustomButton(
+                    text: 'View Medication List',
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.list_alt, color: AppColors.white),
+                  ),
+
+                  const SizedBox(height: AppDimensions.spacing32),
                 ],
               ),
-              const SizedBox(height: AppDimensions.spacing16),
-              _buildStatCard(
-                label: 'Missed',
-                value: '${stats['missed']}',
-                color: AppColors.error,
-                delay: 200,
-                isFullWidth: true,
-              ),
-
-              const SizedBox(height: AppDimensions.spacing32),
-
-              // Medication Adherence Overview
-              Text(
-                'Medication Adherence Overview',
-                style: AppTextStyles.bodyLarge.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: AppDimensions.spacing12),
-
-              // Period Selector
-              Container(
-                padding: const EdgeInsets.all(AppDimensions.spacing4),
-                decoration: BoxDecoration(
-                  color: AppColors.inputBackground,
-                  borderRadius: BorderRadius.circular(
-                    AppDimensions.radiusSmall,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(child: _buildPeriodButton('Past Week')),
-                    Expanded(child: _buildPeriodButton('Past Month')),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: AppDimensions.spacing24),
-
-              // Chart
-              _buildChart(stats),
-
-              const SizedBox(height: AppDimensions.spacing32),
-
-              // View Medication List Button
-              CustomButton(
-                text: 'View Medication List',
-                onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.list_alt, color: AppColors.white),
-              ),
-
-              const SizedBox(height: AppDimensions.spacing32),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

@@ -14,37 +14,44 @@ class DashboardHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: const BoxDecoration(
-        gradient: AppColors.primaryGradient,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(24),
-          bottomRight: Radius.circular(24),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      decoration: BoxDecoration(
+        gradient: AppColors.headerGradient,
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(28),
+          bottomRight: Radius.circular(28),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryTurquoise.withOpacity(0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: SafeArea(
         bottom: false,
         child: Row(
           children: [
-            // Back button removed for Dashboard (Home)
-            // If needed for other screens, we can add a showBackButton flag
-            const SizedBox(width: 16), // Left padding
+            const SizedBox(width: 8),
             Expanded(
               child: Center(
                 child: Text(
                   title,
-                  style: const TextStyle(
-                    color: AppColors.white,
-                    fontSize: 20,
+                  style: TextStyle(
+                    color: AppColors.primaryTurquoiseDark,
+                    fontSize: 18,
                     fontWeight: FontWeight.w600,
+                    letterSpacing: 0.3,
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 40), // Balance the back button
+            const SizedBox(width: 40),
           ],
         ),
       ),
     );
   }
 }
+
