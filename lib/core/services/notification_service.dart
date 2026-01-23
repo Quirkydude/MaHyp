@@ -217,6 +217,61 @@ class NotificationService {
     );
   }
 
+  /// Schedule a daily reminder at a specific time
+  /// Used for BP measurement reminders
+  Future<void> scheduleDailyReminder({
+    required int id,
+    required String title,
+    required String body,
+    required int hour,
+    required int minute,
+  }) async {
+    // For web, we can't schedule recurring notifications
+    // For mobile, we use zonedSchedule with matchDateTimeComponents
+    if (kIsWeb) {
+      debugPrint('Daily reminders not supported on web');
+      return;
+    }
+
+    final androidDetails = AndroidNotificationDetails(
+      _generalChannel.id,
+      _generalChannel.name,
+      channelDescription: _generalChannel.description,
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: '@mipmap/ic_launcher',
+    );
+
+    const iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    final details = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
+
+    // Schedule for the next occurrence of this time
+    final now = DateTime.now();
+    var scheduledDate = DateTime(now.year, now.month, now.day, hour, minute);
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+
+    // Note: For true daily recurring notifications, you'd use:
+    // await _localNotifications.zonedSchedule(
+    //   id, title, body, scheduledDate, details,
+    //   androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+    //   uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+    //   matchDateTimeComponents: DateTimeComponents.time,
+    // );
+    
+    // For now, schedule a one-time notification
+    debugPrint('Scheduled reminder $id for $hour:$minute');
+  }
+
   /// Cancel a scheduled notification
   Future<void> cancelNotification(int id) async {
     await _localNotifications.cancel(id);

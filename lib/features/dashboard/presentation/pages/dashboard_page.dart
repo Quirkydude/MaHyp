@@ -36,7 +36,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
     return MainLayout(
       currentIndex: 0,
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: const CustomAppBar(
           title: 'Dashboard',
           showBackButton: false,
@@ -49,6 +49,8 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
               GreetingSection(
                 userName: userProfileAsync.value?.fullName ?? 'User',
                 avatarUrl: null, // Avatar not yet implemented
+                onProfilePressed: () => context.push(AppRouter.profile),
+                onSettingsPressed: () => context.push(AppRouter.settings),
               ),
               
               const SizedBox(height: 16),

@@ -26,9 +26,21 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    // Use dark gradient in dark mode, primary gradient in light mode
+    final gradient = isDark 
+        ? const LinearGradient(
+            colors: [Color(0xFF1E1E1E), Color(0xFF2C2C2C)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          )
+        : AppColors.primaryGradient;
+
     return Container(
       decoration: BoxDecoration(
-        gradient: backgroundColor == null ? AppColors.primaryGradient : null,
+        gradient: backgroundColor == null ? gradient : null,
         color: backgroundColor,
       ),
       child: AppBar(

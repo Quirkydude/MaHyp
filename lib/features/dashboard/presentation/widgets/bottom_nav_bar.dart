@@ -13,10 +13,15 @@ class BottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final bgColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final unselectedColor = isDark ? Colors.grey[500] : AppColors.textSecondary;
+
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
-        boxShadow: [
+        color: bgColor,
+        boxShadow: isDark ? [] : [
           BoxShadow(
             color: AppColors.shadow.withOpacity(0.1),
             blurRadius: 20,
@@ -34,11 +39,11 @@ class BottomNavBar extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _buildNavItem(0, Icons.home, 'Home'),
-                  _buildNavItem(1, Icons.favorite_outline, 'BP Monitor'),
-                  _buildNavItem(2, Icons.medication_outlined, 'Medication'),
-                  _buildNavItem(3, Icons.menu_book_outlined, 'Education'),
-                  _buildNavItem(4, Icons.menu, 'More'),
+                  _buildNavItem(0, Icons.home, 'Home', unselectedColor),
+                  _buildNavItem(1, Icons.favorite_outline, 'BP Monitor', unselectedColor),
+                  _buildNavItem(2, Icons.medication_outlined, 'Medication', unselectedColor),
+                  _buildNavItem(3, Icons.menu_book_outlined, 'Education', unselectedColor),
+                  _buildNavItem(4, Icons.menu, 'More', unselectedColor),
                 ],
               ),
             ),
@@ -58,7 +63,7 @@ class BottomNavBar extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, String label) {
+  Widget _buildNavItem(int index, IconData icon, String label, Color? unselectedColor) {
     final isSelected = currentIndex == index;
     return GestureDetector(
       onTap: () => onTap(index),
@@ -70,14 +75,14 @@ class BottomNavBar extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: isSelected ? AppColors.primaryTurquoise : AppColors.textSecondary,
+              color: isSelected ? AppColors.primaryTurquoise : unselectedColor,
               size: 24,
             ),
             const SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? AppColors.primaryTurquoise : AppColors.textSecondary,
+                color: isSelected ? AppColors.primaryTurquoise : unselectedColor,
                 fontSize: 10,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
               ),
