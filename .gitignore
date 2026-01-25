@@ -46,3 +46,10 @@ app.*.map.json
 
 # Local Netlify folder
 .netlify
+
+# Build/Analysis outputs
+analysis_output.txt
+verbose_log.txt
+gradle_output.txt
+android/build_error.txt
+android/.gradle_local_home/

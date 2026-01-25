@@ -15,6 +15,7 @@ import '../widgets/stat_card.dart';
 import '../widgets/action_card.dart';
 import '../widgets/calendar_week_view.dart';
 import '../widgets/task_item.dart';
+import '../../../notification/presentation/providers/notification_provider.dart';
 
 class DashboardPage extends ConsumerStatefulWidget {
   const DashboardPage({super.key});
@@ -32,6 +33,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
     final userProfileAsync = ref.watch(userProfileProvider);
     final bpReadingsAsync = ref.watch(bpProvider);
     final medicationsAsync = ref.watch(medicationProvider);
+    final unreadNotificationCount = ref.watch(unreadNotificationCountProvider);
 
     return MainLayout(
       currentIndex: 0,
@@ -51,6 +53,8 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                 avatarUrl: null, // Avatar not yet implemented
                 onProfilePressed: () => context.push(AppRouter.profile),
                 onSettingsPressed: () => context.push(AppRouter.settings),
+                onNotificationPressed: () => context.push(AppRouter.notifications),
+                unreadNotificationCount: unreadNotificationCount,
               ),
               
               const SizedBox(height: 16),

@@ -20,6 +20,7 @@ import '../../features/education/presentation/pages/education_detail_page.dart';
 import '../../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
+import '../../features/notification/presentation/pages/notifications_page.dart';
 
 /// App routes configuration using GoRouter
 class AppRouter {
@@ -42,6 +43,7 @@ class AppRouter {
   static const String dashboard = '/dashboard';
   static const String profile = '/profile';
   static const String settings = '/settings';
+  static const String notifications = '/notifications';
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
@@ -88,6 +90,17 @@ class AppRouter {
           context: context,
           state: state,
           child: const SettingsPage(),
+        ),
+      ),
+
+      // Notifications Screen
+      GoRoute(
+        path: notifications,
+        name: 'notifications',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const NotificationsPage(),
         ),
       ),
 

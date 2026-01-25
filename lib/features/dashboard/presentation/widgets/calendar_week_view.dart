@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 
-class CalendarWeekView extends StatelessWidget {
+class CalendarWeekView extends StatefulWidget {
   final DateTime selectedDate;
   final String monthName;
   final ValueChanged<DateTime>? onDateSelected;
@@ -18,9 +19,16 @@ class CalendarWeekView extends StatelessWidget {
   });
 
   @override
+  State<CalendarWeekView> createState() => _CalendarWeekViewState();
+}
+
+class _CalendarWeekViewState extends State<CalendarWeekView> {
+  @override
   Widget build(BuildContext context) {
     // Generate dates for the week
-    final weekDates = _getWeekDates(selectedDate);
+    final weekDates = _getWeekDates(widget.selectedDate);
+    // Get month from selected date dynamically
+    final currentMonthName = DateFormat('MMMM').format(widget.selectedDate);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -45,23 +53,39 @@ class CalendarWeekView extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                onTap: onMonthPressed,
-                child: Row(
-                  children: [
-                    Text(
-                      monthName,
-                      style: const TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
+                onTap: () => _showMonthPicker(context),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.shadow,
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
                       ),
-                    ),
-                    const Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      size: 18,
-                      color: AppColors.textSecondary,
-                    ),
-                  ],
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        currentMonthName,
+                        style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      const Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        size: 18,
+                        color: AppColors.primaryTurquoise,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -100,7 +124,7 @@ class CalendarWeekView extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: weekDates.map((date) {
-                    final isSelected = _isSameDay(date, selectedDate);
+                    final isSelected = _isSameDay(date, widget.selectedDate);
                     final isToday = _isSameDay(date, DateTime.now());
                     return _buildDayItem(date, isSelected, isToday);
                   }).toList(),
@@ -138,9 +162,88 @@ class CalendarWeekView extends StatelessWidget {
     );
   }
 
+  void _showMonthPicker(BuildContext context) {
+    final now = DateTime.now();
+    final months = <String>[];
+    final monthDates = <DateTime>[];
+    
+    // Generate 12 months (6 past + current + 5 future)
+    for (int i = -6; i <= 5; i++) {
+      final date = DateTime(now.year, now.month + i, 1);
+      months.add(DateFormat('MMMM yyyy').format(date));
+      monthDates.add(date);
+    }
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: AppColors.cardBackground,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Handle bar
+            Container(
+              margin: const EdgeInsets.only(top: 12),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.inputBorder,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                'Select Month',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ),
+            const Divider(height: 1),
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: months.length,
+                itemBuilder: (context, index) {
+                  final isSelected = widget.selectedDate.month == monthDates[index].month &&
+                      widget.selectedDate.year == monthDates[index].year;
+                  return ListTile(
+                    title: Text(
+                      months[index],
+                      style: TextStyle(
+                        color: isSelected ? AppColors.primaryTurquoise : AppColors.textPrimary,
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                      ),
+                    ),
+                    trailing: isSelected
+                        ? const Icon(Icons.check_circle, color: AppColors.primaryTurquoise)
+                        : null,
+                    onTap: () {
+                      Navigator.pop(context);
+                      // Navigate to the 1st of the selected month
+                      widget.onDateSelected?.call(monthDates[index]);
+                    },
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _navigateWeek(int days) {
-    final newDate = selectedDate.add(Duration(days: days));
-    onDateSelected?.call(newDate);
+    final newDate = widget.selectedDate.add(Duration(days: days));
+    widget.onDateSelected?.call(newDate);
   }
 
   Widget _buildDayItem(DateTime date, bool isSelected, bool isToday) {
@@ -148,7 +251,7 @@ class CalendarWeekView extends StatelessWidget {
     final dayName = dayNames[date.weekday % 7];
 
     return GestureDetector(
-      onTap: () => onDateSelected?.call(date),
+      onTap: () => widget.onDateSelected?.call(date),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         width: 42,
@@ -199,4 +302,3 @@ class CalendarWeekView extends StatelessWidget {
     return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 }
-

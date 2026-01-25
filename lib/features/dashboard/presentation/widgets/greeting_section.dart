@@ -7,6 +7,7 @@ class GreetingSection extends StatelessWidget {
   final VoidCallback? onNotificationPressed;
   final VoidCallback? onSettingsPressed;
   final VoidCallback? onProfilePressed;
+  final int unreadNotificationCount;
 
   const GreetingSection({
     super.key,
@@ -15,6 +16,7 @@ class GreetingSection extends StatelessWidget {
     this.onNotificationPressed,
     this.onSettingsPressed,
     this.onProfilePressed,
+    this.unreadNotificationCount = 0,
   });
 
   @override
@@ -23,11 +25,8 @@ class GreetingSection extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          // Notification Icon
-          _buildIconButton(
-            icon: Icons.notifications_outlined,
-            onPressed: onNotificationPressed,
-          ),
+          // Notification Icon with Badge
+          _buildNotificationButton(),
           const SizedBox(width: 8),
           // Settings Icon
           _buildIconButton(
@@ -40,7 +39,7 @@ class GreetingSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                'Hi, WelcomeBack',
+                'Hi, Welcome Back',
                 style: TextStyle(
                   color: AppColors.textSecondary,
                   fontSize: 12,
@@ -86,6 +85,55 @@ class GreetingSection extends StatelessWidget {
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotificationButton() {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: AppColors.inputBackground,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Stack(
+        children: [
+          IconButton(
+            onPressed: onNotificationPressed,
+            icon: Icon(
+              Icons.notifications_outlined,
+              color: AppColors.textSecondary,
+              size: 22,
+            ),
+            padding: EdgeInsets.zero,
+          ),
+          if (unreadNotificationCount > 0)
+            Positioned(
+              right: 4,
+              top: 4,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: AppColors.error,
+                  shape: BoxShape.circle,
+                ),
+                constraints: const BoxConstraints(
+                  minWidth: 16,
+                  minHeight: 16,
+                ),
+                child: Text(
+                  unreadNotificationCount > 9 ? '9+' : '$unreadNotificationCount',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
         ],
       ),
     );
