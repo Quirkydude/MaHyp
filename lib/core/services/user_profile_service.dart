@@ -8,6 +8,7 @@ class UserProfile {
   final String email;
   final String? mobile;
   final DateTime? dob;
+  final String? avatarUrl;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -17,6 +18,7 @@ class UserProfile {
     required this.email,
     this.mobile,
     this.dob,
+    this.avatarUrl,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -30,6 +32,7 @@ class UserProfile {
       email: data['email'] ?? '',
       mobile: data['mobile'],
       dob: data['dob'] != null ? (data['dob'] as Timestamp).toDate() : null,
+      avatarUrl: data['avatarUrl'],
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       updatedAt: (data['updatedAt'] as Timestamp).toDate(),
     );
@@ -42,6 +45,7 @@ class UserProfile {
       'email': email,
       'mobile': mobile,
       'dob': dob != null ? Timestamp.fromDate(dob!) : null,
+      'avatarUrl': avatarUrl,
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': Timestamp.fromDate(updatedAt),
     };
@@ -51,7 +55,7 @@ class UserProfile {
 /// Service for managing user profiles in Firestore
 class UserProfileService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  
+
   /// Collection reference
   CollectionReference<Map<String, dynamic>> get _usersCollection =>
       _firestore.collection('users');
@@ -63,6 +67,7 @@ class UserProfileService {
     required String email,
     String? mobile,
     DateTime? dob,
+    String? avatarUrl,
   }) async {
     final now = DateTime.now();
     await _usersCollection.doc(uid).set({
@@ -70,6 +75,7 @@ class UserProfileService {
       'email': email,
       'mobile': mobile,
       'dob': dob != null ? Timestamp.fromDate(dob) : null,
+      'avatarUrl': avatarUrl,
       'createdAt': Timestamp.fromDate(now),
       'updatedAt': Timestamp.fromDate(now),
     });
@@ -88,15 +94,17 @@ class UserProfileService {
     String? fullName,
     String? mobile,
     DateTime? dob,
+    String? avatarUrl,
   }) async {
     final updates = <String, dynamic>{
       'updatedAt': Timestamp.fromDate(DateTime.now()),
     };
-    
+
     if (fullName != null) updates['fullName'] = fullName;
     if (mobile != null) updates['mobile'] = mobile;
     if (dob != null) updates['dob'] = Timestamp.fromDate(dob);
-    
+    if (avatarUrl != null) updates['avatarUrl'] = avatarUrl;
+
     await _usersCollection.doc(uid).update(updates);
   }
 

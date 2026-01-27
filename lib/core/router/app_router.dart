@@ -8,7 +8,9 @@ import '../../features/auth/presentation/pages/set_password_page.dart';
 import '../../features/demo/demo_page.dart';
 import '../../features/medication/presentation/pages/medication_list_page.dart';
 import '../../features/medication/presentation/pages/add_medication_page.dart';
+import '../../features/medication/presentation/pages/edit_medication_page.dart';
 import '../../features/medication/presentation/pages/medication_report_page.dart';
+import '../../features/medication/data/models/medication_model.dart' as med_model;
 import '../../features/bp_monitoring/presentation/pages/record_bp_page.dart';
 import '../../features/bp_monitoring/presentation/pages/bp_history_page.dart';
 import '../../features/bp_monitoring/presentation/pages/bp_analysis_page.dart';
@@ -19,6 +21,7 @@ import '../../features/education/presentation/pages/education_page.dart';
 import '../../features/education/presentation/pages/education_detail_page.dart';
 import '../../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
+import '../../features/profile/presentation/pages/edit_profile_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/notification/presentation/pages/notifications_page.dart';
 
@@ -42,6 +45,7 @@ class AppRouter {
   static const String educationDetail = '/education-detail';
   static const String dashboard = '/dashboard';
   static const String profile = '/profile';
+  static const String editProfile = '/edit-profile';
   static const String settings = '/settings';
   static const String notifications = '/notifications';
 
@@ -79,6 +83,17 @@ class AppRouter {
           context: context,
           state: state,
           child: const ProfilePage(),
+        ),
+      ),
+
+      // Edit Profile Screen
+      GoRoute(
+        path: editProfile,
+        name: 'editProfile',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const EditProfilePage(),
         ),
       ),
 
@@ -187,6 +202,20 @@ class AppRouter {
           state: state,
           child: const AddMedicationPage(),
         ),
+      ),
+
+      // Edit Medication Page
+      GoRoute(
+        path: '/edit-medication/:id',
+        name: 'editMedication',
+        pageBuilder: (context, state) {
+          final medication = state.extra as med_model.MedicationModel;
+          return _buildPageWithTransition(
+            context: context,
+            state: state,
+            child: EditMedicationPage(medication: medication),
+          );
+        },
       ),
 
       // Medication Report Page
@@ -323,17 +352,11 @@ class AppRouter {
         final slideAnimation = Tween<Offset>(
           begin: const Offset(0.05, 0),
           end: Offset.zero,
-        ).animate(CurvedAnimation(
-          parent: animation,
-          curve: Curves.easeOut,
-        ));
+        ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut));
 
         return FadeTransition(
           opacity: fadeAnimation,
-          child: SlideTransition(
-            position: slideAnimation,
-            child: child,
-          ),
+          child: SlideTransition(position: slideAnimation, child: child),
         );
       },
     );

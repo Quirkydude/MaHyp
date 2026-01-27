@@ -315,7 +315,10 @@ class _MedicationListPageState extends ConsumerState<MedicationListPage>
           },
           onEdit: () {
             Navigator.pop(context);
-            // TODO: Navigate to edit medication
+            context.push(
+              '/edit-medication/${medication.id}',
+              extra: medication,
+            );
           },
           onDelete: () {
             Navigator.pop(context);

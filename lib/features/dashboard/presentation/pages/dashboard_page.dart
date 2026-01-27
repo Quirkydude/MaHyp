@@ -39,10 +39,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
       currentIndex: 0,
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        appBar: const CustomAppBar(
-          title: 'Dashboard',
-          showBackButton: false,
-        ),
+        appBar: const CustomAppBar(title: 'Dashboard', showBackButton: false),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,12 +50,13 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                 avatarUrl: null, // Avatar not yet implemented
                 onProfilePressed: () => context.push(AppRouter.profile),
                 onSettingsPressed: () => context.push(AppRouter.settings),
-                onNotificationPressed: () => context.push(AppRouter.notifications),
+                onNotificationPressed: () =>
+                    context.push(AppRouter.notifications),
                 unreadNotificationCount: unreadNotificationCount,
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Stat Cards Row
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -89,7 +87,9 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                             } else if (diff.inDays == 1) {
                               return 'Yesterday';
                             }
-                            return DateFormat('MMM d').format(latest.recordedAt);
+                            return DateFormat(
+                              'MMM d',
+                            ).format(latest.recordedAt);
                           },
                           loading: () => 'Loading...',
                           error: (_, __) => 'Error',
@@ -115,9 +115,9 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                   ],
                 ),
               ),
-              
+
               const SizedBox(height: 12),
-              
+
               // Action Cards Row
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -132,19 +132,22 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                               type: ActionCardType.nextMedication,
                               medicationName: 'No upcoming',
                               medicationTime: 'medications',
-                              onTap: () => context.push(AppRouter.addMedication),
+                              onTap: () =>
+                                  context.push(AppRouter.addMedication),
                             );
                           }
                           return ActionCard(
                             type: ActionCardType.nextMedication,
                             medicationName: next.medicationName,
-                            medicationTime: _formatNextTime(next.dose.scheduledTime),
+                            medicationTime: _formatNextTime(
+                              next.dose.scheduledTime,
+                            ),
                             onTap: () => context.push(AppRouter.medicationList),
                           );
                         },
                         loading: () => const SizedBox(height: 130),
                         error: (_, __) => const SizedBox(height: 130),
-                      )
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -156,9 +159,9 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                   ],
                 ),
               ),
-              
+
               const SizedBox(height: 24),
-              
+
               // Calendar Week View
               CalendarWeekView(
                 selectedDate: _selectedDate,
@@ -169,9 +172,9 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                   });
                 },
               ),
-              
+
               const SizedBox(height: 20),
-              
+
               // Tasks section header
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -179,7 +182,9 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      _isToday(_selectedDate) ? "Today's Tasks" : "Tasks for ${DateFormat('MMM d').format(_selectedDate)}",
+                      _isToday(_selectedDate)
+                          ? "Today's Tasks"
+                          : "Tasks for ${DateFormat('MMM d').format(_selectedDate)}",
                       style: const TextStyle(
                         color: AppColors.textPrimary,
                         fontSize: 16,
@@ -197,14 +202,14 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                   ],
                 ),
               ),
-              
+
               const SizedBox(height: 12),
-              
+
               // Task Items List
               medicationsAsync.when(
                 data: (meds) {
                   final tasks = _getTasksForDate(meds, _selectedDate);
-                  
+
                   if (tasks.isEmpty) {
                     return const Padding(
                       padding: EdgeInsets.all(32.0),
@@ -217,7 +222,10 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                     );
                   }
 
-                  tasks.sort((a, b) => a.dose.scheduledTime.compareTo(b.dose.scheduledTime));
+                  tasks.sort(
+                    (a, b) =>
+                        a.dose.scheduledTime.compareTo(b.dose.scheduledTime),
+                  );
 
                   return ListView.builder(
                     shrinkWrap: true,
@@ -226,17 +234,24 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                     itemBuilder: (context, index) {
                       final task = tasks[index];
                       return TaskItem(
-                        time: DateFormat('h:mm a').format(task.dose.scheduledTime),
+                        time: DateFormat(
+                          'h:mm a',
+                        ).format(task.dose.scheduledTime),
                         title: 'Take ${task.medicationName} (${task.dosage})',
                         icon: Icons.medication_rounded,
                         iconColor: AppColors.primaryTurquoise,
                         isCompleted: task.dose.status == MedicationStatus.taken,
                         onCheckChanged: (value) async {
                           if (value == true) {
-                            await ref.read(medicationProvider.notifier)
-                                .markDoseAsTaken(task.medicationId, task.dose.id);
+                            await ref
+                                .read(medicationProvider.notifier)
+                                .markDoseAsTaken(
+                                  task.medicationId,
+                                  task.dose.id,
+                                );
                           } else {
-                            await ref.read(medicationProvider.notifier)
+                            await ref
+                                .read(medicationProvider.notifier)
                                 .undoTaken(task.medicationId, task.dose.id);
                           }
                         },
@@ -247,7 +262,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, _) => Center(child: Text('Error loading tasks: $e')),
               ),
-              
+
               const SizedBox(height: 100), // Space for bottom nav
             ],
           ),
@@ -260,64 +275,109 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
 
   int _calculateAdherence(List<MedicationModel> medications) {
     if (medications.isEmpty) return 0;
-    
+
     // Simple adherence: taken / (taken + missed) across all meds
     int taken = 0;
     int total = 0;
-    
+
     for (final med in medications) {
       if (med.overallStatus == MedicationStatus.taken) taken++;
       if (med.overallStatus != MedicationStatus.upcoming) total++;
     }
-    
+
     // If no past doses, default to 100 or 0? 100 is more encouraging for new users
     if (total == 0) return 100;
-    
+
     return ((taken / total) * 100).round();
   }
 
-  ({String medicationName, String medicationId, MedicationDose dose, String dosage})? _getNextMedication(List<MedicationModel> meds) {
+  ({
+    String medicationName,
+    String medicationId,
+    MedicationDose dose,
+    String dosage,
+  })?
+  _getNextMedication(List<MedicationModel> meds) {
     final now = DateTime.now();
-    final allDoses = <({String medicationName, String medicationId, MedicationDose dose, String dosage})>[];
+    final allDoses =
+        <
+          ({
+            String medicationName,
+            String medicationId,
+            MedicationDose dose,
+            String dosage,
+          })
+        >[];
 
     for (final med in meds) {
       for (final dose in med.doses) {
         // Only look for upcoming doses
-        if (dose.scheduledTime.isAfter(now) && dose.status == MedicationStatus.upcoming) {
-           allDoses.add((medicationName: med.name, medicationId: med.id, dose: dose, dosage: med.dosage));
+        if (dose.scheduledTime.isAfter(now) &&
+            dose.status == MedicationStatus.upcoming) {
+          allDoses.add((
+            medicationName: med.name,
+            medicationId: med.id,
+            dose: dose,
+            dosage: med.dosage,
+          ));
         }
       }
     }
 
     if (allDoses.isEmpty) return null;
-    
+
     // Sort by time
-    allDoses.sort((a, b) => a.dose.scheduledTime.compareTo(b.dose.scheduledTime));
+    allDoses.sort(
+      (a, b) => a.dose.scheduledTime.compareTo(b.dose.scheduledTime),
+    );
     return allDoses.first;
   }
 
-  List<({String medicationName, String medicationId, MedicationDose dose, String dosage})> _getTasksForDate(List<MedicationModel> meds, DateTime date) {
+  List<
+    ({
+      String medicationName,
+      String medicationId,
+      MedicationDose dose,
+      String dosage,
+    })
+  >
+  _getTasksForDate(List<MedicationModel> meds, DateTime date) {
     final dayStart = DateTime(date.year, date.month, date.day);
     final dayEnd = dayStart.add(const Duration(days: 1));
-    
-    final tasks = <({String medicationName, String medicationId, MedicationDose dose, String dosage})>[];
+
+    final tasks =
+        <
+          ({
+            String medicationName,
+            String medicationId,
+            MedicationDose dose,
+            String dosage,
+          })
+        >[];
 
     for (final med in meds) {
       for (final dose in med.doses) {
-        if (dose.scheduledTime.isAfter(dayStart.subtract(const Duration(milliseconds: 1))) && 
+        if (dose.scheduledTime.isAfter(
+              dayStart.subtract(const Duration(milliseconds: 1)),
+            ) &&
             dose.scheduledTime.isBefore(dayEnd)) {
-             tasks.add((medicationName: med.name, medicationId: med.id, dose: dose, dosage: med.dosage));
+          tasks.add((
+            medicationName: med.name,
+            medicationId: med.id,
+            dose: dose,
+            dosage: med.dosage,
+          ));
         }
       }
     }
-    
+
     return tasks;
   }
 
   String _formatNextTime(DateTime time) {
     final now = DateTime.now();
     final diff = time.difference(now);
-    
+
     if (diff.inHours < 12 && time.day == now.day) {
       return 'Today at ${DateFormat('h:mm a').format(time)}';
     } else if (time.day == now.day + 1) {
@@ -328,7 +388,8 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
 
   bool _isToday(DateTime date) {
     final now = DateTime.now();
-    return date.year == now.year && date.month == now.month && date.day == now.day;
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
   }
 }
-

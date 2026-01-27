@@ -1,0 +1,487 @@
+import 'package:flutter/material.dart' hide TimeOfDay;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_dimensions.dart';
+import '../../../../core/constants/app_text_styles.dart';
+import '../../../../shared/widgets/custom_app_bar.dart';
+import '../../../../shared/widgets/custom_text_field.dart';
+import '../../../../shared/widgets/custom_button.dart';
+import '../../../../shared/widgets/frequency_chip.dart';
+import '../providers/medication_provider.dart';
+import '../../data/models/medication_model.dart';
+
+/// Edit Medication Page - Allows users to modify existing medications
+class EditMedicationPage extends ConsumerStatefulWidget {
+  final MedicationModel medication;
+
+  const EditMedicationPage({
+    super.key,
+    required this.medication,
+  });
+
+  @override
+  ConsumerState<EditMedicationPage> createState() =>
+      _EditMedicationPageState();
+}
+
+class _EditMedicationPageState extends ConsumerState<EditMedicationPage>
+    with SingleTickerProviderStateMixin {
+  late final TextEditingController _nameController;
+  late final TextEditingController _dosageController;
+  late final TextEditingController _notesController;
+
+  late MedicationFrequency _selectedFrequency;
+  late List<TimeOfDay> _selectedTimesOfDay;
+  late bool _reminderEnabled;
+  bool _isLoading = false;
+
+  late AnimationController _animationController;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize controllers with existing medication data
+    _nameController = TextEditingController(text: widget.medication.name);
+    _dosageController =
+        TextEditingController(text: widget.medication.dosage);
+    _notesController =
+        TextEditingController(text: widget.medication.notes ?? '');
+
+    _selectedFrequency = widget.medication.frequency;
+    _selectedTimesOfDay = List.from(widget.medication.timesOfDay);
+    _reminderEnabled = widget.medication.reminderEnabled;
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _dosageController.dispose();
+    _notesController.dispose();
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  // Update selected times based on frequency
+  void _updateFrequency(MedicationFrequency frequency) {
+    setState(() {
+      _selectedFrequency = frequency;
+
+      // Reset times based on frequency
+      switch (frequency) {
+        case MedicationFrequency.onceDaily:
+          _selectedTimesOfDay = [TimeOfDay.morning];
+          break;
+        case MedicationFrequency.twiceDaily:
+          _selectedTimesOfDay = [TimeOfDay.morning, TimeOfDay.evening];
+          break;
+        case MedicationFrequency.thriceDaily:
+          _selectedTimesOfDay = [
+            TimeOfDay.morning,
+            TimeOfDay.afternoon,
+            TimeOfDay.evening,
+          ];
+          break;
+        case MedicationFrequency.custom:
+          _selectedTimesOfDay = [TimeOfDay.morning];
+          break;
+      }
+    });
+  }
+
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter medication name';
+    }
+    return null;
+  }
+
+  String? _validateDosage(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter dosage';
+    }
+    return null;
+  }
+
+  Future<void> _handleSave() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() => _isLoading = true);
+
+      // Create updated medication
+      final updatedMedication = widget.medication.copyWith(
+        name: _nameController.text.trim(),
+        dosage: _dosageController.text.trim(),
+        frequency: _selectedFrequency,
+        timesOfDay: _selectedTimesOfDay,
+        reminderEnabled: _reminderEnabled,
+        notes: _notesController.text.trim().isEmpty
+            ? null
+            : _notesController.text.trim(),
+      );
+
+      try {
+        // Update via provider
+        await ref
+            .read(medicationProvider.notifier)
+            .updateMedication(updatedMedication);
+
+        setState(() => _isLoading = false);
+
+        if (mounted) {
+          _showSuccessDialog();
+        }
+      } catch (e) {
+        setState(() => _isLoading = false);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error saving medication: $e'),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0.0, end: 1.0),
+              duration: const Duration(milliseconds: 600),
+              curve: Curves.elasticOut,
+              builder: (context, value, child) {
+                return Transform.scale(scale: value, child: child);
+              },
+              child: Container(
+                width: 80,
+                height: 80,
+                decoration: const BoxDecoration(
+                  color: AppColors.success,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.check,
+                  size: 50,
+                  color: AppColors.white,
+                ),
+              ),
+            ),
+            const SizedBox(height: AppDimensions.spacing24),
+            Text('Medication Updated!', style: AppTextStyles.h3),
+            const SizedBox(height: AppDimensions.spacing8),
+            Text(
+              'Your medication has been successfully updated.',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          CustomButton(
+            text: 'Done',
+            onPressed: () {
+              Navigator.of(context).pop(); // Close dialog
+              context.pop(); // Go back to list
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const CustomAppBar(
+        title: 'Edit Medication',
+        showBackButton: true,
+      ),
+      body: SlideTransition(
+        position: _slideAnimation,
+        child: FadeTransition(
+          opacity: _animationController,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(
+              AppDimensions.screenPaddingHorizontal,
+            ),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: AppDimensions.spacing16),
+
+                  // Name Field
+                  CustomTextField(
+                    label: 'Name',
+                    hint: 'e.g., amlodipine',
+                    controller: _nameController,
+                    validator: _validateName,
+                    prefixIcon: const Icon(
+                      Icons.medication,
+                      color: AppColors.primaryTurquoise,
+                    ),
+                  ),
+
+                  const SizedBox(height: AppDimensions.spacing20),
+
+                  // Dosage Field
+                  CustomTextField(
+                    label: 'Dosage',
+                    hint: 'e.g., 10 mg',
+                    controller: _dosageController,
+                    validator: _validateDosage,
+                    prefixIcon: const Icon(
+                      Icons.science_outlined,
+                      color: AppColors.primaryTurquoise,
+                    ),
+                  ),
+
+                  const SizedBox(height: AppDimensions.spacing24),
+
+                  // Frequency Section
+                  Text('Frequency', style: AppTextStyles.inputLabel),
+                  const SizedBox(height: AppDimensions.spacing12),
+                  Wrap(
+                    spacing: AppDimensions.spacing12,
+                    runSpacing: AppDimensions.spacing12,
+                    children: [
+                      FrequencyChip(
+                        label: 'Once daily',
+                        isSelected:
+                            _selectedFrequency == MedicationFrequency.onceDaily,
+                        onTap: () =>
+                            _updateFrequency(MedicationFrequency.onceDaily),
+                      ),
+                      FrequencyChip(
+                        label: 'Twice daily',
+                        isSelected:
+                            _selectedFrequency ==
+                            MedicationFrequency.twiceDaily,
+                        onTap: () =>
+                            _updateFrequency(MedicationFrequency.twiceDaily),
+                      ),
+                      FrequencyChip(
+                        label: 'Thrice daily',
+                        isSelected:
+                            _selectedFrequency ==
+                            MedicationFrequency.thriceDaily,
+                        onTap: () =>
+                            _updateFrequency(MedicationFrequency.thriceDaily),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: AppDimensions.spacing24),
+
+                  // Times of Day Section
+                  Text('Times of the day', style: AppTextStyles.inputLabel),
+                  const SizedBox(height: AppDimensions.spacing8),
+                  Text(
+                    _getTimesHelpText(),
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: AppDimensions.spacing12),
+
+                  // Display selected times
+                  ...List.generate(_selectedTimesOfDay.length, (index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: AppDimensions.spacing12,
+                      ),
+                      child: _buildTimeSelector(index),
+                    );
+                  }),
+
+                  const SizedBox(height: AppDimensions.spacing24),
+
+                  // Reminder Toggle
+                  Container(
+                    padding: const EdgeInsets.all(AppDimensions.spacing16),
+                    decoration: BoxDecoration(
+                      color: AppColors.inputBackground,
+                      borderRadius: BorderRadius.circular(
+                        AppDimensions.radiusMedium,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Enable Medication Reminders',
+                            style: AppTextStyles.bodyMedium,
+                          ),
+                        ),
+                        Switch(
+                          value: _reminderEnabled,
+                          onChanged: (value) {
+                            setState(() => _reminderEnabled = value);
+                          },
+                          activeColor: AppColors.primaryTurquoise,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: AppDimensions.spacing20),
+
+                  // Notes Field
+                  CustomTextField(
+                    label: 'Notes (optional)',
+                    hint: 'e.g., take after food',
+                    controller: _notesController,
+                    maxLines: 3,
+                    prefixIcon: const Icon(
+                      Icons.note_outlined,
+                      color: AppColors.primaryTurquoise,
+                    ),
+                  ),
+
+                  const SizedBox(height: AppDimensions.spacing40),
+
+                  // Save Button
+                  CustomButton(
+                    text: 'Save Changes',
+                    onPressed: _handleSave,
+                    isLoading: _isLoading,
+                  ),
+
+                  const SizedBox(height: AppDimensions.spacing16),
+
+                  // Cancel Button
+                  CustomButton(
+                    text: 'Cancel',
+                    onPressed: () => context.pop(),
+                    isOutlined: true,
+                  ),
+
+                  const SizedBox(height: AppDimensions.spacing32),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTimeSelector(int index) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppDimensions.spacing16,
+        vertical: AppDimensions.spacing4,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.inputBackground,
+        borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+        border: Border.all(color: AppColors.inputBorder, width: 1.5),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            _getIconForTimeOfDay(_selectedTimesOfDay[index]),
+            color: AppColors.primaryTurquoise,
+            size: 20,
+          ),
+          const SizedBox(width: AppDimensions.spacing12),
+          Expanded(
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<TimeOfDay>(
+                value: _selectedTimesOfDay[index],
+                isExpanded: true,
+                icon: const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: AppColors.primaryTurquoise,
+                ),
+                style: AppTextStyles.input,
+                items: TimeOfDay.values.map((time) {
+                  return DropdownMenuItem(
+                    value: time,
+                    child: Text(_getTimeOfDayLabel(time)),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      _selectedTimesOfDay[index] = value;
+                    });
+                  }
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _getTimesHelpText() {
+    switch (_selectedFrequency) {
+      case MedicationFrequency.onceDaily:
+        return 'Select one time per day';
+      case MedicationFrequency.twiceDaily:
+        return 'Select two times per day';
+      case MedicationFrequency.thriceDaily:
+        return 'Select three times per day';
+      case MedicationFrequency.custom:
+        return 'Select custom times';
+    }
+  }
+
+  IconData _getIconForTimeOfDay(TimeOfDay time) {
+    switch (time) {
+      case TimeOfDay.morning:
+        return Icons.wb_sunny;
+      case TimeOfDay.afternoon:
+        return Icons.wb_cloudy;
+      case TimeOfDay.evening:
+        return Icons.wb_twilight;
+      case TimeOfDay.night:
+        return Icons.nightlight_round;
+    }
+  }
+
+  String _getTimeOfDayLabel(TimeOfDay time) {
+    switch (time) {
+      case TimeOfDay.morning:
+        return 'Morning (8:00 AM)';
+      case TimeOfDay.afternoon:
+        return 'Afternoon (2:00 PM)';
+      case TimeOfDay.evening:
+        return 'Evening (6:00 PM)';
+      case TimeOfDay.night:
+        return 'Night (9:00 PM)';
+    }
+  }
+}

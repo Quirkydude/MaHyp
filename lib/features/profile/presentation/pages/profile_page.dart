@@ -18,26 +18,21 @@ class ProfilePage extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: const CustomAppBar(
-        title: 'My Profile',
-        showBackButton: true,
-      ),
+      appBar: const CustomAppBar(title: 'My Profile', showBackButton: true),
       body: SingleChildScrollView(
         child: Column(
           children: [
             // Profile Header Card
             _buildProfileHeader(context, userProfileAsync, user),
-            
+
             const SizedBox(height: 24),
-            
+
             // Menu Items
             _buildMenuItem(
               context,
               icon: Icons.person_outline,
               title: 'Profile',
-              onTap: () {
-                // TODO: Navigate to edit profile
-              },
+              onTap: () => context.push('/edit-profile'),
             ),
             _buildMenuItem(
               context,
@@ -75,7 +70,7 @@ class ProfilePage extends ConsumerWidget {
                 }
               },
             ),
-            
+
             const SizedBox(height: 40),
           ],
         ),
@@ -113,16 +108,25 @@ class ProfilePage extends ConsumerWidget {
                 ),
                 child: ClipOval(
                   child: userProfileAsync.when(
-                    data: (profile) => profile?.avatarUrl != null
-                        ? Image.network(
-                            profile!.avatarUrl!,
-                            fit: BoxFit.cover,
-                          )
-                        : Icon(
+                    data: (profile) {
+                      if (profile?.avatarUrl != null &&
+                          profile!.avatarUrl!.isNotEmpty) {
+                        return Image.network(
+                          profile.avatarUrl!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Icon(
                             Icons.person,
                             size: 50,
                             color: AppColors.primaryTurquoise,
                           ),
+                        );
+                      }
+                      return Icon(
+                        Icons.person,
+                        size: 50,
+                        color: AppColors.primaryTurquoise,
+                      );
+                    },
                     loading: () => const CircularProgressIndicator(),
                     error: (_, __) => Icon(
                       Icons.person,
@@ -135,26 +139,32 @@ class ProfilePage extends ConsumerWidget {
               Positioned(
                 right: 0,
                 bottom: 0,
-                child: Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.primaryTurquoise, width: 2),
-                  ),
-                  child: Icon(
-                    Icons.edit,
-                    size: 16,
-                    color: AppColors.primaryTurquoise,
+                child: GestureDetector(
+                  onTap: () => context.push('/edit-profile'),
+                  child: Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: AppColors.primaryTurquoise,
+                        width: 2,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.edit,
+                      size: 16,
+                      color: AppColors.primaryTurquoise,
+                    ),
                   ),
                 ),
               ),
             ],
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // User Name
           userProfileAsync.when(
             data: (profile) => Text(
@@ -174,13 +184,13 @@ class ProfilePage extends ConsumerWidget {
               style: TextStyle(color: AppColors.white, fontSize: 22),
             ),
           ),
-          
+
           const SizedBox(height: 4),
-          
-          // Phone Number
+
+          // Mobile Number
           userProfileAsync.when(
             data: (profile) => Text(
-              profile?.phoneNumber ?? '',
+              profile?.mobile ?? '',
               style: TextStyle(
                 color: AppColors.white.withOpacity(0.9),
                 fontSize: 14,
@@ -189,9 +199,9 @@ class ProfilePage extends ConsumerWidget {
             loading: () => const SizedBox(),
             error: (_, __) => const SizedBox(),
           ),
-          
+
           const SizedBox(height: 2),
-          
+
           // Email
           Text(
             user?.email ?? '',
@@ -239,13 +249,15 @@ class ProfilePage extends ConsumerWidget {
                   ),
                   child: Icon(
                     icon,
-                    color: isLogout ? AppColors.error : AppColors.primaryTurquoise,
+                    color: isLogout
+                        ? AppColors.error
+                        : AppColors.primaryTurquoise,
                     size: 24,
                   ),
                 ),
-                
+
                 const SizedBox(width: 16),
-                
+
                 // Title
                 Expanded(
                   child: Text(
@@ -257,7 +269,7 @@ class ProfilePage extends ConsumerWidget {
                     ),
                   ),
                 ),
-                
+
                 // Arrow (only for non-logout items)
                 if (!isLogout)
                   Icon(
