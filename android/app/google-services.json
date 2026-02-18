@@ -58,6 +58,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "820250335949-a4olvdaamhjok0fcolba20175ngcirhk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mahyp.ucc",
+            "certificate_hash": "64f67892a0bd133c317b25bdc248300bf21d3632"
+          }
+        },
+        {
           "client_id": "820250335949-cs136m2jqaslms5vc8mpvmmbos7if9jp.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
