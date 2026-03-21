@@ -18,3 +18,9 @@ final currentUserProvider = Provider<User?>((ref) {
   final authState = ref.watch(authStateProvider);
   return authState.value;
 });
+
+// Provider to check if current user's email is verified
+final isEmailVerifiedProvider = Provider<bool>((ref) {
+  final user = ref.watch(currentUserProvider);
+  return user?.emailVerified ?? false;
+});

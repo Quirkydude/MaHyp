@@ -85,7 +85,7 @@ class _TaskItemState extends State<TaskItem> with SingleTickerProviderStateMixin
               widget.time,
               style: const TextStyle(
                 color: AppColors.textSecondary,
-                fontSize: 12,
+                fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -156,7 +156,7 @@ class _TaskItemState extends State<TaskItem> with SingleTickerProviderStateMixin
                           widget.title,
                           style: TextStyle(
                             color: AppColors.textPrimary,
-                            fontSize: 14,
+                            fontSize: 16,
                             fontWeight: FontWeight.w500,
                             decoration: widget.isCompleted
                                 ? TextDecoration.lineThrough

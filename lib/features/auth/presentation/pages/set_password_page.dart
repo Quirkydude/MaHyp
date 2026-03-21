@@ -107,14 +107,17 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
           if (widget.fullName != null) {
             await userCredential.user!.updateDisplayName(widget.fullName);
           }
+
+          // Send email verification
+          await ref.read(authServiceProvider).sendEmailVerification();
         }
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Account created successfully!')),
+            const SnackBar(content: Text('Account created! Please verify your email.')),
           );
-          // Navigate to dashboard
-          context.go(AppRouter.dashboard);
+          // Navigate to email verification
+          context.go(AppRouter.emailVerification);
         }
       } on FirebaseAuthException catch (e) {
         if (mounted) {

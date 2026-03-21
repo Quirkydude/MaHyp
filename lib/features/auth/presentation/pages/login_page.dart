@@ -105,9 +105,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
   void _handleForgotPassword() {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Forgot password clicked')));
+    context.push(AppRouter.forgotPassword);
   }
 
   Future<void> _handleSocialLogin(SocialLoginType type) async {

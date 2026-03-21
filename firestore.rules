@@ -12,23 +12,60 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
     
-    // Users collection - each user can only access their own data
+    // Users collection
     match /users/{userId} {
-      allow read, write: if isOwner(userId);
+      allow read: if isOwner(userId);
+      
+      // On create: strict check
+      allow create: if isOwner(userId)
+                    && request.resource.data.keys().hasAll(['fullName', 'email', 'createdAt', 'updatedAt'])
+                    && request.resource.data.fullName is string
+                    && request.resource.data.email is string
+                    && request.resource.data.createdAt is timestamp
+                    && request.resource.data.updatedAt is timestamp;
+      
+      // On update: cannot change createdAt
+      allow update: if isOwner(userId)
+                    && request.resource.data.createdAt == resource.data.createdAt
+                    && request.resource.data.updatedAt is timestamp;
       
       // Blood pressure readings subcollection
       match /bp_readings/{readingId} {
-        allow read, write: if isOwner(userId);
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+                              && request.resource.data.keys().hasAll(['systolic', 'diastolic', 'recordedAt', 'timeOfDay'])
+                              && request.resource.data.systolic is int
+                              && request.resource.data.diastolic is int
+                              && request.resource.data.systolic >= 70 && request.resource.data.systolic <= 300
+                              && request.resource.data.diastolic >= 40 && request.resource.data.diastolic <= 200
+                              && request.resource.data.systolic > request.resource.data.diastolic
+                              && request.resource.data.recordedAt is timestamp
+                              && request.resource.data.timeOfDay is int;
+        allow delete: if isOwner(userId);
       }
       
       // Medications subcollection
       match /medications/{medicationId} {
-        allow read, write: if isOwner(userId);
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+                              && request.resource.data.keys().hasAll(['name', 'dosage', 'frequency', 'createdAt'])
+                              && request.resource.data.name is string
+                              && request.resource.data.dosage is string
+                              && request.resource.data.frequency is string
+                              && request.resource.data.createdAt is timestamp;
+        allow delete: if isOwner(userId);
       }
       
       // Medication logs subcollection
       match /medication_logs/{logId} {
-        allow read, write: if isOwner(userId);
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+                              && request.resource.data.keys().hasAll(['medicationId', 'doseId', 'scheduledTime', 'status'])
+                              && request.resource.data.medicationId is string
+                              && request.resource.data.doseId is string
+                              && request.resource.data.scheduledTime is timestamp
+                              && request.resource.data.status is string;
+        allow delete: if isOwner(userId);
       }
     }
     

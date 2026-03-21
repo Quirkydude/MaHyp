@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/signup_page.dart';
 import '../../features/auth/presentation/pages/set_password_page.dart';
+import '../../features/auth/presentation/pages/forgot_password_page.dart';
+import '../../features/auth/presentation/pages/email_verification_page.dart';
 import '../../features/demo/demo_page.dart';
 import '../../features/medication/presentation/pages/medication_list_page.dart';
 import '../../features/medication/presentation/pages/add_medication_page.dart';
@@ -25,13 +29,16 @@ import '../../features/profile/presentation/pages/edit_profile_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/notification/presentation/pages/notifications_page.dart';
 
-/// App routes configuration using GoRouter
 class AppRouter {
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
   static const String splash = '/';
   static const String onboarding = '/onboarding';
   static const String login = '/login';
   static const String signup = '/signup';
   static const String setPassword = '/set-password';
+  static const String forgotPassword = '/forgot-password';
+  static const String emailVerification = '/email-verification';
   static const String demo = '/demo';
   static const String medicationList = '/medication-list';
   static const String addMedication = '/add-medication';
@@ -49,9 +56,79 @@ class AppRouter {
   static const String settings = '/settings';
   static const String notifications = '/notifications';
 
+  // Routes that don't require authentication
+  static const List<String> _publicRoutes = [
+    splash,
+    onboarding,
+    login,
+    signup,
+    setPassword,
+    forgotPassword,
+    demo,
+  ];
+
+  // Routes accessible while authenticated but not yet verified
+  static const List<String> _unverifiedRoutes = [
+    emailVerification,
+  ];
+
   static final GoRouter router = GoRouter(
+    navigatorKey: navigatorKey,
     initialLocation: splash,
     debugLogDiagnostics: true,
+    observers: [
+      FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+    ],
+
+    // Route guard redirect
+    redirect: (context, state) {
+      final user = FirebaseAuth.instance.currentUser;
+      final currentPath = state.matchedLocation;
+
+      final isPublicRoute = _publicRoutes.contains(currentPath) ||
+          currentPath.startsWith('/edit-medication');
+      final isUnverifiedRoute = _unverifiedRoutes.contains(currentPath);
+      final isLoggedIn = user != null;
+      final isEmailVerified = user?.emailVerified ?? false;
+
+      // Not logged in
+      if (!isLoggedIn) {
+        // Allow access to public routes
+        if (isPublicRoute) return null;
+        // Redirect to login for protected routes
+        return login;
+      }
+
+      // Logged in but email not verified (skip for social logins)
+      if (isLoggedIn && !isEmailVerified) {
+        // Check if user signed in via email/password (has password provider)
+        final isEmailProvider = user.providerData.any(
+          (info) => info.providerId == 'password',
+        );
+
+        if (isEmailProvider) {
+          // Allow verification page and public routes
+          if (isUnverifiedRoute || isPublicRoute) return null;
+          // Redirect unverified email users to verification
+          return emailVerification;
+        }
+      }
+
+      // Logged in and verified — redirect away from auth screens
+      if (isLoggedIn) {
+        if (currentPath == login ||
+            currentPath == signup ||
+            currentPath == setPassword ||
+            currentPath == forgotPassword ||
+            currentPath == onboarding ||
+            currentPath == emailVerification) {
+          return dashboard;
+        }
+      }
+
+      return null;
+    },
+
     routes: [
       // Splash Screen
       GoRoute(
@@ -171,6 +248,28 @@ class AppRouter {
         },
       ),
 
+      // Forgot Password Screen
+      GoRoute(
+        path: forgotPassword,
+        name: 'forgotPassword',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const ForgotPasswordPage(),
+        ),
+      ),
+
+      // Email Verification Screen
+      GoRoute(
+        path: emailVerification,
+        name: 'emailVerification',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const EmailVerificationPage(),
+        ),
+      ),
+
       // Demo Page (for testing shared components)
       GoRoute(
         path: demo,
@@ -209,7 +308,16 @@ class AppRouter {
         path: '/edit-medication/:id',
         name: 'editMedication',
         pageBuilder: (context, state) {
-          final medication = state.extra as med_model.MedicationModel;
+          final medication = state.extra is med_model.MedicationModel
+              ? state.extra as med_model.MedicationModel
+              : null;
+          if (medication == null) {
+            return _buildPageWithTransition(
+              context: context,
+              state: state,
+              child: const MedicationListPage(),
+            );
+          }
           return _buildPageWithTransition(
             context: context,
             state: state,
@@ -255,22 +363,46 @@ class AppRouter {
       GoRoute(
         path: bpAnalysis,
         name: 'bpAnalysis',
-        pageBuilder: (context, state) => _buildPageWithTransition(
-          context: context,
-          state: state,
-          child: BPAnalysisPage(reading: state.extra as BPReadingModel),
-        ),
+        pageBuilder: (context, state) {
+          final reading = state.extra is BPReadingModel
+              ? state.extra as BPReadingModel
+              : null;
+          if (reading == null) {
+            return _buildPageWithTransition(
+              context: context,
+              state: state,
+              child: const BPHistoryPage(),
+            );
+          }
+          return _buildPageWithTransition(
+            context: context,
+            state: state,
+            child: BPAnalysisPage(reading: reading),
+          );
+        },
       ),
 
       // BP Emergency Page
       GoRoute(
         path: bpEmergency,
         name: 'bpEmergency',
-        pageBuilder: (context, state) => _buildPageWithTransition(
-          context: context,
-          state: state,
-          child: BPEmergencyPage(reading: state.extra as BPReadingModel),
-        ),
+        pageBuilder: (context, state) {
+          final reading = state.extra is BPReadingModel
+              ? state.extra as BPReadingModel
+              : null;
+          if (reading == null) {
+            return _buildPageWithTransition(
+              context: context,
+              state: state,
+              child: const BPHistoryPage(),
+            );
+          }
+          return _buildPageWithTransition(
+            context: context,
+            state: state,
+            child: BPEmergencyPage(reading: reading),
+          );
+        },
       ),
 
       // Support & Help Page
@@ -299,11 +431,23 @@ class AppRouter {
       GoRoute(
         path: educationDetail,
         name: 'educationDetail',
-        pageBuilder: (context, state) => _buildPageWithTransition(
-          context: context,
-          state: state,
-          child: EducationDetailPage(type: state.extra as EducationType),
-        ),
+        pageBuilder: (context, state) {
+          final type = state.extra is EducationType
+              ? state.extra as EducationType
+              : null;
+          if (type == null) {
+            return _buildPageWithTransition(
+              context: context,
+              state: state,
+              child: const EducationPage(),
+            );
+          }
+          return _buildPageWithTransition(
+            context: context,
+            state: state,
+            child: EducationDetailPage(type: type),
+          );
+        },
       ),
     ],
 
@@ -330,8 +474,6 @@ class AppRouter {
     ),
   );
 
-  /// Build page with smooth fade + slide transition.
-  /// Gentle animation provides predictable navigation cues for elderly users.
   static Page _buildPageWithTransition({
     required BuildContext context,
     required GoRouterState state,
@@ -343,12 +485,10 @@ class AppRouter {
       transitionDuration: const Duration(milliseconds: 300),
       reverseTransitionDuration: const Duration(milliseconds: 250),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        // Fade transition
         final fadeAnimation = CurvedAnimation(
           parent: animation,
           curve: Curves.easeInOut,
         );
-        // Subtle slide from right (5% offset)
         final slideAnimation = Tween<Offset>(
           begin: const Offset(0.05, 0),
           end: Offset.zero,

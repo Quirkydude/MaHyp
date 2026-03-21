@@ -71,7 +71,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
         }
       }
     } catch (e) {
-      print('Error loading profile: $e');
+      debugPrint('Error loading profile');
     }
   }
 

@@ -35,14 +35,14 @@ class BottomNavBar extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              height: 70,
+              height: 80,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _buildNavItem(0, Icons.home, 'Home', unselectedColor),
-                  _buildNavItem(1, Icons.favorite_outline, 'BP Monitor', unselectedColor),
-                  _buildNavItem(2, Icons.medication_outlined, 'Medication', unselectedColor),
-                  _buildNavItem(3, Icons.menu_book_outlined, 'Education', unselectedColor),
+                  _buildNavItem(1, Icons.favorite_outline, 'BP', unselectedColor),
+                  _buildNavItem(2, Icons.medication_outlined, 'Meds', unselectedColor),
+                  _buildNavItem(3, Icons.menu_book_outlined, 'Learn', unselectedColor),
                   _buildNavItem(4, Icons.menu, 'More', unselectedColor),
                 ],
               ),
@@ -68,23 +68,23 @@ class BottomNavBar extends StatelessWidget {
     return GestureDetector(
       onTap: () => onTap(index),
       behavior: HitTestBehavior.opaque,
-      child: SizedBox(
-        width: 70,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minWidth: 56, minHeight: 56),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               icon,
               color: isSelected ? AppColors.primaryTurquoise : unselectedColor,
-              size: 24,
+              size: 28,
             ),
             const SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
                 color: isSelected ? AppColors.primaryTurquoise : unselectedColor,
-                fontSize: 10,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                fontSize: 14,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
               ),
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,

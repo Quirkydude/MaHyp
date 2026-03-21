@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
@@ -23,7 +24,7 @@ class _SplashPageState extends State<SplashPage>
   void initState() {
     super.initState();
     _initializeAnimations();
-    _navigateToOnboarding();
+    _navigateToNextScreen();
   }
 
   void _initializeAnimations() {
@@ -49,10 +50,23 @@ class _SplashPageState extends State<SplashPage>
     _animationController.forward();
   }
 
-  Future<void> _navigateToOnboarding() async {
+  Future<void> _navigateToNextScreen() async {
     await Future.delayed(const Duration(milliseconds: 2500));
     if (mounted) {
-      context.go('/onboarding');
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        // Check if email/password user needs verification
+        final isEmailProvider = user.providerData.any(
+          (info) => info.providerId == 'password',
+        );
+        if (isEmailProvider && !user.emailVerified) {
+          context.go('/email-verification');
+        } else {
+          context.go('/dashboard');
+        }
+      } else {
+        context.go('/onboarding');
+      }
     }
   }
 

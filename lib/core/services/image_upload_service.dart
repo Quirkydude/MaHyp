@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 /// Service for handling image uploads to Firebase Storage
@@ -41,7 +42,7 @@ class ImageUploadService {
       await ref.delete();
     } catch (e) {
       // Log error but don't throw - old avatar deletion is not critical
-      print('Failed to delete old avatar: $e');
+      debugPrint('Failed to delete old avatar');
     }
   }
 }

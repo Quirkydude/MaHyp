@@ -25,16 +25,23 @@ class UserProfile {
 
   /// Create from Firestore document
   factory UserProfile.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
+    final data = doc.data() as Map<String, dynamic>?;
+    if (data == null) {
+      throw StateError('User profile document ${doc.id} has no data');
+    }
     return UserProfile(
       uid: doc.id,
-      fullName: data['fullName'] ?? '',
-      email: data['email'] ?? '',
-      mobile: data['mobile'],
-      dob: data['dob'] != null ? (data['dob'] as Timestamp).toDate() : null,
-      avatarUrl: data['avatarUrl'],
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
-      updatedAt: (data['updatedAt'] as Timestamp).toDate(),
+      fullName: data['fullName'] as String? ?? '',
+      email: data['email'] as String? ?? '',
+      mobile: data['mobile'] as String?,
+      dob: data['dob'] is Timestamp ? (data['dob'] as Timestamp).toDate() : null,
+      avatarUrl: data['avatarUrl'] as String?,
+      createdAt: data['createdAt'] is Timestamp
+          ? (data['createdAt'] as Timestamp).toDate()
+          : DateTime.now(),
+      updatedAt: data['updatedAt'] is Timestamp
+          ? (data['updatedAt'] as Timestamp).toDate()
+          : DateTime.now(),
     );
   }
 

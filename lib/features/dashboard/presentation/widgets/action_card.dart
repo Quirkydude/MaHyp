@@ -97,7 +97,7 @@ class _ActionCardState extends State<ActionCard> {
               'Next Medication',
               style: TextStyle(
                 color: AppColors.white.withOpacity(0.95),
-                fontSize: 12,
+                fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -117,7 +117,7 @@ class _ActionCardState extends State<ActionCard> {
           widget.medicationTime ?? 'Today At 6:00 PM',
           style: TextStyle(
             color: AppColors.white.withOpacity(0.85),
-            fontSize: 12,
+            fontSize: 16,
           ),
         ),
       ],
@@ -153,7 +153,7 @@ class _ActionCardState extends State<ActionCard> {
           'Record BP',
           style: TextStyle(
             color: AppColors.primaryTurquoiseDark,
-            fontSize: 14,
+            fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
         ),

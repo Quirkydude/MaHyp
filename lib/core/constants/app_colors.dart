@@ -36,8 +36,8 @@ class AppColors {
 
   // Text Colors
   static const Color textPrimary = Color(0xFF2D3436);
-  static const Color textSecondary = Color(0xFF636E72);
-  static const Color textHint = Color(0xFFB2BEC3);
+  static const Color textSecondary = Color(0xFF4A5568);
+  static const Color textHint = Color(0xFF7A8B94);
   static const Color textOnPrimary = Color(0xFFFFFFFF);
 
   // Input Field Colors
@@ -47,8 +47,8 @@ class AppColors {
 
   // Status Colors
   static const Color success = Color(0xFF00B894);
-  static const Color error = Color(0xFFFF7675);
-  static const Color warning = Color(0xFFFDCB6E);
+  static const Color error = Color(0xFFE05252);
+  static const Color warning = Color(0xFFE6A817);
   static const Color info = Color(0xFF74B9FF);
 
   // Social Login Colors

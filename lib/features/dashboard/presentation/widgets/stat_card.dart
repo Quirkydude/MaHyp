@@ -46,7 +46,7 @@ class _StatCardState extends State<StatCard> {
         duration: const Duration(milliseconds: 100),
         curve: Curves.easeInOut,
         child: Container(
-          height: 130,
+          height: 140,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             gradient: widget.type == StatCardType.bp
@@ -77,7 +77,7 @@ class _StatCardState extends State<StatCard> {
                       widget.title,
                       style: TextStyle(
                         color: AppColors.white.withOpacity(0.95),
-                        fontSize: 13,
+                        fontSize: 16,
                         fontWeight: FontWeight.w500,
                         letterSpacing: 0.3,
                       ),
@@ -112,7 +112,7 @@ class _StatCardState extends State<StatCard> {
                     widget.subtitle,
                     style: TextStyle(
                       color: AppColors.white.withOpacity(0.85),
-                      fontSize: 12,
+                      fontSize: 16,
                       fontWeight: FontWeight.w400,
                     ),
                   ),

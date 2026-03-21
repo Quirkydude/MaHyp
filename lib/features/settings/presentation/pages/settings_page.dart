@@ -75,13 +75,6 @@ class SettingsPage extends ConsumerWidget {
             _buildSectionHeader(context, 'Health Settings'),
             _buildNavigationTile(
               context,
-              icon: Icons.speed_outlined,
-              title: 'BP Units',
-              subtitle: settings.bpUnits,
-              onTap: () => _showUnitsDialog(context, ref, settings.bpUnits),
-            ),
-            _buildNavigationTile(
-              context,
               icon: Icons.timer_outlined,
               title: 'Reminder Schedule',
               subtitle: '${settings.morningReminderTime}, ${settings.eveningReminderTime}',
@@ -307,40 +300,6 @@ class SettingsPage extends ConsumerWidget {
     );
   }
 
-  void _showUnitsDialog(BuildContext context, WidgetRef ref, String currentUnits) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('BP Units'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: const Text('mmHg (millimeters of mercury)'),
-              trailing: currentUnits == 'mmHg'
-                  ? Icon(Icons.check, color: AppColors.primaryTurquoise)
-                  : null,
-              onTap: () {
-                ref.read(settingsProvider.notifier).setBpUnits('mmHg');
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('kPa (kilopascals)'),
-              trailing: currentUnits == 'kPa'
-                  ? Icon(Icons.check, color: AppColors.primaryTurquoise)
-                  : null,
-              onTap: () {
-                ref.read(settingsProvider.notifier).setBpUnits('kPa');
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   void _showReminderScheduleDialog(BuildContext context, WidgetRef ref, SettingsState settings) {
     showDialog(

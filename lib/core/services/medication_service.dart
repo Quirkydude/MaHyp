@@ -121,11 +121,14 @@ class MedicationService {
 
   /// Convert Firestore document to MedicationModel
   MedicationModel _medicationFromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
-    final data = doc.data()!;
+    final data = doc.data();
+    if (data == null) {
+      throw StateError('Medication document ${doc.id} has no data');
+    }
     return MedicationModel(
       id: doc.id,
-      name: data['name'] as String,
-      dosage: data['dosage'] as String,
+      name: data['name'] as String? ?? 'Unknown',
+      dosage: data['dosage'] as String? ?? '',
       frequency: MedicationFrequency.values.firstWhere(
         (e) => e.name == data['frequency'],
         orElse: () => MedicationFrequency.onceDaily,
@@ -136,10 +139,12 @@ class MedicationService {
                 orElse: () => TimeOfDay.morning,
               ))
           .toList() ?? [TimeOfDay.morning],
-      doses: [], // Doses are generated client-side based on frequency
+      doses: [],
       reminderEnabled: data['reminderEnabled'] as bool? ?? true,
       notes: data['notes'] as String?,
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
+      createdAt: data['createdAt'] is Timestamp
+          ? (data['createdAt'] as Timestamp).toDate()
+          : DateTime.now(),
     );
   }
 }

@@ -6,7 +6,7 @@ class SettingsService {
   static const String _keyRemindersEnabled = 'reminders_enabled';
   static const String _keyDarkModeEnabled = 'dark_mode_enabled';
   static const String _keyFontSize = 'font_size';
-  static const String _keyBpUnits = 'bp_units';
+
   static const String _keyMorningReminderTime = 'morning_reminder_time';
   static const String _keyEveningReminderTime = 'evening_reminder_time';
 
@@ -49,12 +49,6 @@ class SettingsService {
 
   // ============ Health Settings ============
   
-  String get bpUnits => _prefs?.getString(_keyBpUnits) ?? 'mmHg';
-  
-  Future<void> setBpUnits(String value) async {
-    await _prefs?.setString(_keyBpUnits, value);
-  }
-
   String get morningReminderTime => _prefs?.getString(_keyMorningReminderTime) ?? '08:00';
   
   Future<void> setMorningReminderTime(String value) async {
@@ -75,7 +69,7 @@ class SettingsService {
       remindersEnabled: remindersEnabled,
       darkModeEnabled: darkModeEnabled,
       fontSize: fontSize,
-      bpUnits: bpUnits,
+
       morningReminderTime: morningReminderTime,
       eveningReminderTime: eveningReminderTime,
     );
@@ -88,7 +82,7 @@ class SettingsState {
   final bool remindersEnabled;
   final bool darkModeEnabled;
   final String fontSize;
-  final String bpUnits;
+
   final String morningReminderTime;
   final String eveningReminderTime;
 
@@ -97,7 +91,7 @@ class SettingsState {
     this.remindersEnabled = true,
     this.darkModeEnabled = false,
     this.fontSize = 'Medium',
-    this.bpUnits = 'mmHg',
+
     this.morningReminderTime = '08:00',
     this.eveningReminderTime = '20:00',
   });
@@ -107,7 +101,7 @@ class SettingsState {
     bool? remindersEnabled,
     bool? darkModeEnabled,
     String? fontSize,
-    String? bpUnits,
+
     String? morningReminderTime,
     String? eveningReminderTime,
   }) {
@@ -116,7 +110,7 @@ class SettingsState {
       remindersEnabled: remindersEnabled ?? this.remindersEnabled,
       darkModeEnabled: darkModeEnabled ?? this.darkModeEnabled,
       fontSize: fontSize ?? this.fontSize,
-      bpUnits: bpUnits ?? this.bpUnits,
+
       morningReminderTime: morningReminderTime ?? this.morningReminderTime,
       eveningReminderTime: eveningReminderTime ?? this.eveningReminderTime,
     );

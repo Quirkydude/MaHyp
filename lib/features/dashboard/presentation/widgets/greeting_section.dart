@@ -42,7 +42,7 @@ class GreetingSection extends StatelessWidget {
                 'Hi, Welcome Back',
                 style: TextStyle(
                   color: AppColors.textSecondary,
-                  fontSize: 12,
+                  fontSize: 16,
                 ),
               ),
               Text(
@@ -127,7 +127,7 @@ class GreetingSection extends StatelessWidget {
                   unreadNotificationCount > 9 ? '9+' : '$unreadNotificationCount',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 10,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,

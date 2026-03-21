@@ -93,13 +93,18 @@ class BPService {
 
   /// Convert Firestore document to BPReadingModel
   BPReadingModel _fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
-    final data = doc.data()!;
+    final data = doc.data();
+    if (data == null) {
+      throw StateError('BP reading document ${doc.id} has no data');
+    }
     return BPReadingModel(
       id: doc.id,
-      systolic: data['systolic'] as int,
-      diastolic: data['diastolic'] as int,
-      heartRate: data['heartRate'] as int?,
-      recordedAt: (data['recordedAt'] as Timestamp).toDate(),
+      systolic: (data['systolic'] as num?)?.toInt() ?? 0,
+      diastolic: (data['diastolic'] as num?)?.toInt() ?? 0,
+      heartRate: (data['heartRate'] as num?)?.toInt(),
+      recordedAt: data['recordedAt'] is Timestamp
+          ? (data['recordedAt'] as Timestamp).toDate()
+          : DateTime.now(),
       timeOfDay: MeasurementTime.values.firstWhere(
         (e) => e.name == data['timeOfDay'],
         orElse: () => MeasurementTime.morning,

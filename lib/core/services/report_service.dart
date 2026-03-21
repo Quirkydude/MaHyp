@@ -79,7 +79,7 @@ class ReportService {
         '${reading.systolic},'
         '${reading.diastolic},'
         '${reading.heartRate},'
-        '${reading.category.label},'
+        '${reading.categoryName},'
         '"${reading.notes ?? ""}"'
       );
     }
@@ -159,7 +159,7 @@ class ReportService {
       return pw.Text('No readings available');
     }
 
-    final stats = BPStatistics.calculate(readings);
+    final stats = BPStatistics.fromReadings(readings);
     
     return pw.Container(
       padding: const pw.EdgeInsets.all(16),
@@ -177,8 +177,8 @@ class ReportService {
             mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
             children: [
               _buildStatBox('Average', '${stats.avgSystolic}/${stats.avgDiastolic}', 'mmHg'),
-              _buildStatBox('Highest', '${stats.maxSystolic}/${stats.maxDiastolic}', 'mmHg'),
-              _buildStatBox('Lowest', '${stats.minSystolic}/${stats.minDiastolic}', 'mmHg'),
+              _buildStatBox('Highest', '${stats.highestReading?.systolic ?? 0}/${stats.highestReading?.diastolic ?? 0}', 'mmHg'),
+              _buildStatBox('Lowest', '${stats.lowestReading?.systolic ?? 0}/${stats.lowestReading?.diastolic ?? 0}', 'mmHg'),
             ],
           ),
         ],
@@ -235,7 +235,7 @@ class ReportService {
             ),
             pw.Padding(
               padding: const pw.EdgeInsets.all(6),
-              child: pw.Text(reading.category.label, style: const pw.TextStyle(fontSize: 8)),
+              child: pw.Text(reading.categoryName, style: const pw.TextStyle(fontSize: 8)),
             ),
           ],
         )),
@@ -309,7 +309,7 @@ class ReportService {
         subject: 'MaHyp Health Report',
       );
     } catch (e) {
-      debugPrint('Error saving/sharing PDF: $e');
+      debugPrint('Error saving/sharing PDF');
       rethrow;
     }
   }
@@ -325,7 +325,7 @@ class ReportService {
         subject: 'MaHyp Health Data Export',
       );
     } catch (e) {
-      debugPrint('Error saving/sharing CSV: $e');
+      debugPrint('Error saving/sharing CSV');
       rethrow;
     }
   }

@@ -48,7 +48,7 @@ class _CalendarWeekViewState extends State<CalendarWeekView> {
                 'Upcoming Schedule',
                 style: TextStyle(
                   color: AppColors.textPrimary,
-                  fontSize: 14,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -74,7 +74,7 @@ class _CalendarWeekViewState extends State<CalendarWeekView> {
                         currentMonthName,
                         style: const TextStyle(
                           color: AppColors.textPrimary,
-                          fontSize: 13,
+                          fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -270,7 +270,7 @@ class _CalendarWeekViewState extends State<CalendarWeekView> {
               dayName,
               style: TextStyle(
                 color: isSelected ? AppColors.white : AppColors.textSecondary,
-                fontSize: 10,
+                fontSize: 16,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.5,
               ),

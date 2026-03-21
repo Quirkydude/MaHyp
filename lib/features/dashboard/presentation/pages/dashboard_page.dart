@@ -195,7 +195,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                       'See all',
                       style: TextStyle(
                         color: AppColors.primaryTurquoise,
-                        fontSize: 13,
+                        fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -260,7 +260,26 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                   );
                 },
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Center(child: Text('Error loading tasks: $e')),
+                error: (_, __) => Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        const Icon(Icons.error_outline, color: AppColors.error, size: 40),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Unable to load tasks',
+                          style: TextStyle(color: AppColors.textSecondary),
+                        ),
+                        const SizedBox(height: 8),
+                        TextButton(
+                          onPressed: () => ref.invalidate(medicationProvider),
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
 
               const SizedBox(height: 100), // Space for bottom nav

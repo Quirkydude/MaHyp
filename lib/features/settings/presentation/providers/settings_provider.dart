@@ -102,10 +102,6 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
 
   // ============ Health Settings ============
   
-  Future<void> setBpUnits(String value) async {
-    await _settingsService.setBpUnits(value);
-    state = state.copyWith(bpUnits: value);
-  }
 
   Future<void> setMorningReminderTime(String value) async {
     await _settingsService.setMorningReminderTime(value);
@@ -158,6 +154,3 @@ final fontSizeProvider = Provider<String>((ref) {
   return ref.watch(settingsProvider).fontSize;
 });
 
-final bpUnitsProvider = Provider<String>((ref) {
-  return ref.watch(settingsProvider).bpUnits;
-});

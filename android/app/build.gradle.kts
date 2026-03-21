@@ -1,8 +1,16 @@
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services") // FlutterFire
+    id("com.google.firebase.crashlytics") // Crashlytics
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
+}
+
+// Load keystore properties
+val keystoreProperties = java.util.Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(java.io.FileInputStream(keystorePropertiesFile))
 }
 
 android {
@@ -30,9 +38,24 @@ android {
         jvmTarget = "1.8" // ✅ use double quotes in Kotlin DSL
     }
 
+    signingConfigs {
+        create("release") {
+            if (keystorePropertiesFile.exists()) {
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+                storeFile = file(keystoreProperties["storeFile"] as String)
+                storePassword = keystoreProperties["storePassword"] as String
+            }
+        }
+    }
+
     buildTypes {
         getByName("release") {
-            signingConfig = signingConfigs.getByName("debug")
+            if (keystorePropertiesFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            } else {
+                signingConfig = signingConfigs.getByName("debug")
+            }
             // minifyEnabled true
             // shrinkResources true
         }

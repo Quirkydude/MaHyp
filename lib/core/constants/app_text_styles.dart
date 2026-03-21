@@ -53,7 +53,7 @@ class AppTextStyles {
   );
 
   static const TextStyle bodySmall = TextStyle(
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: FontWeight.normal,
     color: AppColors.textSecondary,
     height: 1.5,
@@ -106,14 +106,14 @@ class AppTextStyles {
   );
 
   static const TextStyle caption = TextStyle(
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: FontWeight.normal,
     color: AppColors.textSecondary,
     height: 1.4,
   );
 
   static const TextStyle error = TextStyle(
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: FontWeight.normal,
     color: AppColors.error,
     height: 1.4,
