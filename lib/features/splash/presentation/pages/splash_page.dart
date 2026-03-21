@@ -93,25 +93,17 @@ class _SplashPageState extends State<SplashPage>
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Heart Icon
-                        Container(
+                        // Heart Icon replaced by MaHyp Icon
+                        SvgPicture.asset(
+                          'assets/logos/mahyp_icon.svg',
                           width: 120,
                           height: 120,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.3),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.favorite,
-                            size: 60,
-                            color: AppColors.white,
-                          ),
                         ),
                         const SizedBox(height: AppDimensions.spacing32),
 
                         // Logo SVG
                         SvgPicture.asset(
-                          'assets/images/logo.svg',
+                          'assets/logos/mahyp_full_logo.svg',
                           width: AppDimensions.logoLarge,
                           height: AppDimensions.logoLarge,
                           colorFilter: const ColorFilter.mode(

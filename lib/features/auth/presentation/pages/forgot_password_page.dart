@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -116,20 +117,11 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
         children: [
           const SizedBox(height: AppDimensions.spacing32),
 
-          // Icon
+          // Logo
           Center(
-            child: Container(
-              width: 80,
+            child: SvgPicture.asset(
+              'assets/logos/mahyp_full_logo.svg',
               height: 80,
-              decoration: BoxDecoration(
-                color: AppColors.primaryTurquoise.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.lock_reset,
-                size: 40,
-                color: AppColors.primaryTurquoise,
-              ),
             ),
           ),
 

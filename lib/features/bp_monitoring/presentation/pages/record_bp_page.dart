@@ -10,6 +10,7 @@ import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../providers/bp_provider.dart';
 import '../../data/models/bp_reading_model.dart';
+import '../../../../illustrations/illustrations.dart';
 
 /// Record Blood Pressure Page
 class RecordBPPage extends ConsumerStatefulWidget {
@@ -169,19 +170,7 @@ class _RecordBPPageState extends ConsumerState<RecordBPPage>
               builder: (context, value, child) {
                 return Transform.scale(scale: value, child: child);
               },
-              child: Container(
-                width: 80,
-                height: 80,
-                decoration: const BoxDecoration(
-                  color: AppColors.success,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.check,
-                  size: 50,
-                  color: AppColors.white,
-                ),
-              ),
+              child: const SuccessIllustration(size: 100),
             ),
             const SizedBox(height: AppDimensions.spacing24),
             Text('Reading Saved!', style: AppTextStyles.h3),
@@ -222,6 +211,11 @@ class _RecordBPPageState extends ConsumerState<RecordBPPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: AppDimensions.spacing16),
+
+                Center(
+                  child: const BloodPressureCheckIllustration(size: 200),
+                ),
+                const SizedBox(height: AppDimensions.spacing24),
 
                 // Systolic Input
                 CustomTextField(

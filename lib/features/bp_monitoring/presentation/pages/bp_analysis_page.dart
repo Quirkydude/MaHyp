@@ -6,6 +6,7 @@ import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
+import '../../../../illustrations/illustrations.dart';
 import '../../data/models/bp_reading_model.dart';
 
 /// BP Analysis Page - Shows detailed analysis of reading
@@ -53,6 +54,12 @@ class _BPAnalysisPageState extends State<BPAnalysisPage>
         padding: const EdgeInsets.all(AppDimensions.screenPaddingHorizontal),
         child: Column(
           children: [
+            const SizedBox(height: AppDimensions.spacing24),
+
+            // Health Data SVG
+            const Center(
+              child: HealthDataIllustration(size: 200),
+            ),
             const SizedBox(height: AppDimensions.spacing24),
 
             // Alert Card

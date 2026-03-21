@@ -7,6 +7,7 @@ import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../shared/widgets/main_layout.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
+import '../../../../illustrations/illustrations.dart';
 import '../providers/bp_provider.dart';
 import '../../data/models/bp_reading_model.dart';
 
@@ -66,6 +67,11 @@ class BPHistoryPage extends ConsumerWidget {
                 children: [
                   const SizedBox(height: AppDimensions.spacing16),
 
+                  const Center(
+                    child: HealthDataIllustration(size: 200),
+                  ),
+                  const SizedBox(height: AppDimensions.spacing16),
+
                   // Trend Chart
                   Text('Blood Pressure Trend', style: AppTextStyles.h3),
                   const SizedBox(height: AppDimensions.spacing16),
@@ -117,19 +123,7 @@ class BPHistoryPage extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: 120,
-            height: 120,
-            decoration: const BoxDecoration(
-              color: AppColors.inputBackground,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.favorite_outline,
-              size: 60,
-              color: AppColors.textHint,
-            ),
-          ),
+          const EmptyStateIllustration(size: 200),
           const SizedBox(height: AppDimensions.spacing24),
           Text('No readings yet', style: AppTextStyles.h3),
           const SizedBox(height: AppDimensions.spacing8),

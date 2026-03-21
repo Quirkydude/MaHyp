@@ -54,7 +54,7 @@ class _BPPainter extends CustomPainter {
 
     // Arm
     p.color = const Color(0xFFFFE5CC);
-    canvas.drawOval(const Rect.fromCenter(center: Offset(150, 180), width: 90, height: 140), p);
+    canvas.drawOval(Rect.fromCenter(center: const Offset(150, 180), width: 90, height: 140), p);
 
     // BP Cuff
     p.color = const Color(0xFF00C9D6);
@@ -101,9 +101,9 @@ class _BPPainter extends CustomPainter {
 
     // Bulb pump
     p.color = const Color(0xFF9CA3AF);
-    canvas.drawOval(const Rect.fromCenter(center: Offset(50, 200), width: 44, height: 56), p);
+    canvas.drawOval(Rect.fromCenter(center: const Offset(50, 200), width: 44, height: 56), p);
     p.color = const Color(0xFFD1D5DB);
-    canvas.drawOval(const Rect.fromCenter(center: Offset(50, 198), width: 36, height: 44), p);
+    canvas.drawOval(Rect.fromCenter(center: const Offset(50, 198), width: 36, height: 44), p);
 
     // Reading display (at translate(160,55))
     p.color = Colors.white;

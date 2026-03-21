@@ -5,6 +5,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../shared/widgets/custom_button.dart';
+import '../../../../illustrations/illustrations.dart';
 
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({super.key});
@@ -17,7 +18,10 @@ class OnboardingPage extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [AppColors.white, AppColors.white],
+            colors: [
+              Color(0xFFF0FDFF),
+              AppColors.white,
+            ],
           ),
         ),
         child: SafeArea(
@@ -29,84 +33,29 @@ class OnboardingPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const Spacer(flex: 3),
+
+                const WelcomeIllustration(size: 260),
+                
                 const Spacer(flex: 2),
 
-                Container(
-                  width: 140,
-                  height: 140,
-                  decoration: BoxDecoration(
-                    gradient: AppColors.primaryGradient,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primaryTurquoise.withOpacity(0.3),
-                        blurRadius: 20,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      const Icon(
-                        Icons.favorite,
-                        size: 70,
-                        color: AppColors.white,
-                      ),
-                      Positioned(
-                        right: 20,
-                        bottom: 20,
-                        child: Container(
-                          width: 50,
-                          height: 50,
-                          decoration: const BoxDecoration(
-                            color: AppColors.white,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.access_time,
-                            size: 28,
-                            color: AppColors.primaryTurquoise,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: AppDimensions.spacing40),
-
                 SvgPicture.asset(
-                  'assets/images/logo.svg',
-                  width: AppDimensions.logoMedium,
-                  height: AppDimensions.logoMedium,
-                  colorFilter: const ColorFilter.mode(
-                    AppColors.primaryTurquoise,
-                    BlendMode.srcIn,
-                  ),
+                  'assets/logos/mahyp_full_logo.svg',
+                  height: 60,
                 ),
 
-                const SizedBox(height: AppDimensions.spacing16),
-
-                Text(
-                  'MaHyp',
-                  style: AppTextStyles.h1.copyWith(
-                    color: AppColors.primaryTurquoise,
-                    fontSize: 36,
-                  ),
-                ),
-
-                const SizedBox(height: AppDimensions.spacing8),
+                const SizedBox(height: AppDimensions.spacing24),
 
                 Text(
                   'Take control of your blood pressure,\none day at a time.',
                   textAlign: TextAlign.center,
                   style: AppTextStyles.bodyMedium.copyWith(
                     color: AppColors.textSecondary,
+                    height: 1.5,
                   ),
                 ),
 
-                const Spacer(flex: 2),
+                const Spacer(flex: 3),
 
                 CustomButton(
                   text: 'Log In',
@@ -130,3 +79,4 @@ class OnboardingPage extends StatelessWidget {
     );
   }
 }
+

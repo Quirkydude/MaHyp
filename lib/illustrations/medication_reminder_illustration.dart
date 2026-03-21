@@ -88,7 +88,7 @@ class _MedPainter extends CustomPainter {
     canvas.translate(220, 170);
     canvas.rotate(30 * 3.14159 / 180);
     p.color = const Color(0xFFDC2626);
-    canvas.drawOval(const Rect.fromCenter(center: Offset(0, 0), width: 36, height: 20), p);
+    canvas.drawOval(Rect.fromCenter(center: const Offset(0, 0), width: 36, height: 20), p);
     p.color = Colors.white; p.style = PaintingStyle.stroke; p.strokeWidth = 2;
     canvas.drawLine(const Offset(-12, 0), const Offset(12, 0), p);
     canvas.restore();
@@ -98,7 +98,7 @@ class _MedPainter extends CustomPainter {
     canvas.rotate(-20 * 3.14159 / 180);
     p.style = PaintingStyle.fill;
     p.color = const Color(0xFF00C9D6);
-    canvas.drawOval(const Rect.fromCenter(center: Offset(0, 0), width: 36, height: 20), p);
+    canvas.drawOval(Rect.fromCenter(center: const Offset(0, 0), width: 36, height: 20), p);
     p.color = Colors.white; p.style = PaintingStyle.stroke; p.strokeWidth = 2;
     canvas.drawLine(const Offset(-12, 0), const Offset(12, 0), p);
     canvas.restore();

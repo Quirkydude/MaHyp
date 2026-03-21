@@ -120,7 +120,7 @@ class _SuccessPainter extends CustomPainter {
     canvas.save();
     canvas.translate(204, lerp(80, 100, p2T) + 4); // pivot at center of rect
     canvas.rotate(45 * math.pi / 180);
-    canvas.drawRect(const Rect.fromCenter(center: Offset(0, 0), width: 8, height: 8), p);
+    canvas.drawRect(Rect.fromCenter(center: const Offset(0, 0), width: 8, height: 8), p);
     canvas.restore();
 
     // P3: circle teal cy 200→220
@@ -132,7 +132,7 @@ class _SuccessPainter extends CustomPainter {
     canvas.save();
     canvas.translate(80, lerp(210, 230, p4T) + 5);
     canvas.rotate(20 * math.pi / 180);
-    canvas.drawRect(const Rect.fromCenter(center: Offset(0, 0), width: 10, height: 10), p);
+    canvas.drawRect(Rect.fromCenter(center: const Offset(0, 0), width: 10, height: 10), p);
     canvas.restore();
 
     // P5: circle purple cx 200→220

@@ -6,6 +6,7 @@ import '../../../../core/constants/app_text_styles.dart';
 import '../../../../shared/widgets/main_layout.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
+import '../../../../illustrations/illustrations.dart';
 
 /// Support & Help Page with FAQs and contact options
 class SupportPage extends StatefulWidget {
@@ -60,6 +61,11 @@ class _SupportPageState extends State<SupportPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: AppDimensions.spacing16),
+
+              const Center(
+                child: DoctorConsultIllustration(size: 200),
+              ),
+              const SizedBox(height: AppDimensions.spacing24),
 
               // FAQs Section
               Text('Frequently Asked Questions', style: AppTextStyles.h3),
@@ -411,19 +417,7 @@ class _SupportPageState extends State<SupportPage> {
               builder: (context, value, child) {
                 return Transform.scale(scale: value, child: child);
               },
-              child: Container(
-                width: 80,
-                height: 80,
-                decoration: const BoxDecoration(
-                  color: AppColors.success,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.check,
-                  size: 50,
-                  color: AppColors.white,
-                ),
-              ),
+              child: const SuccessIllustration(size: 100),
             ),
             const SizedBox(height: AppDimensions.spacing24),
             Text(title, style: AppTextStyles.h3),

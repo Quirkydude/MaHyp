@@ -9,6 +9,7 @@ import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/frequency_chip.dart';
 import '../providers/medication_provider.dart';
 import '../../data/models/medication_model.dart';
+import '../../../../illustrations/illustrations.dart';
 
 /// Add Medication Page with improved time logic
 class AddMedicationPage extends ConsumerStatefulWidget {
@@ -204,19 +205,7 @@ class _AddMedicationPageState extends ConsumerState<AddMedicationPage>
               builder: (context, value, child) {
                 return Transform.scale(scale: value, child: child);
               },
-              child: Container(
-                width: 80,
-                height: 80,
-                decoration: const BoxDecoration(
-                  color: AppColors.success,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.check,
-                  size: 50,
-                  color: AppColors.white,
-                ),
-              ),
+              child: const SuccessIllustration(size: 100),
             ),
             const SizedBox(height: AppDimensions.spacing24),
             Text('Medication Added!', style: AppTextStyles.h3),
@@ -261,6 +250,11 @@ class _AddMedicationPageState extends ConsumerState<AddMedicationPage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: AppDimensions.spacing16),
+
+                  Center(
+                    child: const MedicationReminderIllustration(size: 200),
+                  ),
+                  const SizedBox(height: AppDimensions.spacing24),
 
                   // Name Field
                   CustomTextField(

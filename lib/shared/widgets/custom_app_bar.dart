@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_dimensions.dart';
 import '../../core/constants/app_text_styles.dart';
@@ -59,7 +60,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     onPressed:
                         onBackPressed ?? () => Navigator.of(context).pop(),
                   )
-                : null),
+                : Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: SvgPicture.asset(
+                      'assets/logos/mahyp_icon.svg',
+                      colorFilter: ColorFilter.mode(titleColor ?? AppColors.white, BlendMode.srcIn),
+                    ),
+                  )),
         title: Text(
           title,
           style: AppTextStyles.h3.copyWith(

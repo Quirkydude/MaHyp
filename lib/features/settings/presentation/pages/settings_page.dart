@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/services/settings_service.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../providers/settings_provider.dart';
@@ -25,7 +27,15 @@ class SettingsPage extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 16),
+            const SizedBox(height: AppDimensions.spacing16),
+            
+            Center(
+              child: SvgPicture.asset(
+                'assets/logos/mahyp_logo.svg',
+                height: 80,
+              ),
+            ),
+            const SizedBox(height: AppDimensions.spacing24),
             
             // Notifications Section
             _buildSectionHeader(context, 'Notifications'),

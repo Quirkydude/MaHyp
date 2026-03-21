@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_dimensions.dart';
 
@@ -33,8 +34,7 @@ class BottomNavBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _NavBarItem(
-                icon: Icons.home_outlined,
-                activeIcon: Icons.home,
+                svgPath: 'assets/logos/mahyp_icon.svg',
                 label: 'Home',
                 isActive: currentIndex == 0,
                 onTap: () => onTap(0),
@@ -77,15 +77,17 @@ class BottomNavBar extends StatelessWidget {
 
 /// Individual navigation bar item
 class _NavBarItem extends StatelessWidget {
-  final IconData icon;
-  final IconData activeIcon;
+  final IconData? icon;
+  final IconData? activeIcon;
+  final String? svgPath;
   final String label;
   final bool isActive;
   final VoidCallback onTap;
 
   const _NavBarItem({
-    required this.icon,
-    required this.activeIcon,
+    this.icon,
+    this.activeIcon,
+    this.svgPath,
     required this.label,
     required this.isActive,
     required this.onTap,
@@ -102,13 +104,25 @@ class _NavBarItem extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                isActive ? activeIcon : icon,
-                color: isActive
-                    ? AppColors.primaryTurquoise
-                    : AppColors.textSecondary,
-                size: AppDimensions.iconMedium,
-              ),
+              svgPath != null
+                  ? SvgPicture.asset(
+                      svgPath!,
+                      colorFilter: ColorFilter.mode(
+                        isActive
+                            ? AppColors.primaryTurquoise
+                            : AppColors.textSecondary,
+                        BlendMode.srcIn,
+                      ),
+                      width: AppDimensions.iconMedium,
+                      height: AppDimensions.iconMedium,
+                    )
+                  : Icon(
+                      isActive ? activeIcon : icon,
+                      color: isActive
+                          ? AppColors.primaryTurquoise
+                          : AppColors.textSecondary,
+                      size: AppDimensions.iconMedium,
+                    ),
               const SizedBox(height: AppDimensions.spacing4),
               Text(
                 label,

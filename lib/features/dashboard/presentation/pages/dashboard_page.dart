@@ -16,6 +16,7 @@ import '../widgets/action_card.dart';
 import '../widgets/calendar_week_view.dart';
 import '../widgets/task_item.dart';
 import '../../../notification/presentation/providers/notification_provider.dart';
+import '../../../../illustrations/illustrations.dart';
 
 class DashboardPage extends ConsumerStatefulWidget {
   const DashboardPage({super.key});
@@ -53,6 +54,12 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                 onNotificationPressed: () =>
                     context.push(AppRouter.notifications),
                 unreadNotificationCount: unreadNotificationCount,
+              ),
+
+              const SizedBox(height: 16),
+
+              Center(
+                child: const HeartMonitorIllustration(size: 200),
               ),
 
               const SizedBox(height: 16),

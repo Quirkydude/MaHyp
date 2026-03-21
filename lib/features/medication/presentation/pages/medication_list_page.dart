@@ -11,6 +11,7 @@ import '../../../../shared/widgets/medication_details_modal.dart';
 import '../../../../shared/widgets/tab_selector.dart';
 import '../../../../shared/widgets/medication_card.dart';
 import '../../../../shared/widgets/report_card.dart';
+import '../../../../illustrations/illustrations.dart';
 import '../providers/medication_provider.dart';
 
 import '../../data/models/medication_model.dart';
@@ -245,19 +246,7 @@ class _MedicationListPageState extends ConsumerState<MedicationListPage>
             builder: (context, value, child) {
               return Transform.scale(scale: value, child: child);
             },
-            child: Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: AppColors.inputBackground,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.medication_outlined,
-                size: 60,
-                color: AppColors.textHint,
-              ),
-            ),
+            child: const EmptyStateIllustration(size: 200),
           ),
           const SizedBox(height: AppDimensions.spacing24),
           Text(

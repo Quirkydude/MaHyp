@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -177,6 +178,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: AppDimensions.spacing16),
+
+                Center(
+                  child: SvgPicture.asset(
+                    'assets/logos/mahyp_full_logo.svg',
+                    height: 80,
+                  ),
+                ),
+                const SizedBox(height: AppDimensions.spacing24),
 
                 Text('Welcome', style: AppTextStyles.h2),
                 const SizedBox(height: AppDimensions.spacing8),
