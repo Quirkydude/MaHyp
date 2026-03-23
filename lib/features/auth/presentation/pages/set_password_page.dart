@@ -139,10 +139,11 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
           );
         }
       } catch (e) {
+        debugPrint('Set password unexpected error: $e');
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('An unexpected error occurred: $e'),
+            const SnackBar(
+              content: Text('An unexpected error occurred. Please try again.'),
               backgroundColor: AppColors.error,
             ),
           );

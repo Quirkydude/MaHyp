@@ -103,6 +103,23 @@ class UserProfileService {
     DateTime? dob,
     String? avatarUrl,
   }) async {
+    final docRef = _usersCollection.doc(uid);
+    final docSnap = await docRef.get();
+    
+    // If the profile document doesn't exist, create it instead of updating
+    if (!docSnap.exists) {
+      final user = FirebaseAuth.instance.currentUser;
+      await createUserProfile(
+        uid: uid,
+        fullName: fullName ?? 'User',
+        email: user?.email ?? '',
+        mobile: mobile,
+        dob: dob,
+        avatarUrl: avatarUrl,
+      );
+      return;
+    }
+
     final updates = <String, dynamic>{
       'updatedAt': Timestamp.fromDate(DateTime.now()),
     };
@@ -112,7 +129,7 @@ class UserProfileService {
     if (dob != null) updates['dob'] = Timestamp.fromDate(dob);
     if (avatarUrl != null) updates['avatarUrl'] = avatarUrl;
 
-    await _usersCollection.doc(uid).update(updates);
+    await docRef.update(updates);
   }
 
   /// Stream user profile for real-time updates

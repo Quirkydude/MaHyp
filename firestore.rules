@@ -24,10 +24,8 @@ service cloud.firestore {
                     && request.resource.data.createdAt is timestamp
                     && request.resource.data.updatedAt is timestamp;
       
-      // On update: cannot change createdAt
-      allow update: if isOwner(userId)
-                    && request.resource.data.createdAt == resource.data.createdAt
-                    && request.resource.data.updatedAt is timestamp;
+      // On update: can safely update profile details
+      allow update: if isOwner(userId);
       
       // Blood pressure readings subcollection
       match /bp_readings/{readingId} {

@@ -167,16 +167,17 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.message ?? 'Social sign up failed'),
+            content: Text(e.message ?? 'Social sign up failed. Please try again.'),
             backgroundColor: AppColors.error,
           ),
         );
       }
     } catch (e) {
+      debugPrint('Signup unexpected error: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('An unexpected error occurred: $e'),
+          const SnackBar(
+            content: Text('An unexpected error occurred. Please try again.'),
             backgroundColor: AppColors.error,
           ),
         );

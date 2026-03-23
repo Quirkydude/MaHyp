@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../../../illustrations/illustrations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -11,7 +13,7 @@ import '../../../../shared/widgets/medication_details_modal.dart';
 import '../../../../shared/widgets/tab_selector.dart';
 import '../../../../shared/widgets/medication_card.dart';
 import '../../../../shared/widgets/report_card.dart';
-import '../../../../illustrations/illustrations.dart';
+
 import '../providers/medication_provider.dart';
 
 import '../../data/models/medication_model.dart';
@@ -246,7 +248,7 @@ class _MedicationListPageState extends ConsumerState<MedicationListPage>
             builder: (context, value, child) {
               return Transform.scale(scale: value, child: child);
             },
-            child: const EmptyStateIllustration(size: 200),
+            child: EmptyStateIllustration(size: 200),
           ),
           const SizedBox(height: AppDimensions.spacing24),
           Text(

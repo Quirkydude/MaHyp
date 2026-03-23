@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../../../illustrations/illustrations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -7,7 +9,7 @@ import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../shared/widgets/main_layout.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
-import '../../../../illustrations/illustrations.dart';
+
 import '../providers/bp_provider.dart';
 import '../../data/models/bp_reading_model.dart';
 
@@ -67,7 +69,7 @@ class BPHistoryPage extends ConsumerWidget {
                 children: [
                   const SizedBox(height: AppDimensions.spacing16),
 
-                  const Center(
+                  Center(
                     child: HealthDataIllustration(size: 200),
                   ),
                   const SizedBox(height: AppDimensions.spacing16),
@@ -123,7 +125,7 @@ class BPHistoryPage extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const EmptyStateIllustration(size: 200),
+          EmptyStateIllustration(size: 200),
           const SizedBox(height: AppDimensions.spacing24),
           Text('No readings yet', style: AppTextStyles.h3),
           const SizedBox(height: AppDimensions.spacing8),

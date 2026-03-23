@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 
 /// Service for handling image uploads to Firebase Storage
 class ImageUploadService {
@@ -10,7 +12,7 @@ class ImageUploadService {
   /// Returns the download URL of the uploaded image
   Future<String> uploadUserAvatar({
     required String userId,
-    required File imageFile,
+    required XFile imageFile,
   }) async {
     try {
       // Create a unique path for the image
@@ -20,8 +22,15 @@ class ImageUploadService {
         'users/$userId/avatar/$fileName',
       );
 
-      // Upload the file
-      await ref.putFile(imageFile);
+      // Read file as bytes to avoid path permission issues on Android
+      final Uint8List bytes = await imageFile.readAsBytes();
+      
+      // Upload the file data
+      final metadata = SettableMetadata(contentType: 'image/jpeg');
+      await ref.putData(bytes, metadata);
+
+      // Wait a tiny bit to ensure the bucket state is updated before getting URL
+      await Future.delayed(const Duration(milliseconds: 500));
 
       // Get the download URL
       final String downloadUrl = await ref.getDownloadURL();

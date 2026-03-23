@@ -87,10 +87,11 @@ class _EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
         );
       }
     } catch (e) {
+      debugPrint('Error checking verification: $e');
       if (!silent && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error checking verification: $e'),
+          const SnackBar(
+            content: Text('Failed to check verification. Please try again.'),
             backgroundColor: AppColors.error,
           ),
         );
@@ -127,10 +128,11 @@ class _EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
         );
       }
     } catch (e) {
+      debugPrint('Email verification resend unexpected error: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('An unexpected error occurred: $e'),
+          const SnackBar(
+            content: Text('An unexpected error occurred. Please try again.'),
             backgroundColor: AppColors.error,
           ),
         );

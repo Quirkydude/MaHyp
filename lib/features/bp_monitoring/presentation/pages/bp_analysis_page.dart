@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../../illustrations/illustrations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -6,7 +8,7 @@ import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
-import '../../../../illustrations/illustrations.dart';
+
 import '../../data/models/bp_reading_model.dart';
 
 /// BP Analysis Page - Shows detailed analysis of reading
@@ -57,7 +59,7 @@ class _BPAnalysisPageState extends State<BPAnalysisPage>
             const SizedBox(height: AppDimensions.spacing24),
 
             // Health Data SVG
-            const Center(
+            Center(
               child: HealthDataIllustration(size: 200),
             ),
             const SizedBox(height: AppDimensions.spacing24),

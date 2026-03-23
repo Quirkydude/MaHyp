@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../../illustrations/illustrations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -16,7 +18,7 @@ import '../widgets/action_card.dart';
 import '../widgets/calendar_week_view.dart';
 import '../widgets/task_item.dart';
 import '../../../notification/presentation/providers/notification_provider.dart';
-import '../../../../illustrations/illustrations.dart';
+
 
 class DashboardPage extends ConsumerStatefulWidget {
   const DashboardPage({super.key});
@@ -59,7 +61,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
               const SizedBox(height: 16),
 
               Center(
-                child: const HeartMonitorIllustration(size: 200),
+                child: HeartMonitorIllustration(size: 200),
               ),
 
               const SizedBox(height: 16),

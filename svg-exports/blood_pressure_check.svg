@@ -1,0 +1,49 @@
+<svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="150" cy="150" r="140" fill="#FFF5F5"/>
+  
+  <!-- Arm -->
+  <ellipse cx="150" cy="180" rx="45" ry="70" fill="#FFE5CC"/>
+  
+  <!-- Blood Pressure Cuff -->
+  <g>
+    <!-- Main Cuff -->
+    <rect x="105" y="140" width="90" height="50" rx="8" fill="#00C9D6"/>
+    <rect x="105" y="145" width="90" height="8" rx="2" fill="#5CE1E6"/>
+    <rect x="105" y="158" width="90" height="8" rx="2" fill="#5CE1E6"/>
+    <rect x="105" y="171" width="90" height="8" rx="2" fill="#5CE1E6"/>
+    
+    <!-- Velcro Detail -->
+    <rect x="180" y="150" width="15" height="30" rx="3" fill="#00A5B0"/>
+  </g>
+  
+  <!-- Tube -->
+  <path d="M 105 165 Q 60 165, 50 140" stroke="#6B7280" stroke-width="4" fill="none" stroke-linecap="round"/>
+  
+  <!-- Pressure Gauge -->
+  <g transform="translate(20, 80)">
+    <!-- Gauge Body -->
+    <circle cx="30" cy="30" r="28" fill="white" stroke="#00C9D6" stroke-width="3"/>
+    <circle cx="30" cy="30" r="20" fill="#F0FDFF"/>
+    
+    <!-- Gauge Needle -->
+    <line x1="30" y1="30" x2="30" y2="15" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/>
+    
+    <!-- Center Dot -->
+    <circle cx="30" cy="30" r="3" fill="#dc2626"/>
+  </g>
+  
+  <!-- Bulb Pump -->
+  <ellipse cx="50" cy="200" rx="22" ry="28" fill="#9CA3AF"/>
+  <ellipse cx="50" cy="198" rx="18" ry="22" fill="#D1D5DB"/>
+  
+  <!-- Reading Display -->
+  <g transform="translate(160, 55)">
+    <rect x="0" y="0" width="80" height="45" rx="8" fill="white" stroke="#00C9D6" stroke-width="2"/>
+    <text x="40" y="28" text-anchor="middle" fill="#dc2626" font-size="20" font-weight="bold" font-family="system-ui">120/80</text>
+  </g>
+  
+  <!-- Checkmark Icon -->
+  <circle cx="230" cy="240" r="18" fill="#10B981"/>
+  <path d="M 222 240 L 228 246 L 238 234" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

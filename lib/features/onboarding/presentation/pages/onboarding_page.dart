@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../../../illustrations/illustrations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../shared/widgets/custom_button.dart';
-import '../../../../illustrations/illustrations.dart';
+
 
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({super.key});
@@ -35,7 +36,7 @@ class OnboardingPage extends StatelessWidget {
               children: [
                 const Spacer(flex: 3),
 
-                const WelcomeIllustration(size: 260),
+                WelcomeIllustration(size: 260),
                 
                 const Spacer(flex: 2),
 

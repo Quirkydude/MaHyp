@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../../illustrations/illustrations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
@@ -6,7 +8,7 @@ import '../../../../core/constants/app_text_styles.dart';
 import '../../../../shared/widgets/main_layout.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
-import '../../../../illustrations/illustrations.dart';
+
 
 /// Support & Help Page with FAQs and contact options
 class SupportPage extends StatefulWidget {
@@ -62,7 +64,7 @@ class _SupportPageState extends State<SupportPage> {
             children: [
               const SizedBox(height: AppDimensions.spacing16),
 
-              const Center(
+              Center(
                 child: DoctorConsultIllustration(size: 200),
               ),
               const SizedBox(height: AppDimensions.spacing24),
@@ -417,7 +419,11 @@ class _SupportPageState extends State<SupportPage> {
               builder: (context, value, child) {
                 return Transform.scale(scale: value, child: child);
               },
-              child: const SuccessIllustration(size: 100),
+              child: SvgPicture.asset(
+                'assets/illustrations/success_state.svg',
+                width: 100,
+                height: 100,
+              ),
             ),
             const SizedBox(height: AppDimensions.spacing24),
             Text(title, style: AppTextStyles.h3),

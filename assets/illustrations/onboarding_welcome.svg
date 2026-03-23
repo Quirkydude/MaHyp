@@ -1,0 +1,67 @@
+<svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="150" cy="150" r="140" fill="#F0FDFF"/>
+  
+  <!-- Large Phone -->
+  <g>
+    <!-- Phone Body -->
+    <rect x="95" y="50" width="110" height="200" rx="15" fill="white" stroke="#00C9D6" stroke-width="3"/>
+    
+    <!-- Screen -->
+    <rect x="105" y="70" width="90" height="160" rx="8" fill="#F0FDFF"/>
+    
+    <!-- Notch -->
+    <rect x="130" y="55" width="40" height="8" rx="4" fill="#E5E7EB"/>
+    
+    <!-- App Content -->
+    <g>
+      <!-- Logo Area -->
+      <circle cx="150" cy="110" r="20" fill="#00C9D6"/>
+      
+      <!-- Heart in Logo -->
+      <path d="M 150 122 C 150 122, 142.5 116.25, 140 111.25 C 137.5 106.25, 137.5 103.75, 140 101.25 C 142.5 98.75, 146.25 98.75, 148.75 101.25 C 149.375 101.875, 149.6875 102.1875, 150 103.125 C 150.3125 102.1875, 150.625 101.875, 151.25 101.25 C 153.75 98.75, 157.5 98.75, 160 101.25 C 162.5 103.75, 162.5 106.25, 160 111.25 C 157.5 116.25, 150 122, 150 122 Z" fill="white"/>
+      
+      <!-- Text Lines -->
+      <rect x="120" y="145" width="60" height="6" rx="3" fill="#00C9D6" opacity="0.6"/>
+      <rect x="115" y="160" width="70" height="4" rx="2" fill="#5CE1E6" opacity="0.4"/>
+      <rect x="125" y="170" width="50" height="4" rx="2" fill="#5CE1E6" opacity="0.4"/>
+      
+      <!-- Button -->
+      <rect x="115" y="190" width="70" height="28" rx="14" fill="#00C9D6"/>
+      <rect x="130" y="199" width="40" height="10" rx="5" fill="white" opacity="0.9"/>
+    </g>
+    
+    <!-- Home Indicator -->
+    <rect x="135" y="238" width="30" height="4" rx="2" fill="#D1D5DB"/>
+  </g>
+  
+  <!-- Floating UI Elements -->
+  <g opacity="0.7">
+    <!-- Notification 1 -->
+    <g transform="translate(40, 80)">
+      <rect x="0" y="0" width="50" height="35" rx="8" fill="white"/>
+      <circle cx="15" cy="17.5" r="8" fill="#dc2626"/>
+      <line x1="28" y1="12" x2="42" y2="12" stroke="#00C9D6" stroke-width="2" stroke-linecap="round"/>
+      <line x1="28" y1="23" x2="38" y2="23" stroke="#D1D5DB" stroke-width="2" stroke-linecap="round"/>
+    </g>
+    
+    <!-- Notification 2 -->
+    <g transform="translate(210, 140)">
+      <circle cx="20" cy="20" r="18" fill="#10B981"/>
+      <path d="M 13 20 L 18 25 L 27 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </g>
+    
+    <!-- Heart Rate Monitor -->
+    <g transform="translate(30, 180)">
+      <rect x="0" y="0" width="55" height="30" rx="6" fill="white"/>
+      <path d="M 8 15 L 15 15 L 18 10 L 22 20 L 26 13 L 30 15 L 47 15" stroke="#dc2626" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+  
+  <!-- Welcome Sparkles -->
+  <g fill="#FBBF24">
+    <polygon points="70,50 71,53 74,53 72,55 73,58 70,56 67,58 68,55 66,53 69,53"/>
+    <polygon points="225,70 226,73 229,73 227,75 228,78 225,76 222,78 223,75 221,73 224,73"/>
+    <polygon points="220,220 221,223 224,223 222,225 223,228 220,226 217,228 218,225 216,223 219,223"/>
+  </g>
+</svg>

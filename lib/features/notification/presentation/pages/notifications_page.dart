@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../../../illustrations/illustrations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/router/app_router.dart';
@@ -84,19 +86,7 @@ class NotificationsPage extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: AppColors.primaryTurquoise.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.notifications_none_rounded,
-                size: 64,
-                color: AppColors.primaryTurquoise.withOpacity(0.6),
-              ),
-            ),
+            EmptyStateIllustration(size: 150),
             const SizedBox(height: 24),
             Text(
               'No Notifications',

@@ -1,0 +1,74 @@
+<svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="150" cy="150" r="140" fill="#F0FDFF"/>
+  
+  <!-- Doctor -->
+  <g>
+    <!-- Head -->
+    <circle cx="110" cy="110" r="28" fill="#FFE5CC"/>
+    
+    <!-- Hair -->
+    <path d="M 85 105 Q 85 80, 110 75 Q 135 80, 135 105" fill="#4B5563"/>
+    
+    <!-- Body/Lab Coat -->
+    <path d="M 80 135 L 80 200 L 140 200 L 140 135 Q 140 130, 135 130 L 125 130 L 125 140 Q 110 140, 110 140 L 95 140 L 95 130 L 85 130 Q 80 130, 80 135 Z" fill="white" stroke="#00C9D6" stroke-width="2"/>
+    
+    <!-- Collar -->
+    <polygon points="95,130 105,140 115,140 125,130" fill="#5CE1E6"/>
+    
+    <!-- Stethoscope -->
+    <path d="M 105 140 Q 105 155, 95 165" stroke="#374151" stroke-width="2.5" fill="none"/>
+    <circle cx="95" cy="167" r="5" fill="#374151"/>
+    
+    <!-- Medical Cross Badge -->
+    <g transform="translate(100, 155)">
+      <rect x="-2" y="-6" width="4" height="12" rx="1" fill="#dc2626"/>
+      <rect x="-6" y="-2" width="12" height="4" rx="1" fill="#dc2626"/>
+    </g>
+    
+    <!-- Arms -->
+    <ellipse cx="75" cy="165" rx="8" ry="22" fill="#FFE5CC"/>
+    <ellipse cx="145" cy="165" rx="8" ry="22" fill="#FFE5CC"/>
+  </g>
+  
+  <!-- Patient (represented as person icon) -->
+  <g transform="translate(165, 90)">
+    <!-- Head -->
+    <circle cx="30" cy="25" r="20" fill="#FFE5CC"/>
+    
+    <!-- Body -->
+    <path d="M 10 45 L 10 95 L 50 95 L 50 45 Q 50 42, 45 42 L 15 42 Q 10 42, 10 45 Z" fill="#5CE1E6"/>
+    
+    <!-- Arms -->
+    <ellipse cx="5" cy="60" rx="6" ry="18" fill="#FFE5CC"/>
+    <ellipse cx="55" cy="60" rx="6" ry="18" fill="#FFE5CC"/>
+  </g>
+  
+  <!-- Medical Chart/Clipboard -->
+  <g transform="translate(80, 210)">
+    <rect x="0" y="0" width="50" height="60" rx="4" fill="white" stroke="#00C9D6" stroke-width="2"/>
+    <rect x="20" y="-5" width="10" height="8" rx="2" fill="#9CA3AF"/>
+    
+    <!-- Chart Lines -->
+    <line x1="8" y1="15" x2="42" y2="15" stroke="#00C9D6" stroke-width="2" stroke-linecap="round"/>
+    <line x1="8" y1="25" x2="35" y2="25" stroke="#00C9D6" stroke-width="2" stroke-linecap="round"/>
+    <line x1="8" y1="35" x2="38" y2="35" stroke="#00C9D6" stroke-width="2" stroke-linecap="round"/>
+    
+    <!-- Checkmarks -->
+    <path d="M 8 45 L 12 49 L 18 43" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <circle cx="13" cy="46" r="8" stroke="#10B981" stroke-width="1.5" fill="none"/>
+  </g>
+  
+  <!-- Video Call Icon -->
+  <g transform="translate(180, 155)">
+    <rect x="0" y="0" width="45" height="32" rx="6" fill="#00C9D6"/>
+    <rect x="5" y="5" width="35" height="22" rx="3" fill="white"/>
+    <polygon points="45,8 55,4 55,28 45,24" fill="#00C9D6"/>
+    
+    <!-- Pulse in screen -->
+    <path d="M 10 16 L 15 16 L 18 12 L 22 20 L 26 14 L 30 16 L 35 16" stroke="#dc2626" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Connection Lines -->
+  <line x1="140" y1="140" x2="180" y2="165" stroke="#5CE1E6" stroke-width="2" stroke-dasharray="4 4" opacity="0.6"/>
+</svg>

@@ -1,0 +1,69 @@
+<svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="150" cy="150" r="140" fill="#FFF5F5"/>
+  
+  <!-- Target/Goal Circles -->
+  <g transform="translate(150, 140)">
+    <circle cx="0" cy="0" r="80" fill="none" stroke="#FFE5E5" stroke-width="3"/>
+    <circle cx="0" cy="0" r="60" fill="none" stroke="#FFC9C9" stroke-width="3"/>
+    <circle cx="0" cy="0" r="40" fill="none" stroke="#FFA3A3" stroke-width="3"/>
+    <circle cx="0" cy="0" r="20" fill="#dc2626"/>
+    
+    <!-- Star in Center -->
+    <polygon points="0,-12 3,-4 12,-4 5,1 8,9 0,4 -8,9 -5,1 -12,-4 -3,-4" fill="white"/>
+  </g>
+  
+  <!-- Progress Indicators -->
+  <g>
+    <!-- Progress Circle 1 -->
+    <g transform="translate(60, 80)">
+      <circle cx="0" cy="0" r="25" fill="white" stroke="#00C9D6" stroke-width="3"/>
+      <text x="0" y="6" text-anchor="middle" fill="#00C9D6" font-size="16" font-weight="bold" font-family="system-ui">85%</text>
+    </g>
+    
+    <!-- Progress Circle 2 -->
+    <g transform="translate(240, 100)">
+      <circle cx="0" cy="0" r="22" fill="white" stroke="#10B981" stroke-width="3"/>
+      <path d="M -8 0 L -2 6 L 8 -6" stroke="#10B981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </g>
+    
+    <!-- Progress Circle 3 -->
+    <g transform="translate(70, 220)">
+      <circle cx="0" cy="0" r="20" fill="white" stroke="#5CE1E6" stroke-width="3"/>
+      <circle cx="0" cy="0" r="10" fill="#5CE1E6"/>
+    </g>
+  </g>
+  
+  <!-- Trophy -->
+  <g transform="translate(210, 200)">
+    <!-- Cup -->
+    <path d="M 15 5 L 10 25 L 30 25 L 25 5 Z" fill="#FBBF24"/>
+    
+    <!-- Handles -->
+    <path d="M 10 10 Q 5 10, 5 15 Q 5 18, 8 18" stroke="#FBBF24" stroke-width="2.5" fill="none"/>
+    <path d="M 30 10 Q 35 10, 35 15 Q 35 18, 32 18" stroke="#FBBF24" stroke-width="2.5" fill="none"/>
+    
+    <!-- Base -->
+    <rect x="12" y="25" width="16" height="3" rx="1.5" fill="#F59E0B"/>
+    <rect x="15" y="28" width="10" height="5" rx="2" fill="#F59E0B"/>
+    
+    <!-- Shine -->
+    <ellipse cx="18" cy="12" rx="3" ry="5" fill="white" opacity="0.4"/>
+  </g>
+  
+  <!-- Upward Arrow -->
+  <g transform="translate(150, 50)">
+    <path d="M 0 20 L 0 -10" stroke="#00C9D6" stroke-width="4" stroke-linecap="round"/>
+    <path d="M -8 -2 L 0 -10 L 8 -2" stroke="#00C9D6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </g>
+  
+  <!-- Achievement Stars -->
+  <g fill="#FBBF24" opacity="0.8">
+    <polygon points="100,60 101,63 104,63 102,65 103,68 100,66 97,68 98,65 96,63 99,63"/>
+    <polygon points="200,60 201,63 204,63 202,65 203,68 200,66 197,68 198,65 196,63 199,63"/>
+    <polygon points="240,180 241,183 244,183 242,185 243,188 240,186 237,188 238,185 236,183 239,183"/>
+  </g>
+  
+  <!-- Heart Beat Path -->
+  <path d="M 40 140 L 60 140 L 65 135 L 70 145 L 75 138" stroke="#dc2626" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/>
+</svg>

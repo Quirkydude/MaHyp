@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide TimeOfDay;
+import '../../../../illustrations/illustrations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -10,7 +12,7 @@ import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../providers/bp_provider.dart';
 import '../../data/models/bp_reading_model.dart';
-import '../../../../illustrations/illustrations.dart';
+
 
 /// Record Blood Pressure Page
 class RecordBPPage extends ConsumerStatefulWidget {
@@ -140,10 +142,11 @@ class _RecordBPPageState extends ConsumerState<RecordBPPage>
         }
       } catch (e) {
         setState(() => _isLoading = false);
+        debugPrint('Error saving reading: $e');
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error saving reading: $e'),
+            const SnackBar(
+              content: Text('Failed to save reading. Please try again.'),
               backgroundColor: AppColors.error,
             ),
           );
@@ -170,7 +173,11 @@ class _RecordBPPageState extends ConsumerState<RecordBPPage>
               builder: (context, value, child) {
                 return Transform.scale(scale: value, child: child);
               },
-              child: const SuccessIllustration(size: 100),
+              child: SvgPicture.asset(
+                'assets/illustrations/success_state.svg',
+                width: 100,
+                height: 100,
+              ),
             ),
             const SizedBox(height: AppDimensions.spacing24),
             Text('Reading Saved!', style: AppTextStyles.h3),
@@ -213,7 +220,7 @@ class _RecordBPPageState extends ConsumerState<RecordBPPage>
                 const SizedBox(height: AppDimensions.spacing16),
 
                 Center(
-                  child: const BloodPressureCheckIllustration(size: 200),
+                  child: BloodPressureCheckIllustration(size: 200),
                 ),
                 const SizedBox(height: AppDimensions.spacing24),
 

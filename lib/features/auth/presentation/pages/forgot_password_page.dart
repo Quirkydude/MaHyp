@@ -75,10 +75,11 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
           setState(() => _isLoading = false);
         }
       } catch (e) {
+        debugPrint('Forgot password unexpected error: $e');
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('An unexpected error occurred: $e'),
+            const SnackBar(
+              content: Text('An unexpected error occurred. Please try again.'),
               backgroundColor: AppColors.error,
             ),
           );

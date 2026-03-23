@@ -89,10 +89,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           );
         }
       } catch (e) {
+        debugPrint('Login unexpected error: $e');
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('An unexpected error occurred: $e'),
+            const SnackBar(
+              content: Text('An unexpected error occurred. Please try again.'),
               backgroundColor: AppColors.error,
             ),
           );
@@ -132,16 +133,17 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.message ?? 'Social login failed'),
+            content: Text(e.message ?? 'Social login failed. Please try again.'),
             backgroundColor: AppColors.error,
           ),
         );
       }
     } catch (e) {
+      debugPrint('Social login unexpected error: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('An unexpected error occurred: $e'),
+          const SnackBar(
+            content: Text('An unexpected error occurred. Please try again.'),
             backgroundColor: AppColors.error,
           ),
         );

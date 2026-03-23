@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
@@ -29,7 +30,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
   final _dobController = TextEditingController();
   final ImagePicker _imagePicker = ImagePicker();
 
-  File? _selectedImage;
+  XFile? _selectedImage;
   bool _isLoading = false;
   bool _isUploadingImage = false;
 
@@ -87,7 +88,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
 
       if (image != null && mounted) {
         setState(() {
-          _selectedImage = File(image.path);
+          _selectedImage = image;
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -95,12 +96,15 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error picking image: $e'),
-          backgroundColor: AppColors.error,
-        ),
-      );
+      debugPrint('Error picking image: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to pick image. Please try again.'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
     }
   }
 
@@ -116,7 +120,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
 
       if (photo != null && mounted) {
         setState(() {
-          _selectedImage = File(photo.path);
+          _selectedImage = photo;
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -124,12 +128,15 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error taking photo: $e'),
-          backgroundColor: AppColors.error,
-        ),
-      );
+      debugPrint('Error taking photo: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to take photo. Please try again.'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
     }
   }
 
@@ -363,20 +370,20 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
         }
       } on FirebaseException catch (e) {
         if (mounted) {
+          debugPrint('Firebase error updating profile: ${e.code} - ${e.message}');
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Error: ${e.message ?? 'Failed to update profile'}',
-              ),
+            const SnackBar(
+              content: Text('Failed to update profile. Please try again.'),
               backgroundColor: AppColors.error,
             ),
           );
         }
       } catch (e) {
         if (mounted) {
+          debugPrint('Unexpected error updating profile: $e');
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('An unexpected error occurred: $e'),
+            const SnackBar(
+              content: Text('Something went wrong. Please check your connection and try again.'),
               backgroundColor: AppColors.error,
             ),
           );
@@ -460,7 +467,9 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                       ),
                       child: ClipOval(
                         child: _selectedImage != null
-                            ? Image.file(_selectedImage!, fit: BoxFit.cover)
+                            ? (kIsWeb
+                                ? Image.network(_selectedImage!.path, fit: BoxFit.cover)
+                                : Image.file(File(_selectedImage!.path), fit: BoxFit.cover))
                             : userProfileAsync.when(
                                 data: (profile) {
                                   if (profile?.avatarUrl != null &&

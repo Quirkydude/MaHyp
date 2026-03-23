@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide TimeOfDay;
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -10,7 +11,7 @@ import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/frequency_chip.dart';
 import '../providers/medication_provider.dart';
 import '../../data/models/medication_model.dart';
-import '../../../../illustrations/illustrations.dart';
+
 
 /// Edit Medication Page - Allows users to modify existing medications
 class EditMedicationPage extends ConsumerStatefulWidget {
@@ -147,10 +148,11 @@ class _EditMedicationPageState extends ConsumerState<EditMedicationPage>
         }
       } catch (e) {
         setState(() => _isLoading = false);
+        debugPrint('Error saving medication: $e');
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error saving medication: $e'),
+            const SnackBar(
+              content: Text('Failed to save medication. Please try again.'),
               backgroundColor: AppColors.error,
             ),
           );
@@ -177,7 +179,11 @@ class _EditMedicationPageState extends ConsumerState<EditMedicationPage>
               builder: (context, value, child) {
                 return Transform.scale(scale: value, child: child);
               },
-              child: const SuccessIllustration(size: 100),
+              child: SvgPicture.asset(
+                'assets/illustrations/success_state.svg',
+                width: 100,
+                height: 100,
+              ),
             ),
             const SizedBox(height: AppDimensions.spacing24),
             Text('Medication Updated!', style: AppTextStyles.h3),

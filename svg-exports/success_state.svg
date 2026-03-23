@@ -1,0 +1,40 @@
+<svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="150" cy="150" r="140" fill="#F0FDF4"/>
+  
+  <!-- Success Circle -->
+  <circle cx="150" cy="150" r="80" fill="#10B981"/>
+  
+  <!-- Checkmark -->
+  <path d="M 115 150 L 140 175 L 190 125" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  
+  <!-- Confetti Particles -->
+  <g opacity="0.8">
+    <!-- Particle 1 -->
+    <circle cx="90" cy="70" r="6" fill="#00C9D6"/>
+    
+    <!-- Particle 2 -->
+    <rect x="200" y="80" width="8" height="8" fill="#dc2626" transform="rotate(45 204 84)"/>
+    
+    <!-- Particle 3 -->
+    <circle cx="210" cy="200" r="5" fill="#5CE1E6"/>
+    
+    <!-- Particle 4 -->
+    <rect x="75" y="210" width="10" height="10" fill="#F59E0B" transform="rotate(20 80 215)"/>
+    
+    <!-- Particle 5 -->
+    <circle cx="200" cy="140" r="4" fill="#8B5CF6"/>
+    
+    <!-- Particle 6 -->
+    <circle cx="100" cy="140" r="4" fill="#EC4899"/>
+  </g>
+  
+  <!-- Outer Ring Animation -->
+  <circle cx="150" cy="150" r="95" stroke="#10B981" stroke-width="3" fill="none" opacity="0.3"/>
+  
+  <!-- Small Stars -->
+  <g fill="#FBBF24" opacity="0.7">
+    <polygon points="230,60 232,66 238,66 233,70 235,76 230,72 225,76 227,70 222,66 228,66"/>
+    <polygon points="70,230 72,236 78,236 73,240 75,246 70,242 65,246 67,240 62,236 68,236"/>
+  </g>
+</svg>

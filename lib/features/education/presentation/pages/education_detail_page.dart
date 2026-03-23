@@ -68,7 +68,7 @@ class EducationDetailPage extends StatelessWidget {
         // IMAGE PLACEHOLDER - Heart with pressure indicators
         _buildImagePlaceholder(
           'Heart illustration showing blood vessels with pressure arrows',
-          'assets/images/education/heart_pressure.svg',
+          'assets/images/education/heart_pressure.png',
           height: 200,
         ),
 
@@ -123,7 +123,7 @@ class EducationDetailPage extends StatelessWidget {
         // IMAGE PLACEHOLDER - Person measuring BP correctly
         _buildImagePlaceholder(
           'Person sitting correctly with BP cuff on arm',
-          'assets/images/education/measuring_bp.svg',
+          'assets/images/education/measuring_bp.png',
           height: 180,
         ),
 
@@ -195,7 +195,7 @@ class EducationDetailPage extends StatelessWidget {
         // IMAGE PLACEHOLDER - Healthy lifestyle icons
         _buildImagePlaceholder(
           'Illustration with healthy food, exercise, and relaxation',
-          'assets/images/education/healthy_lifestyle.svg',
+          'assets/images/education/healthy_lifestyle.png',
           height: 180,
         ),
 
@@ -311,7 +311,7 @@ class EducationDetailPage extends StatelessWidget {
         // IMAGE PLACEHOLDER - Treatment pathway
         _buildImagePlaceholder(
           'Flow diagram showing treatment steps',
-          'assets/images/education/treatment_flow.svg',
+          'assets/images/education/treatment_flow.png',
           height: 200,
         ),
 
@@ -401,30 +401,41 @@ class EducationDetailPage extends StatelessWidget {
       width: double.infinity,
       height: height,
       decoration: BoxDecoration(
-        color: AppColors.inputBackground,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
-        border: Border.all(
-          color: AppColors.inputBorder,
-          width: 2,
-          style: BorderStyle.solid,
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.image, size: 60, color: AppColors.textHint),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              '📷 IMAGE NEEDED:\n$description',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.caption.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadow,
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
+        child: Image.asset(
+          assetPath,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.image, size: 60, color: AppColors.textHint),
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    '📷 IMAGE NEEDED:\n$description',
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
