@@ -175,7 +175,7 @@ class _SupportPageState extends State<SupportPage> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: AppColors.primaryTurquoise.withOpacity(0.1),
+                      color: AppColors.primaryTurquoise.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(
                         AppDimensions.radiusSmall,
                       ),
@@ -260,7 +260,7 @@ class _SupportPageState extends State<SupportPage> {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: iconColor.withOpacity(0.1),
+            color: iconColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
           ),
           child: Icon(icon, color: iconColor, size: 24),

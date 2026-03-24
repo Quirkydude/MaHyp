@@ -1,2 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="100%" height="100%" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" ><defs><linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00C9D6" /><stop offset="100%" stop-color="#dc2626" /></linearGradient></defs><!-- Circular background outline --><circle cx="100" cy="100" r="85" stroke="#00C9D6" stroke-width="3" fill="none" opacity="0.2" /><!-- Heart shape with pulse line integrated --><path d="M100 150 C100 150, 65 125, 55 105 C45 85, 45 70, 55 60 C65 50, 80 50, 90 60 C95 65, 97 68, 100 72 C103 68, 105 65, 110 60 C120 50, 135 50, 145 60 C155 70, 155 85, 145 105 C135 125, 100 150, 100 150 Z" fill="#00C9D6" /><!-- Heartbeat/pulse line overlaid on heart --><g opacity="0.9"><path d="M 40 100 L 70 100 L 80 85 L 90 115 L 100 95 L 110 110 L 120 100 L 160 100" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" /></g><!-- Small accent circle (care/protection symbol) --><circle cx="100" cy="72" r="6" fill="white" opacity="0.8" /></svg>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5CE1E6"/>
+      <stop offset="100%" stop-color="#009EAA"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#009EAA" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Background circle with gradient -->
+  <circle cx="100" cy="100" r="92" fill="url(#bgGradient)"/>
+
+  <!-- Subtle inner ring -->
+  <circle cx="100" cy="100" r="84" stroke="white" stroke-width="1.5" fill="none" opacity="0.2"/>
+
+  <!-- Heart shape -->
+  <path
+    d="M100 152 C100 152, 60 126, 49 102 C38 78, 40 60, 53 51 C66 42, 83 46, 92 58 C96 63, 98 67, 100 71 C102 67, 104 63, 108 58 C117 46, 134 42, 147 51 C160 60, 162 78, 151 102 C140 126, 100 152, 100 152 Z"
+    fill="white"
+    filter="url(#shadow)"
+  />
+
+  <!-- ECG / Pulse line — dark turquoise on white heart, seamlessly continues -->
+  <path
+    d="M 38 100 L 66 100 L 77 80 L 88 122 L 98 90 L 109 110 L 119 100 L 162 100"
+    stroke="#00C9D6"
+    stroke-width="4.5"
+    fill="none"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- Pulse line segments on turquoise background — white overlay for readability -->
+  <path
+    d="M 38 100 L 66 100"
+    stroke="white"
+    stroke-width="4.5"
+    fill="none"
+    stroke-linecap="round"
+    opacity="0.9"
+  />
+  <path
+    d="M 119 100 L 162 100"
+    stroke="white"
+    stroke-width="4.5"
+    fill="none"
+    stroke-linecap="round"
+    opacity="0.9"
+  />
+</svg>

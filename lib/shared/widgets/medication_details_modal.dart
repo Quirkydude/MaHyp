@@ -218,7 +218,7 @@ class MedicationDetailsModal extends StatelessWidget {
         vertical: AppDimensions.spacing12,
       ),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
         border: Border.all(color: color, width: 1.5),
       ),

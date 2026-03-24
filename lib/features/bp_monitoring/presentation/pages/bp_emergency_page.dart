@@ -51,7 +51,7 @@ class _BPEmergencyPageState extends State<BPEmergencyPage>
     return WillPopScope(
       onWillPop: () async => false, // Prevent back button
       child: Scaffold(
-        backgroundColor: AppColors.error.withOpacity(0.05),
+        backgroundColor: AppColors.error.withValues(alpha: 0.05),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(AppDimensions.spacing24),
@@ -76,7 +76,7 @@ class _BPEmergencyPageState extends State<BPEmergencyPage>
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.error.withOpacity(0.3),
+                                color: AppColors.error.withValues(alpha: 0.3),
                                 blurRadius: 30,
                                 spreadRadius: 10,
                               ),
@@ -143,7 +143,7 @@ class _BPEmergencyPageState extends State<BPEmergencyPage>
                 Container(
                   padding: const EdgeInsets.all(AppDimensions.spacing20),
                   decoration: BoxDecoration(
-                    color: AppColors.warning.withOpacity(0.1),
+                    color: AppColors.warning.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(
                       AppDimensions.radiusMedium,
                     ),

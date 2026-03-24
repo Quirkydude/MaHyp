@@ -58,7 +58,7 @@ class _StatCardState extends State<StatCard> {
                 color: (widget.type == StatCardType.bp
                         ? AppColors.cardTeal
                         : AppColors.cardBlue)
-                    .withOpacity(0.25),
+                    .withValues(alpha: 0.25),
                 blurRadius: 16,
                 offset: const Offset(0, 8),
                 spreadRadius: 0,
@@ -76,7 +76,7 @@ class _StatCardState extends State<StatCard> {
                     child: Text(
                       widget.title,
                       style: TextStyle(
-                        color: AppColors.white.withOpacity(0.95),
+                        color: AppColors.white.withValues(alpha: 0.95),
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                         letterSpacing: 0.3,
@@ -104,14 +104,14 @@ class _StatCardState extends State<StatCard> {
                       height: 8,
                       margin: const EdgeInsets.only(right: 6),
                       decoration: BoxDecoration(
-                        color: AppColors.white.withOpacity(0.9),
+                        color: AppColors.white.withValues(alpha: 0.9),
                         shape: BoxShape.circle,
                       ),
                     ),
                   Text(
                     widget.subtitle,
                     style: TextStyle(
-                      color: AppColors.white.withOpacity(0.85),
+                      color: AppColors.white.withValues(alpha: 0.85),
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                     ),
@@ -130,7 +130,7 @@ class _StatCardState extends State<StatCard> {
       width: 36,
       height: 36,
       decoration: BoxDecoration(
-        color: AppColors.white.withOpacity(0.25),
+        color: AppColors.white.withValues(alpha: 0.25),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Icon(

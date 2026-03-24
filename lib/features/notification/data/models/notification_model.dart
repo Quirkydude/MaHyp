@@ -1,7 +1,4 @@
-/// Notification model for in-app notifications
-/// 
-/// Represents a single notification item that can be displayed
-/// in the notifications list.
+library;
 
 enum NotificationType {
   medicationReminder,
@@ -76,6 +73,35 @@ class NotificationItem {
       case NotificationType.healthTip:
         return 'Health Tip';
     }
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'body': body,
+      'type': type.name,
+      'createdAt': createdAt.millisecondsSinceEpoch,
+      'isRead': isRead,
+      'payload': payload,
+    };
+  }
+
+  factory NotificationItem.fromMap(Map<String, dynamic> map) {
+    return NotificationItem(
+      id: map['id'] as String,
+      title: map['title'] as String,
+      body: map['body'] as String,
+      type: NotificationType.values.firstWhere(
+        (t) => t.name == map['type'],
+        orElse: () => NotificationType.system,
+      ),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
+      isRead: map['isRead'] as bool? ?? false,
+      payload: map['payload'] != null
+          ? Map<String, dynamic>.from(map['payload'] as Map)
+          : null,
+    );
   }
 
   @override

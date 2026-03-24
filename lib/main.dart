@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'firebase_options.dart';
 import 'core/theme/app_theme.dart';
@@ -33,9 +32,6 @@ void main() async {
     }
     return true;
   };
-
-  // Initialize Analytics
-  final analytics = FirebaseAnalytics.instance;
 
   // Initialize Notification Service
   await NotificationService().initialize();

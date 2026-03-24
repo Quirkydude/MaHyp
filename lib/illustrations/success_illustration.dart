@@ -105,18 +105,18 @@ class _SuccessPainter extends CustomPainter {
     final ringR = lerp(80, 100, ringT);
     final ringOpacity = lerp(0.3, 0, ringT);
     p.style = PaintingStyle.stroke;
-    p.color = const Color(0xFF10B981).withOpacity(ringOpacity);
+    p.color = const Color(0xFF10B981).withValues(alpha: ringOpacity);
     p.strokeWidth = 3;
     canvas.drawCircle(const Offset(150, 150), ringR, p);
     p.style = PaintingStyle.fill;
 
     // Confetti particles
     // P1: circle cyan cy 70→90
-    p.color = const Color(0xFF00C9D6).withOpacity(0.8);
+    p.color = const Color(0xFF00C9D6).withValues(alpha: 0.8);
     canvas.drawCircle(Offset(90, lerp(70, 90, p1T)), 6, p);
 
     // P2: rect red y 80→100 (rotated 45deg around 204,84)
-    p.color = const Color(0xFFDC2626).withOpacity(0.8);
+    p.color = const Color(0xFFDC2626).withValues(alpha: 0.8);
     canvas.save();
     canvas.translate(204, lerp(80, 100, p2T) + 4); // pivot at center of rect
     canvas.rotate(45 * math.pi / 180);
@@ -124,11 +124,11 @@ class _SuccessPainter extends CustomPainter {
     canvas.restore();
 
     // P3: circle teal cy 200→220
-    p.color = const Color(0xFF5CE1E6).withOpacity(0.8);
+    p.color = const Color(0xFF5CE1E6).withValues(alpha: 0.8);
     canvas.drawCircle(Offset(210, lerp(200, 220, p3T)), 5, p);
 
     // P4: rect amber y 210→230
-    p.color = const Color(0xFFF59E0B).withOpacity(0.8);
+    p.color = const Color(0xFFF59E0B).withValues(alpha: 0.8);
     canvas.save();
     canvas.translate(80, lerp(210, 230, p4T) + 5);
     canvas.rotate(20 * math.pi / 180);
@@ -136,16 +136,16 @@ class _SuccessPainter extends CustomPainter {
     canvas.restore();
 
     // P5: circle purple cx 200→220
-    p.color = const Color(0xFF8B5CF6).withOpacity(0.8);
+    p.color = const Color(0xFF8B5CF6).withValues(alpha: 0.8);
     canvas.drawCircle(Offset(lerp(200, 220, p5T), 140), 4, p);
 
     // P6: circle pink cx 100→80
-    p.color = const Color(0xFFEC4899).withOpacity(0.8);
+    p.color = const Color(0xFFEC4899).withValues(alpha: 0.8);
     canvas.drawCircle(Offset(lerp(100, 80, p6T), 140), 4, p);
 
     // Stars
     void drawStar(Canvas c, Offset center, double opacity) {
-      final sp = Paint()..color = const Color(0xFFFBBF24).withOpacity(opacity);
+      final sp = Paint()..color = const Color(0xFFFBBF24).withValues(alpha: opacity);
       // 5-point star via polygon points
       final pts = <Offset>[
         Offset(center.dx, center.dy - 8),

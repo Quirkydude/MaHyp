@@ -29,10 +29,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     state = state.copyWith(notificationsEnabled: value);
     
     // Wire up actual notification functionality
-    if (_notificationService != null) {
+    final notificationService = _notificationService;
+    if (notificationService != null) {
       if (value) {
         // Request permission and enable
-        await _notificationService!.requestPermission();
+        await notificationService.requestPermission();
       }
       // Note: Actual disable would require platform-specific handling
     }
@@ -45,19 +46,22 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     state = state.copyWith(remindersEnabled: value);
     
     // Wire up reminder scheduling
-    if (_notificationService != null) {
+    final notificationService = _notificationService;
+    if (notificationService != null) {
       if (value) {
         // Schedule BP measurement reminders
         await _scheduleBpReminders();
       } else {
-        // Cancel BP reminders
-        await _notificationService!.cancelAllNotifications();
+        // Cancel only BP reminder IDs — medication reminders stay intact
+        await notificationService.cancelNotification(100);
+        await notificationService.cancelNotification(101);
       }
     }
   }
 
   Future<void> _scheduleBpReminders() async {
-    if (_notificationService == null) return;
+    final notificationService = _notificationService;
+    if (notificationService == null) return;
     
     // Parse reminder times
     final morningParts = state.morningReminderTime.split(':');
@@ -69,7 +73,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     final eveningMinute = int.tryParse(eveningParts[1]) ?? 0;
     
     // Schedule morning reminder
-    await _notificationService!.scheduleDailyReminder(
+    await notificationService.scheduleDailyReminder(
       id: 100,
       title: 'BP Measurement Reminder',
       body: 'Time to check your blood pressure!',
@@ -78,7 +82,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     );
     
     // Schedule evening reminder
-    await _notificationService!.scheduleDailyReminder(
+    await notificationService.scheduleDailyReminder(
       id: 101,
       title: 'BP Measurement Reminder',
       body: 'Time for your evening BP check!',

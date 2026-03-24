@@ -372,7 +372,7 @@ class _AddMedicationPageState extends ConsumerState<AddMedicationPage>
                           onChanged: (value) {
                             setState(() => _reminderEnabled = value);
                           },
-                          activeColor: AppColors.primaryTurquoise,
+                          activeThumbColor: AppColors.primaryTurquoise,
                         ),
                       ],
                     ),

@@ -63,7 +63,7 @@ class _MedicationCardState extends State<MedicationCard> {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: AppColors.primaryTurquoise.withOpacity(0.1),
+                  color: AppColors.primaryTurquoise.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(
                     AppDimensions.radiusSmall,
                   ),
@@ -126,13 +126,13 @@ class _MedicationCardState extends State<MedicationCard> {
       case MedicationStatus.upcoming:
         return AppColors.white;
       case MedicationStatus.taken:
-        return AppColors.success.withOpacity(0.05);
+        return AppColors.success.withValues(alpha: 0.05);
       case MedicationStatus.ready:
-        return AppColors.info.withOpacity(0.05);
+        return AppColors.info.withValues(alpha: 0.05);
       case MedicationStatus.skipped:
-        return AppColors.textSecondary.withOpacity(0.05);
+        return AppColors.textSecondary.withValues(alpha: 0.05);
       case MedicationStatus.missed:
-        return AppColors.error.withOpacity(0.05);
+        return AppColors.error.withValues(alpha: 0.05);
     }
   }
 

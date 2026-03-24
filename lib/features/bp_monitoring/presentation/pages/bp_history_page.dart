@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../illustrations/illustrations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -217,7 +216,7 @@ class BPHistoryPage extends ConsumerWidget {
                       decoration: BoxDecoration(
                         color: _getCategoryColor(
                           reading.category,
-                        ).withOpacity(0.5),
+                        ).withValues(alpha: 0.5),
                         borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(4),
                         ),
@@ -276,7 +275,7 @@ class BPHistoryPage extends ConsumerWidget {
         color: AppColors.white,
         borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
         border: Border.all(
-          color: _getCategoryColor(reading.category).withOpacity(0.3),
+          color: _getCategoryColor(reading.category).withValues(alpha: 0.3),
           width: 1.5,
         ),
       ),
@@ -290,7 +289,7 @@ class BPHistoryPage extends ConsumerWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: _getCategoryColor(reading.category).withOpacity(0.1),
+                  color: _getCategoryColor(reading.category).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(
                     AppDimensions.radiusSmall,
                   ),
