@@ -43,22 +43,25 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: const CustomAppBar(title: 'Dashboard', showBackButton: false),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Greeting Section
-              GreetingSection(
-                userName: userProfileAsync.value?.fullName ?? 'User',
-                avatarUrl: userProfileAsync.value?.avatarUrl,
-                onProfilePressed: () => context.push(AppRouter.profile),
-                onSettingsPressed: () => context.push(AppRouter.settings),
-                onNotificationPressed: () =>
-                    context.push(AppRouter.notifications),
-                unreadNotificationCount: unreadNotificationCount,
-              ),
-
-              const SizedBox(height: 16),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Sticky Greeting Section with profile avatar and notifications
+            GreetingSection(
+              userName: userProfileAsync.value?.fullName ?? 'User',
+              avatarUrl: userProfileAsync.value?.avatarUrl,
+              onProfilePressed: () => context.push(AppRouter.profile),
+              onSettingsPressed: () => context.push(AppRouter.settings),
+              onNotificationPressed: () =>
+                  context.push(AppRouter.notifications),
+              unreadNotificationCount: unreadNotificationCount,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 16),
 
               Center(
                 child: HeartMonitorIllustration(size: 200),
@@ -296,8 +299,11 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
               ),
 
               const SizedBox(height: 100), // Space for bottom nav
-            ],
-          ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
