@@ -30,13 +30,13 @@ class ReportCard extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.primaryTurquoiseLight.withOpacity(0.15),
-            AppColors.primaryTurquoise.withOpacity(0.15),
+            AppColors.primaryTurquoiseLight.withValues(alpha: 0.15),
+            AppColors.primaryTurquoise.withValues(alpha: 0.15),
           ],
         ),
         borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
         border: Border.all(
-          color: AppColors.primaryTurquoise.withOpacity(0.3),
+          color: AppColors.primaryTurquoise.withValues(alpha: 0.3),
           width: 1.5,
         ),
       ),

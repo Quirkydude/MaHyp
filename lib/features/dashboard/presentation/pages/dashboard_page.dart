@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../../illustrations/illustrations.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -50,7 +50,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
               // Greeting Section
               GreetingSection(
                 userName: userProfileAsync.value?.fullName ?? 'User',
-                avatarUrl: null, // Avatar not yet implemented
+                avatarUrl: userProfileAsync.value?.avatarUrl,
                 onProfilePressed: () => context.push(AppRouter.profile),
                 onSettingsPressed: () => context.push(AppRouter.settings),
                 onNotificationPressed: () =>
@@ -200,12 +200,15 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    Text(
-                      'See all',
-                      style: TextStyle(
-                        color: AppColors.primaryTurquoise,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                    GestureDetector(
+                      onTap: () => context.push(AppRouter.medicationList),
+                      child: Text(
+                        'See all',
+                        style: TextStyle(
+                          color: AppColors.primaryTurquoise,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ],
@@ -251,6 +254,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                         iconColor: AppColors.primaryTurquoise,
                         isCompleted: task.dose.status == MedicationStatus.taken,
                         onCheckChanged: (value) async {
+                          HapticFeedback.mediumImpact();
                           if (value == true) {
                             await ref
                                 .read(medicationProvider.notifier)

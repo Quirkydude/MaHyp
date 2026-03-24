@@ -477,7 +477,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                                     return Image.network(
                                       profile.avatarUrl!,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) => Container(
+                                      errorBuilder: (_, _, _) => Container(
                                         color: AppColors.inputBackground,
                                         child: Icon(
                                           Icons.person,
@@ -504,7 +504,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                                     ),
                                   ),
                                 ),
-                                error: (_, __) => Container(
+                                error: (_, _) => Container(
                                   color: AppColors.inputBackground,
                                   child: Icon(
                                     Icons.person,

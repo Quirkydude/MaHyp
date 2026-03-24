@@ -32,7 +32,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     if (_notificationService != null) {
       if (value) {
         // Request permission and enable
-        await _notificationService!.requestPermission();
+        await _notificationService.requestPermission();
       }
       // Note: Actual disable would require platform-specific handling
     }
@@ -50,8 +50,9 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         // Schedule BP measurement reminders
         await _scheduleBpReminders();
       } else {
-        // Cancel BP reminders
-        await _notificationService!.cancelAllNotifications();
+        // Cancel only BP reminder IDs — medication reminders stay intact
+        await _notificationService.cancelNotification(100);
+        await _notificationService.cancelNotification(101);
       }
     }
   }
@@ -69,7 +70,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     final eveningMinute = int.tryParse(eveningParts[1]) ?? 0;
     
     // Schedule morning reminder
-    await _notificationService!.scheduleDailyReminder(
+    await _notificationService.scheduleDailyReminder(
       id: 100,
       title: 'BP Measurement Reminder',
       body: 'Time to check your blood pressure!',
@@ -78,7 +79,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     );
     
     // Schedule evening reminder
-    await _notificationService!.scheduleDailyReminder(
+    await _notificationService.scheduleDailyReminder(
       id: 101,
       title: 'BP Measurement Reminder',
       body: 'Time for your evening BP check!',

@@ -57,7 +57,7 @@ class _ActionCardState extends State<ActionCard> {
             boxShadow: [
               BoxShadow(
                 color: widget.type == ActionCardType.nextMedication
-                    ? AppColors.cardTeal.withOpacity(0.2)
+                    ? AppColors.cardTeal.withValues(alpha: 0.2)
                     : AppColors.cardShadow,
                 blurRadius: 16,
                 offset: const Offset(0, 8),
@@ -83,7 +83,7 @@ class _ActionCardState extends State<ActionCard> {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: AppColors.white.withOpacity(0.3),
+                color: AppColors.white.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
@@ -96,7 +96,7 @@ class _ActionCardState extends State<ActionCard> {
             Text(
               'Next Medication',
               style: TextStyle(
-                color: AppColors.white.withOpacity(0.95),
+                color: AppColors.white.withValues(alpha: 0.95),
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
@@ -116,7 +116,7 @@ class _ActionCardState extends State<ActionCard> {
         Text(
           widget.medicationTime ?? 'Today At 6:00 PM',
           style: TextStyle(
-            color: AppColors.white.withOpacity(0.85),
+            color: AppColors.white.withValues(alpha: 0.85),
             fontSize: 16,
           ),
         ),
@@ -136,7 +136,7 @@ class _ActionCardState extends State<ActionCard> {
             borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primaryTurquoise.withOpacity(0.3),
+                color: AppColors.primaryTurquoise.withValues(alpha: 0.3),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),

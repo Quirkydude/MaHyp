@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../../../illustrations/illustrations.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
+import '../../../../core/router/app_router.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
 
@@ -70,7 +71,7 @@ class _BPAnalysisPageState extends State<BPAnalysisPage>
               decoration: BoxDecoration(
                 color: _getCategoryColor(
                   widget.reading.category,
-                ).withOpacity(0.1),
+                ).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
                 border: Border.all(
                   color: _getCategoryColor(widget.reading.category),
@@ -133,7 +134,7 @@ class _BPAnalysisPageState extends State<BPAnalysisPage>
                           ),
                         ),
                         Text(
-                          'Recorded today at ${DateFormat('h:mm a').format(widget.reading.recordedAt)}',
+                          _formatRecordedDate(widget.reading.recordedAt),
                           style: AppTextStyles.bodySmall.copyWith(
                             color: AppColors.textSecondary,
                           ),
@@ -224,9 +225,7 @@ class _BPAnalysisPageState extends State<BPAnalysisPage>
             if (isHigh) ...[
               CustomButton(
                 text: 'Contact Doctor',
-                onPressed: () {
-                  // TODO: Implement contact doctor
-                },
+                onPressed: _contactDoctor,
                 icon: const Icon(Icons.phone, color: AppColors.white),
                 backgroundColor: AppColors.primaryTurquoise,
               ),
@@ -235,9 +234,7 @@ class _BPAnalysisPageState extends State<BPAnalysisPage>
 
             CustomButton(
               text: 'View Medication List',
-              onPressed: () {
-                context.go('/medication-list');
-              },
+              onPressed: () => context.push(AppRouter.medicationList),
               isOutlined: true,
             ),
 
@@ -260,7 +257,7 @@ class _BPAnalysisPageState extends State<BPAnalysisPage>
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: AppColors.primaryTurquoise.withOpacity(0.1),
+            color: AppColors.primaryTurquoise.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
           ),
           child: Icon(icon, color: AppColors.primaryTurquoise, size: 20),
@@ -302,6 +299,31 @@ class _BPAnalysisPageState extends State<BPAnalysisPage>
         return 'Stage 2 hypertension requires immediate attention. Please ensure you\'re taking your prescribed medication and consult your doctor if readings remain high.';
       case BPCategory.crisis:
         return 'This is a hypertensive crisis requiring emergency medical attention. Seek immediate care.';
+    }
+  }
+
+  String _formatRecordedDate(DateTime dt) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final date = DateTime(dt.year, dt.month, dt.day);
+    final time = DateFormat('h:mm a').format(dt);
+    if (date == today) return 'Recorded today at $time';
+    if (date == yesterday) return 'Recorded yesterday at $time';
+    return 'Recorded on ${DateFormat('MMM d').format(dt)} at $time';
+  }
+
+  Future<void> _contactDoctor() async {
+    // Open phone dialer — user can enter or select their doctor's number
+    final uri = Uri(scheme: 'tel', path: '');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Unable to open phone dialler on this device.'),
+        ),
+      );
     }
   }
 

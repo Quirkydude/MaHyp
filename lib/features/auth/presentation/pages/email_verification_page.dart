@@ -186,7 +186,7 @@ class _EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
                 width: 100,
                 height: 100,
                 decoration: BoxDecoration(
-                  color: AppColors.primaryTurquoise.withOpacity(0.1),
+                  color: AppColors.primaryTurquoise.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -301,7 +301,7 @@ class _EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
               Container(
                 padding: const EdgeInsets.all(AppDimensions.spacing16),
                 decoration: BoxDecoration(
-                  color: AppColors.info.withOpacity(0.1),
+                  color: AppColors.info.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(
                     AppDimensions.radiusMedium,
                   ),

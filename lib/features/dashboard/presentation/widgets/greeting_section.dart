@@ -63,7 +63,7 @@ class GreetingSection extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 22,
-                  backgroundColor: AppColors.primaryTurquoise.withOpacity(0.2),
+                  backgroundColor: AppColors.primaryTurquoise.withValues(alpha: 0.2),
                   backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl!) : null,
                   child: avatarUrl == null
                       ? const Icon(Icons.person, color: AppColors.primaryTurquoise)

@@ -192,7 +192,7 @@ class ProfilePage extends ConsumerWidget {
             data: (profile) => Text(
               profile?.mobile ?? '',
               style: TextStyle(
-                color: AppColors.white.withOpacity(0.9),
+                color: AppColors.white.withValues(alpha: 0.9),
                 fontSize: 14,
               ),
             ),
@@ -206,7 +206,7 @@ class ProfilePage extends ConsumerWidget {
           Text(
             user?.email ?? '',
             style: TextStyle(
-              color: AppColors.white.withOpacity(0.9),
+              color: AppColors.white.withValues(alpha: 0.9),
               fontSize: 14,
             ),
           ),
@@ -237,13 +237,13 @@ class ProfilePage extends ConsumerWidget {
                   height: 48,
                   decoration: BoxDecoration(
                     color: isLogout
-                        ? AppColors.error.withOpacity(0.1)
-                        : AppColors.primaryTurquoise.withOpacity(0.1),
+                        ? AppColors.error.withValues(alpha: 0.1)
+                        : AppColors.primaryTurquoise.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: isLogout
-                          ? AppColors.error.withOpacity(0.3)
-                          : AppColors.primaryTurquoise.withOpacity(0.3),
+                          ? AppColors.error.withValues(alpha: 0.3)
+                          : AppColors.primaryTurquoise.withValues(alpha: 0.3),
                       width: 1.5,
                     ),
                   ),

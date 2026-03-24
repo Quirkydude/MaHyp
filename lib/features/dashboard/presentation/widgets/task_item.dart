@@ -116,18 +116,18 @@ class _TaskItemState extends State<TaskItem> with SingleTickerProviderStateMixin
                   decoration: BoxDecoration(
                     // Animated background: subtle green tint when completed
                     color: widget.isCompleted
-                        ? AppColors.success.withOpacity(0.08)
+                        ? AppColors.success.withValues(alpha: 0.08)
                         : AppColors.white,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: widget.isCompleted
-                          ? AppColors.success.withOpacity(0.3)
+                          ? AppColors.success.withValues(alpha: 0.3)
                           : Colors.transparent,
                       width: 1.5,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.shadow.withOpacity(0.05),
+                        color: AppColors.shadow.withValues(alpha: 0.05),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -140,7 +140,7 @@ class _TaskItemState extends State<TaskItem> with SingleTickerProviderStateMixin
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: widget.iconColor.withOpacity(0.1),
+                          color: widget.iconColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Icon(

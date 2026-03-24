@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +17,6 @@ class SettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -168,7 +169,7 @@ class SettingsPage extends ConsumerWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: isDark ? [] : [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -180,7 +181,7 @@ class SettingsPage extends ConsumerWidget {
           width: 44,
           height: 44,
           decoration: BoxDecoration(
-            color: AppColors.primaryTurquoise.withOpacity(0.1),
+            color: AppColors.primaryTurquoise.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(
@@ -209,7 +210,7 @@ class SettingsPage extends ConsumerWidget {
         trailing: Switch(
           value: value,
           onChanged: onChanged,
-          activeColor: AppColors.primaryTurquoise,
+          activeThumbColor: AppColors.primaryTurquoise,
         ),
       ),
     );
@@ -236,7 +237,7 @@ class SettingsPage extends ConsumerWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: isDark ? [] : [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -249,7 +250,7 @@ class SettingsPage extends ConsumerWidget {
           width: 44,
           height: 44,
           decoration: BoxDecoration(
-            color: AppColors.primaryTurquoise.withOpacity(0.1),
+            color: AppColors.primaryTurquoise.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(
@@ -393,42 +394,84 @@ class SettingsPage extends ConsumerWidget {
     final controller = TextEditingController();
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Send Feedback'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('We\'d love to hear your thoughts!'),
-            const SizedBox(height: 16),
-            TextField(
-              controller: controller,
-              maxLines: 4,
-              decoration: InputDecoration(
-                hintText: 'Enter your feedback...',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+      builder: (context) {
+        var isSending = false;
+        return StatefulBuilder(
+          builder: (context, setDialogState) => AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            title: const Text('Send Feedback'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('We\'d love to hear your thoughts!'),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: controller,
+                  maxLines: 4,
+                  decoration: InputDecoration(
+                    hintText: 'Enter your feedback...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            actions: [
+              TextButton(
+                onPressed: isSending ? null : () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: isSending
+                    ? null
+                    : () async {
+                        final text = controller.text.trim();
+                        if (text.isEmpty) return;
+                        setDialogState(() => isSending = true);
+                        try {
+                          final uid = FirebaseAuth.instance.currentUser?.uid;
+                          await FirebaseFirestore.instance
+                              .collection('feedback')
+                              .add({
+                            'uid': uid,
+                            'message': text,
+                            'createdAt': FieldValue.serverTimestamp(),
+                            'appVersion': '1.0.0',
+                          });
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Thank you for your feedback!'),
+                                backgroundColor: AppColors.success,
+                              ),
+                            );
+                          }
+                        } catch (_) {
+                          if (context.mounted) {
+                            setDialogState(() => isSending = false);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Failed to send. Please try again.'),
+                                backgroundColor: AppColors.error,
+                              ),
+                            );
+                          }
+                        }
+                      },
+                child: isSending
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Send'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Thank you for your feedback!')),
-              );
-            },
-            child: const Text('Send'),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

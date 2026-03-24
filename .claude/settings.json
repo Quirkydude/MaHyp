@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(where magick:*)",
+      "Bash(where inkscape:*)",
+      "Bash(where rsvg-convert:*)",
+      "Bash(where node:*)",
+      "Bash(node -e \"try { require\\(''sharp''\\); console.log\\(''sharp''\\); } catch\\(e\\) { try { require\\(''canvas''\\); console.log\\(''canvas''\\); } catch\\(e2\\) { console.log\\(''none''\\); } }\")",
+      "Bash(npx --yes sharp-cli --version)",
+      "Bash(node -e \":*)",
+      "Bash(python -c \"from PIL import Image; print\\(''PIL available''\\)\")",
+      "Bash(python -c \"import cairosvg; print\\(''cairosvg''\\)\")",
+      "Bash(flutter pub:*)",
+      "Bash(dart run:*)",
+      "Read(//c/Users/COPHabitat/.claude/projects/c--Users-COPHabitat-Desktop-clems-MaHyp/memory/**)",
+      "Bash(dart analyze:*)"
+    ]
+  }
+}

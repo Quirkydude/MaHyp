@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/notification_model.dart';
 import '../../../medication/presentation/providers/medication_provider.dart';
@@ -64,15 +67,64 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
     _loadInitialNotifications();
   }
 
-  /// Load initial notifications based on current data
+  /// Load initial notifications: Firestore first, then generate from live data
   void _loadInitialNotifications() {
-    final medications = _ref.read(medicationProvider);
-    final bpReadings = _ref.read(bpProvider);
+    _loadFromFirestore().then((persisted) {
+      if (persisted.isNotEmpty) {
+        state = state.copyWith(notifications: persisted, isLoading: false);
+      }
+      // Merge with freshly generated notifications on top
+      final medications = _ref.read(medicationProvider);
+      final bpReadings = _ref.read(bpProvider);
+      medications.whenData((meds) => _generateMedicationNotifications(meds));
+      bpReadings.whenData((readings) => _generateBPNotifications(readings));
+      state = state.copyWith(isLoading: false);
+    }).catchError((e) {
+      debugPrint('Failed to load notifications from Firestore: $e');
+      state = state.copyWith(isLoading: false);
+    });
+  }
 
-    medications.whenData((meds) => _generateMedicationNotifications(meds));
-    bpReadings.whenData((readings) => _generateBPNotifications(readings));
-    
-    state = state.copyWith(isLoading: false);
+  // ── Firestore helpers ────────────────────────────────────────────────────
+
+  CollectionReference<Map<String, dynamic>>? _notifCollection() {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return null;
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('notifications');
+  }
+
+  Future<List<NotificationItem>> _loadFromFirestore() async {
+    try {
+      final col = _notifCollection();
+      if (col == null) return [];
+      final snap = await col
+          .orderBy('createdAt', descending: true)
+          .limit(50)
+          .get();
+      return snap.docs
+          .map((d) => NotificationItem.fromMap(d.data()))
+          .toList();
+    } catch (e) {
+      debugPrint('Firestore load notifications error: $e');
+      return [];
+    }
+  }
+
+  Future<void> _saveToFirestore(List<NotificationItem> notifications) async {
+    try {
+      final col = _notifCollection();
+      if (col == null) return;
+      final batch = FirebaseFirestore.instance.batch();
+      for (final n in notifications.take(50)) {
+        batch.set(col.doc(n.id), n.toMap(), SetOptions(merge: true));
+      }
+      await batch.commit();
+    } catch (e) {
+      debugPrint('Firestore save notifications error: $e');
+    }
   }
 
   /// Generate notifications from medication data
@@ -220,40 +272,41 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
     final trimmed = existingNotifications.take(50).toList();
 
     state = state.copyWith(notifications: trimmed, isLoading: false);
+    _saveToFirestore(trimmed);
   }
 
   /// Mark a single notification as read
   void markAsRead(String id) {
-    final updatedNotifications = state.notifications.map((notification) {
-      if (notification.id == id) {
-        return notification.copyWith(isRead: true);
-      }
-      return notification;
+    final updated = state.notifications.map((n) {
+      return n.id == id ? n.copyWith(isRead: true) : n;
     }).toList();
-
-    state = state.copyWith(notifications: updatedNotifications);
+    state = state.copyWith(notifications: updated);
+    _saveToFirestore(updated);
   }
 
   /// Mark all notifications as read
   void markAllAsRead() {
-    final updatedNotifications = state.notifications
-        .map((n) => n.copyWith(isRead: true))
-        .toList();
-
-    state = state.copyWith(notifications: updatedNotifications);
+    final updated = state.notifications.map((n) => n.copyWith(isRead: true)).toList();
+    state = state.copyWith(notifications: updated);
+    _saveToFirestore(updated);
   }
 
   /// Delete a notification
   void deleteNotification(String id) {
-    final updatedNotifications = state.notifications
-        .where((n) => n.id != id)
-        .toList();
-
-    state = state.copyWith(notifications: updatedNotifications);
+    final updated = state.notifications.where((n) => n.id != id).toList();
+    state = state.copyWith(notifications: updated);
+    // Remove from Firestore too
+    final col = _notifCollection();
+    col?.doc(id).delete().catchError((e) => debugPrint('Delete notif error: $e'));
+    _saveToFirestore(updated);
   }
 
   /// Clear all notifications
   void clearAll() {
+    final col = _notifCollection();
+    for (final n in state.notifications) {
+      col?.doc(n.id).delete().catchError((e) => debugPrint('Clear notif error: $e'));
+    }
     state = state.copyWith(notifications: []);
   }
 

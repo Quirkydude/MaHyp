@@ -27,7 +27,7 @@ class NotificationCard extends StatelessWidget {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
         decoration: BoxDecoration(
-          color: AppColors.error.withOpacity(0.9),
+          color: AppColors.error.withValues(alpha: 0.9),
           borderRadius: BorderRadius.circular(12),
         ),
         child: const Icon(
@@ -44,11 +44,11 @@ class NotificationCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: notification.isRead 
                 ? AppColors.cardBackground 
-                : AppColors.primaryTurquoise.withOpacity(0.08),
+                : AppColors.primaryTurquoise.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(12),
             border: notification.isRead 
-                ? Border.all(color: AppColors.inputBorder.withOpacity(0.5))
-                : Border.all(color: AppColors.primaryTurquoise.withOpacity(0.3)),
+                ? Border.all(color: AppColors.inputBorder.withValues(alpha: 0.5))
+                : Border.all(color: AppColors.primaryTurquoise.withValues(alpha: 0.3)),
             boxShadow: [
               BoxShadow(
                 color: AppColors.shadow,
@@ -65,7 +65,7 @@ class NotificationCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: _getIconBackgroundColor().withOpacity(0.15),
+                  color: _getIconBackgroundColor().withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
@@ -143,7 +143,7 @@ class NotificationCard extends StatelessWidget {
                             vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            color: _getIconBackgroundColor().withOpacity(0.1),
+                            color: _getIconBackgroundColor().withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(

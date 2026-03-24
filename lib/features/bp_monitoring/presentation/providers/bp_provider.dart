@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/services/bp_service.dart';
 import '../../data/models/bp_reading_model.dart';
 
@@ -105,7 +104,7 @@ final bpStatisticsProvider = Provider<BPStatistics>((ref) {
       return BPStatistics.fromReadings(weekReadings);
     },
     loading: () => BPStatistics.fromReadings([]),
-    error: (_, __) => BPStatistics.fromReadings([]),
+    error: (_, _) => BPStatistics.fromReadings([]),
   );
 });
 
@@ -115,7 +114,7 @@ final latestReadingProvider = Provider<BPReadingModel?>((ref) {
   return readingsAsync.when(
     data: (readings) => readings.isNotEmpty ? readings.first : null,
     loading: () => null,
-    error: (_, __) => null,
+    error: (_, _) => null,
   );
 });
 

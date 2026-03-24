@@ -23,7 +23,7 @@ class DashboardHeader extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryTurquoise.withOpacity(0.08),
+            color: AppColors.primaryTurquoise.withValues(alpha: 0.08),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),

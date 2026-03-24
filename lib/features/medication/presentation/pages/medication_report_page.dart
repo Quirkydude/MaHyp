@@ -175,9 +175,9 @@ class _MedicationReportPageState extends ConsumerState<MedicationReportPage>
         width: isFullWidth ? double.infinity : null,
         padding: const EdgeInsets.all(AppDimensions.spacing20),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-          border: Border.all(color: color.withOpacity(0.3), width: 1.5),
+          border: Border.all(color: color.withValues(alpha: 0.3), width: 1.5),
         ),
         child: Column(
           children: [
