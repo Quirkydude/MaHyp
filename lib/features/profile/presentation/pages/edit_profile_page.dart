@@ -352,7 +352,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
 
         if (mounted) {
           // Invalidate the cache so the profile data reloads
-          ref.refresh(userProfileProvider);
+          ref.invalidate(userProfileProvider);
 
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(

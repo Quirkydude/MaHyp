@@ -171,50 +171,6 @@ class _AddMedicationPageState extends ConsumerState<AddMedicationPage>
     }
   }
 
-  List<MedicationDose> _generateDoses() {
-    final doses = <MedicationDose>[];
-    final now = DateTime.now();
-
-    // Generate doses for next 30 days
-    for (int day = 0; day < 30; day++) {
-      final date = now.add(Duration(days: day));
-
-      // Create dose for each selected time of day
-      for (final timeOfDay in _selectedTimesOfDay) {
-        final hour = _getHourForTimeOfDay(timeOfDay);
-        final scheduledTime = DateTime(
-          date.year,
-          date.month,
-          date.day,
-          hour,
-          0,
-        );
-
-        doses.add(
-          MedicationDose(
-            id: '${date.millisecondsSinceEpoch}_${timeOfDay.name}',
-            scheduledTime: scheduledTime,
-          ),
-        );
-      }
-    }
-
-    return doses;
-  }
-
-  int _getHourForTimeOfDay(TimeOfDay timeOfDay) {
-    switch (timeOfDay) {
-      case TimeOfDay.morning:
-        return 8;
-      case TimeOfDay.afternoon:
-        return 14;
-      case TimeOfDay.evening:
-        return 18;
-      case TimeOfDay.night:
-        return 21;
-    }
-  }
-
   void _showSuccessDialog() {
     showDialog(
       context: context,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import '../services/auth_access_service.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
@@ -100,7 +101,6 @@ class AppRouter {
           currentPath.startsWith('/edit-medication');
       final isUnverifiedRoute = _unverifiedRoutes.contains(currentPath);
       final isLoggedIn = user != null;
-      final isEmailVerified = user?.emailVerified ?? false;
 
       // Not logged in
       if (!isLoggedIn) {
@@ -110,19 +110,10 @@ class AppRouter {
         return login;
       }
 
-      // Logged in but email not verified (skip for social logins)
-      if (isLoggedIn && !isEmailVerified) {
-        // Check if user signed in via email/password (has password provider)
-        final isEmailProvider = user.providerData.any(
-          (info) => info.providerId == 'password',
-        );
-
-        if (isEmailProvider) {
-          // Allow verification page and public routes
-          if (isUnverifiedRoute || isPublicRoute) return null;
-          // Redirect unverified email users to verification
-          return emailVerification;
-        }
+      // Logged in but still needs verification (email or cached phone OTP)
+      if (AuthAccessService.needsEmailVerification(user)) {
+        if (isUnverifiedRoute || isPublicRoute) return null;
+        return emailVerification;
       }
 
       // Logged in and verified — redirect away from auth screens
@@ -132,7 +123,8 @@ class AppRouter {
             currentPath == setPassword ||
             currentPath == forgotPassword ||
             currentPath == onboarding ||
-            currentPath == emailVerification) {
+            currentPath == emailVerification ||
+            currentPath == phoneVerification) {
           return dashboard;
         }
       }

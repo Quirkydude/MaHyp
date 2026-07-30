@@ -6,11 +6,10 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
+import '../../../../core/config/arkesel_config.dart';
 import '../../../../core/services/arkesel_otp_service.dart';
-import '../../../../core/router/app_router.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
-import '../../providers/auth_provider.dart';
 
 class PhoneVerificationPage extends ConsumerStatefulWidget {
   final String phoneNumber;
@@ -35,18 +34,15 @@ class _PhoneVerificationPageState extends ConsumerState<PhoneVerificationPage> {
   final _formKey = GlobalKey<FormState>();
   final _otpController = TextEditingController();
 
-  // TODO: pull these from your secure config / .env instead of hardcoding.
-  // Must be your MAIN SMS API key — sub-keys don't work for OTP.
   final ArkeselOTPService _otpService = ArkeselOTPService(
-    apiKey: 'cmdwS2RvdVBBRG16aVJ4QW1IT0o',
-    senderId: 'KamarTec',
+    apiKey: ArkeselConfig.apiKey,
+    senderId: ArkeselConfig.senderId,
   );
 
   bool _isLoading = false;
   bool _isResending = false;
   int _resendCooldown = 0;
   Timer? _cooldownTimer;
-  bool _otpSent = false;
 
   @override
   void initState() {
@@ -69,7 +65,6 @@ class _PhoneVerificationPageState extends ConsumerState<PhoneVerificationPage> {
     if (!mounted) return;
 
     if (result.success) {
-      setState(() => _otpSent = true);
       _startCooldown();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

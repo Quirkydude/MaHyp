@@ -7,6 +7,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
+import '../../../../core/services/auth_access_service.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../providers/auth_provider.dart';
@@ -80,124 +81,110 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
   }
 
   Future<void> _handleCreatePassword() async {
-    if (_formKey.currentState!.validate()) {
-      // Validate that we received the necessary info from previous page
-      final isPhoneSignup = widget.phone != null && widget.phone!.isNotEmpty;
-      final isEmailSignup = widget.email != null && widget.email!.isNotEmpty;
-      
-      if (!isPhoneSignup && !isEmailSignup) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error: Missing contact information. Please sign up again.')),
-        );
-        return;
+    if (!_formKey.currentState!.validate()) return;
+
+    final email = widget.email?.trim() ?? '';
+    final isEmailSignup = email.isNotEmpty;
+
+    if (!isEmailSignup) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Email is required for account creation. Please go back and add your email.',
+          ),
+          backgroundColor: AppColors.warning,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    UserCredential? userCredential;
+    try {
+      userCredential = await ref
+          .read(authServiceProvider)
+          .createUserWithEmailAndPassword(email, _passwordController.text);
+
+      final user = userCredential.user;
+      if (user == null) {
+        throw StateError('Account was created without a user.');
       }
 
-      setState(() => _isLoading = true);
-
       try {
-        UserCredential? userCredential;
-        
-        if (isPhoneSignup) {
-          // For phone signup, create a temporary email or use phone auth
-          // For now, we'll create with email if available, otherwise use phone-based approach
-          if (isEmailSignup) {
-            userCredential = await ref.read(authServiceProvider).createUserWithEmailAndPassword(
-              widget.email!,
-              _passwordController.text,
-            );
-          } else {
-            // If only phone is provided, we need to handle this differently
-            // For now, show a message that email is required
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Email is required for account creation. Please go back and add your email.'),
-                  backgroundColor: AppColors.warning,
-                ),
-              );
-            }
-            setState(() => _isLoading = false);
-            return;
-          }
-        } else {
-          // Email signup
-          userCredential = await ref.read(authServiceProvider).createUserWithEmailAndPassword(
-            widget.email!,
-            _passwordController.text,
-          );
-        }
-        
-        // Save user profile to Firestore
-        if (userCredential?.user != null) {
-          await ref.read(userProfileServiceProvider).createUserProfile(
-            uid: userCredential!.user!.uid,
-            fullName: widget.fullName ?? '',
-            email: widget.email ?? '',
-            mobile: widget.mobile,
-            dob: widget.dob,
-          );
-          
-          // Update display name on Firebase Auth user
-          if (widget.fullName != null) {
-            await userCredential.user!.updateDisplayName(widget.fullName);
-          }
-
-          // Send email verification if email signup
-          if (isEmailSignup && !widget.isPhoneVerified) {
-            await ref.read(authServiceProvider).sendEmailVerification();
-          }
-        }
-
-        if (mounted) {
-          if (widget.isPhoneVerified) {
-            // Phone verified users go directly to dashboard
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Account created successfully!'),
-                backgroundColor: AppColors.success,
-              ),
-            );
-            context.go(AppRouter.dashboard);
-          } else {
-            // Email users go to email verification
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Account created! Please verify your email.')),
-            );
-            context.go(AppRouter.emailVerification);
-          }
-        }
-      } on FirebaseAuthException catch (e) {
-        if (mounted) {
-          String message = 'Registration failed';
-          if (e.code == 'weak-password') {
-            message = 'The password provided is too weak.';
-          } else if (e.code == 'email-already-in-use') {
-            message = 'The account already exists for that email.';
-          } else {
-             message = e.message ?? 'Registration error';
-          }
-          
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(message),
-              backgroundColor: AppColors.error,
-            ),
-          );
-        }
+        await ref.read(userProfileServiceProvider).createUserProfile(
+          uid: user.uid,
+          fullName: widget.fullName ?? '',
+          email: email,
+          mobile: widget.mobile ?? widget.phone,
+          dob: widget.dob,
+          isPhoneVerified: widget.isPhoneVerified,
+        );
       } catch (e) {
-        debugPrint('Set password unexpected error: $e');
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('An unexpected error occurred. Please try again.'),
-              backgroundColor: AppColors.error,
-            ),
-          );
+        // Roll back Auth user so retry is not blocked by email-already-in-use.
+        await user.delete();
+        rethrow;
+      }
+
+      if (widget.fullName != null && widget.fullName!.isNotEmpty) {
+        await user.updateDisplayName(widget.fullName);
+      }
+
+      if (widget.isPhoneVerified) {
+        await AuthAccessService.markPhoneVerified(user.uid);
+      } else {
+        await ref.read(authServiceProvider).sendEmailVerification();
+      }
+
+      if (!mounted) return;
+
+      if (widget.isPhoneVerified) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Account created successfully!'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+        context.go(AppRouter.dashboard);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Account created! Please verify your email.'),
+          ),
+        );
+        context.go(AppRouter.emailVerification);
+      }
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        String message = 'Registration failed';
+        if (e.code == 'weak-password') {
+          message = 'The password provided is too weak.';
+        } else if (e.code == 'email-already-in-use') {
+          message = 'The account already exists for that email.';
+        } else {
+          message = e.message ?? 'Registration error';
         }
-      } finally {
-        if (mounted) {
-          setState(() => _isLoading = false);
-        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('Set password unexpected error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('An unexpected error occurred. Please try again.'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
       }
     }
   }

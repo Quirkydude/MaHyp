@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
+import '../../../../core/services/auth_access_service.dart';
+import '../../../../core/services/user_profile_service.dart';
 
 /// Splash screen with gradient background and logo animation
 class SplashPage extends StatefulWidget {
@@ -50,23 +52,36 @@ class _SplashPageState extends State<SplashPage>
     _animationController.forward();
   }
 
+  Future<void> _syncPhoneVerification(User user) async {
+    await AuthAccessService.loadCache(user.uid);
+    if (AuthAccessService.canAccessApp(user)) return;
+
+    try {
+      final profile = await UserProfileService().getUserProfile(user.uid);
+      if (profile?.isPhoneVerified == true) {
+        await AuthAccessService.markPhoneVerified(user.uid);
+      }
+    } catch (_) {
+      // Keep cached state; splash will fall through to verification if needed.
+    }
+  }
+
   Future<void> _navigateToNextScreen() async {
     await Future.delayed(const Duration(milliseconds: 2500));
-    if (mounted) {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        // Check if email/password user needs verification
-        final isEmailProvider = user.providerData.any(
-          (info) => info.providerId == 'password',
-        );
-        if (isEmailProvider && !user.emailVerified) {
-          context.go('/email-verification');
-        } else {
-          context.go('/dashboard');
-        }
+    if (!mounted) return;
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await _syncPhoneVerification(user);
+      if (!mounted) return;
+
+      if (AuthAccessService.needsEmailVerification(user)) {
+        context.go('/email-verification');
       } else {
-        context.go('/onboarding');
+        context.go('/dashboard');
       }
+    } else {
+      context.go('/onboarding');
     }
   }
 

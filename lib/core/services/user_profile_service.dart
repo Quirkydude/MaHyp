@@ -9,6 +9,7 @@ class UserProfile {
   final String? mobile;
   final DateTime? dob;
   final String? avatarUrl;
+  final bool isPhoneVerified;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -19,6 +20,7 @@ class UserProfile {
     this.mobile,
     this.dob,
     this.avatarUrl,
+    this.isPhoneVerified = false,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -36,6 +38,7 @@ class UserProfile {
       mobile: data['mobile'] as String?,
       dob: data['dob'] is Timestamp ? (data['dob'] as Timestamp).toDate() : null,
       avatarUrl: data['avatarUrl'] as String?,
+      isPhoneVerified: data['isPhoneVerified'] as bool? ?? false,
       createdAt: data['createdAt'] is Timestamp
           ? (data['createdAt'] as Timestamp).toDate()
           : DateTime.now(),
@@ -53,6 +56,7 @@ class UserProfile {
       'mobile': mobile,
       'dob': dob != null ? Timestamp.fromDate(dob!) : null,
       'avatarUrl': avatarUrl,
+      'isPhoneVerified': isPhoneVerified,
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': Timestamp.fromDate(updatedAt),
     };
@@ -75,6 +79,7 @@ class UserProfileService {
     String? mobile,
     DateTime? dob,
     String? avatarUrl,
+    bool isPhoneVerified = false,
   }) async {
     final now = DateTime.now();
     await _usersCollection.doc(uid).set({
@@ -83,9 +88,29 @@ class UserProfileService {
       'mobile': mobile,
       'dob': dob != null ? Timestamp.fromDate(dob) : null,
       'avatarUrl': avatarUrl,
+      'isPhoneVerified': isPhoneVerified,
       'createdAt': Timestamp.fromDate(now),
       'updatedAt': Timestamp.fromDate(now),
     });
+  }
+
+  /// Ensure a Firestore profile exists for social / first-time sign-in.
+  Future<void> ensureUserProfile({
+    required String uid,
+    required String fullName,
+    required String email,
+    String? mobile,
+    String? avatarUrl,
+  }) async {
+    final existing = await getUserProfile(uid);
+    if (existing != null) return;
+    await createUserProfile(
+      uid: uid,
+      fullName: fullName.isNotEmpty ? fullName : 'User',
+      email: email,
+      mobile: mobile,
+      avatarUrl: avatarUrl,
+    );
   }
 
   /// Get user profile by UID

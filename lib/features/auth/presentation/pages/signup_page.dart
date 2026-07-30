@@ -7,11 +7,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
+import '../../../../core/utils/email_validator.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/widgets/social_login_button.dart';
 import '../../../../core/router/app_router.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/user_profile_provider.dart';
 
 class SignUpPage extends ConsumerStatefulWidget {
   const SignUpPage({super.key});
@@ -48,17 +50,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
     return null;
   }
 
-  String? _validateEmail(String? value) {
-    final email = value?.trim() ?? '';
-    if (email.isEmpty) {
-      return 'Please enter your email';
-    }
-    final emailRegex = RegExp(r'^[\w\.\+\-]+@([\w\-]+\.)+[\w\-]{2,}$');
-    if (!emailRegex.hasMatch(email)) {
-      return 'Please enter a valid email';
-    }
-    return null;
-  }
+  String? _validateEmail(String? value) => EmailValidator.validate(value);
 
   String? _validateMobile(String? value) {
     if (value == null || value.isEmpty) {
@@ -148,19 +140,35 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
   Future<void> _handleSocialLogin(SocialLoginType type) async {
     setState(() => _isLoading = true);
-    
+
     try {
+      UserCredential? credential;
       if (type == SocialLoginType.google) {
-        await ref.read(authServiceProvider).signInWithGoogle();
+        credential = await ref.read(authServiceProvider).signInWithGoogle();
       } else if (type == SocialLoginType.facebook) {
-        await ref.read(authServiceProvider).signInWithFacebook();
+        credential = await ref.read(authServiceProvider).signInWithFacebook();
       } else if (type == SocialLoginType.apple) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Apple Sign In not implemented yet')),
         );
         return;
       }
-      
+
+      if (credential == null) {
+        // User cancelled social sign-up
+        return;
+      }
+
+      final user = credential.user;
+      if (user != null) {
+        await ref.read(userProfileServiceProvider).ensureUserProfile(
+          uid: user.uid,
+          fullName: user.displayName ?? '',
+          email: user.email ?? '',
+          avatarUrl: user.photoURL,
+        );
+      }
+
       if (mounted) {
         context.go(AppRouter.dashboard);
       }
