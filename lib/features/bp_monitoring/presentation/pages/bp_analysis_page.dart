@@ -48,8 +48,7 @@ class _BPAnalysisPageState extends State<BPAnalysisPage>
   @override
   Widget build(BuildContext context) {
     final isHigh =
-        widget.reading.category == BPCategory.highStage2 ||
-        widget.reading.category == BPCategory.highStage1;
+        widget.reading.category == BPCategory.notControlled;
 
     return Scaffold(
       appBar: const CustomAppBar(title: 'Blood Pressure Analysis'),
@@ -289,14 +288,10 @@ class _BPAnalysisPageState extends State<BPAnalysisPage>
 
   String _getExplanation(BPCategory category) {
     switch (category) {
-      case BPCategory.normal:
-        return 'Your blood pressure is within the normal range. Continue with your healthy lifestyle and medication routine.';
-      case BPCategory.elevated:
-        return 'Elevated blood pressure means your reading is higher than normal but not yet at the high blood pressure stage. Following medical advice can help prevent progression.';
-      case BPCategory.highStage1:
-        return 'Stage 1 hypertension indicates your blood pressure is consistently high. It\'s important to take your medication regularly and monitor your readings daily.';
-      case BPCategory.highStage2:
-        return 'Stage 2 hypertension requires immediate attention. Please ensure you\'re taking your prescribed medication and consult your doctor if readings remain high.';
+      case BPCategory.controlled:
+        return 'Your blood pressure is controlled (below 140/90). Keep up the good work! Continue taking your medication as prescribed and monitoring regularly.';
+      case BPCategory.notControlled:
+        return 'Your blood pressure is not controlled (140/90 or higher). Take your medication as prescribed and contact your doctor for a follow-up appointment to adjust your treatment plan.';
       case BPCategory.crisis:
         return 'This is a hypertensive crisis requiring emergency medical attention. Seek immediate care.';
     }
@@ -329,14 +324,10 @@ class _BPAnalysisPageState extends State<BPAnalysisPage>
 
   Color _getCategoryColor(BPCategory category) {
     switch (category) {
-      case BPCategory.normal:
+      case BPCategory.controlled:
         return AppColors.success;
-      case BPCategory.elevated:
+      case BPCategory.notControlled:
         return AppColors.warning;
-      case BPCategory.highStage1:
-        return AppColors.warning;
-      case BPCategory.highStage2:
-        return AppColors.error;
       case BPCategory.crisis:
         return const Color(0xFFD32F2F);
     }

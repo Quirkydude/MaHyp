@@ -49,11 +49,12 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
   }
 
   String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
+    final email = value?.trim() ?? '';
+    if (email.isEmpty) {
       return 'Please enter your email';
     }
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!emailRegex.hasMatch(value)) {
+    final emailRegex = RegExp(r'^[\w\.\+\-]+@([\w\-]+\.)+[\w\-]{2,}$');
+    if (!emailRegex.hasMatch(email)) {
       return 'Please enter a valid email';
     }
     return null;
@@ -134,11 +135,11 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
       
       setState(() => _isLoading = false);
       if (mounted) {
-        // Pass all user data to set password page for Firestore profile creation
-        context.push('/set-password', extra: {
+        // Navigate to phone verification page
+        context.push('/phone-verification', extra: {
+          'phone': _mobileController.text.trim(),
           'email': _emailController.text.trim(),
           'name': _fullNameController.text.trim(),
-          'mobile': _mobileController.text.trim(),
           'dob': _parseDob(),
         });
       }
@@ -225,7 +226,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
                 CustomTextField(
                   label: 'Full name',
-                  hint: 'example@example.com',
+                  hint: 'John Doe',
                   controller: _fullNameController,
                   keyboardType: TextInputType.name,
                   validator: _validateFullName,
@@ -239,7 +240,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
                 CustomTextField(
                   label: 'Email',
-                  hint: '',
+                  hint: 'example@example.com',
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   validator: _validateEmail,
@@ -253,7 +254,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
                 CustomTextField(
                   label: 'Mobile Number',
-                  hint: 'example@example.com',
+                  hint: '0241234567',
                   controller: _mobileController,
                   keyboardType: TextInputType.phone,
                   validator: _validateMobile,

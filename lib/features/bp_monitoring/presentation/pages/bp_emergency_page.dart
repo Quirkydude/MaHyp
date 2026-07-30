@@ -186,10 +186,7 @@ class _BPEmergencyPageState extends State<BPEmergencyPage>
 
                 CustomButton(
                   text: 'Contact Doctor',
-                  onPressed: () {
-                    // TODO: Contact doctor
-                    _showDoctorDialog();
-                  },
+                  onPressed: () => context.push('/emergency-contacts'),
                   backgroundColor: AppColors.primaryTurquoise,
                   icon: const Icon(
                     Icons.local_hospital,
@@ -253,42 +250,4 @@ class _BPEmergencyPageState extends State<BPEmergencyPage>
     );
   }
 
-  void _showDoctorDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(Icons.local_hospital, color: AppColors.primaryTurquoise),
-            const SizedBox(width: AppDimensions.spacing8),
-            const Text('Contact Doctor'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Choose how to contact your doctor:'),
-            const SizedBox(height: AppDimensions.spacing16),
-            ListTile(
-              leading: const Icon(Icons.phone),
-              title: const Text('Call Doctor'),
-              onTap: () {
-                // TODO: Call doctor
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.message),
-              title: const Text('Send Message'),
-              onTap: () {
-                // TODO: Send message
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

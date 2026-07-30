@@ -27,6 +27,7 @@ class _RecordBPPageState extends ConsumerState<RecordBPPage>
   final _formKey = GlobalKey<FormState>();
   final _systolicController = TextEditingController();
   final _diastolicController = TextEditingController();
+  final _heartRateController = TextEditingController();
 
   MeasurementTime _selectedTime = MeasurementTime.morning;
   final _notesController = TextEditingController();
@@ -59,6 +60,7 @@ class _RecordBPPageState extends ConsumerState<RecordBPPage>
   void dispose() {
     _systolicController.dispose();
     _diastolicController.dispose();
+    _heartRateController.dispose();
     _notesController.dispose();
     _animationController.dispose();
     super.dispose();
@@ -115,6 +117,9 @@ class _RecordBPPageState extends ConsumerState<RecordBPPage>
         id: '', // Will be set by Firestore
         systolic: int.parse(_systolicController.text),
         diastolic: int.parse(_diastolicController.text),
+        heartRate: _heartRateController.text.trim().isEmpty
+            ? null
+            : int.tryParse(_heartRateController.text.trim()),
         recordedAt: DateTime.now(),
         timeOfDay: _selectedTime,
         notes: _notesController.text.trim().isEmpty
@@ -252,6 +257,29 @@ class _RecordBPPageState extends ConsumerState<RecordBPPage>
                     Icons.arrow_downward,
                     color: AppColors.primaryTurquoise,
                   ),
+                ),
+
+                const SizedBox(height: AppDimensions.spacing20),
+
+                // Heart Rate (optional)
+                CustomTextField(
+                  label: 'Heart Rate (bpm) — optional',
+                  hint: 'e.g., 72',
+                  controller: _heartRateController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  prefixIcon: const Icon(
+                    Icons.favorite_border,
+                    color: AppColors.primaryTurquoise,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) return null;
+                    final n = int.tryParse(value);
+                    if (n == null || n < 40 || n > 200) {
+                      return 'Enter a valid heart rate (40–200 bpm)';
+                    }
+                    return null;
+                  },
                 ),
 
                 const SizedBox(height: AppDimensions.spacing24),

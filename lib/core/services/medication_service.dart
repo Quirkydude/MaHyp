@@ -36,6 +36,37 @@ class MedicationService {
         .toList();
   }
 
+  /// Get all available medications from master list (for dropdown)
+  Future<List<Map<String, String>>> getAvailableMedications() async {
+    try {
+      // Try to get from a master medications collection
+      final snapshot = await _firestore
+          .collection('master_medications')
+          .orderBy('name')
+          .get();
+      
+      return snapshot.docs
+          .map((doc) => {
+                'id': doc.id,
+                'name': doc.data()['name'] as String? ?? '',
+                'dosage': doc.data()['dosage'] as String? ?? '',
+              })
+          .toList();
+    } catch (e) {
+      // If master collection doesn't exist, return empty list
+      return [];
+    }
+  }
+
+  /// Add medication to master list (admin function)
+  Future<void> addToMasterMedications(String name, String dosage) async {
+    await _firestore.collection('master_medications').add({
+      'name': name,
+      'dosage': dosage,
+      'createdAt': Timestamp.now(),
+    });
+  }
+
   /// Stream of all medications
   Stream<List<MedicationModel>> medicationsStream() {
     return _medicationsCollection

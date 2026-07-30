@@ -14,16 +14,20 @@ import '../../providers/user_profile_provider.dart';
 
 class SetPasswordPage extends ConsumerStatefulWidget {
   final String? email;
+  final String? phone;
   final String? fullName;
   final String? mobile;
   final DateTime? dob;
+  final bool isPhoneVerified;
 
   const SetPasswordPage({
     super.key, 
     this.email,
+    this.phone,
     this.fullName,
     this.mobile,
     this.dob,
+    this.isPhoneVerified = false,
   });
 
   @override
@@ -78,9 +82,12 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
   Future<void> _handleCreatePassword() async {
     if (_formKey.currentState!.validate()) {
       // Validate that we received the necessary info from previous page
-      if (widget.email == null || widget.email!.isEmpty) {
-         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error: Missing email address. Please sign up again.')),
+      final isPhoneSignup = widget.phone != null && widget.phone!.isNotEmpty;
+      final isEmailSignup = widget.email != null && widget.email!.isNotEmpty;
+      
+      if (!isPhoneSignup && !isEmailSignup) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error: Missing contact information. Please sign up again.')),
         );
         return;
       }
@@ -88,18 +95,44 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
       setState(() => _isLoading = true);
 
       try {
-        // Create user with email and password
-        final userCredential = await ref.read(authServiceProvider).createUserWithEmailAndPassword(
-          widget.email!,
-          _passwordController.text,
-        );
+        UserCredential? userCredential;
+        
+        if (isPhoneSignup) {
+          // For phone signup, create a temporary email or use phone auth
+          // For now, we'll create with email if available, otherwise use phone-based approach
+          if (isEmailSignup) {
+            userCredential = await ref.read(authServiceProvider).createUserWithEmailAndPassword(
+              widget.email!,
+              _passwordController.text,
+            );
+          } else {
+            // If only phone is provided, we need to handle this differently
+            // For now, show a message that email is required
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Email is required for account creation. Please go back and add your email.'),
+                  backgroundColor: AppColors.warning,
+                ),
+              );
+            }
+            setState(() => _isLoading = false);
+            return;
+          }
+        } else {
+          // Email signup
+          userCredential = await ref.read(authServiceProvider).createUserWithEmailAndPassword(
+            widget.email!,
+            _passwordController.text,
+          );
+        }
         
         // Save user profile to Firestore
-        if (userCredential.user != null) {
+        if (userCredential?.user != null) {
           await ref.read(userProfileServiceProvider).createUserProfile(
-            uid: userCredential.user!.uid,
+            uid: userCredential!.user!.uid,
             fullName: widget.fullName ?? '',
-            email: widget.email!,
+            email: widget.email ?? '',
             mobile: widget.mobile,
             dob: widget.dob,
           );
@@ -109,16 +142,29 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
             await userCredential.user!.updateDisplayName(widget.fullName);
           }
 
-          // Send email verification
-          await ref.read(authServiceProvider).sendEmailVerification();
+          // Send email verification if email signup
+          if (isEmailSignup && !widget.isPhoneVerified) {
+            await ref.read(authServiceProvider).sendEmailVerification();
+          }
         }
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Account created! Please verify your email.')),
-          );
-          // Navigate to email verification
-          context.go(AppRouter.emailVerification);
+          if (widget.isPhoneVerified) {
+            // Phone verified users go directly to dashboard
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Account created successfully!'),
+                backgroundColor: AppColors.success,
+              ),
+            );
+            context.go(AppRouter.dashboard);
+          } else {
+            // Email users go to email verification
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Account created! Please verify your email.')),
+            );
+            context.go(AppRouter.emailVerification);
+          }
         }
       } on FirebaseAuthException catch (e) {
         if (mounted) {
@@ -216,7 +262,7 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
                 const SizedBox(height: AppDimensions.spacing24),
 
                 Text(
-                  'Please create a secure password for your account linked to ${widget.email ?? "your email"}.',
+                  'Please create a secure password for your account linked to ${widget.email ?? widget.phone ?? "your account"}.',
                   style: AppTextStyles.bodySmall,
                 ),
 

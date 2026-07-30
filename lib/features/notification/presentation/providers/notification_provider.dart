@@ -202,27 +202,17 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
           isRead: false,
           payload: {'readingId': latest.id, 'systolic': latest.systolic, 'diastolic': latest.diastolic},
         ));
-      } else if (category == BPCategory.highStage2) {
+      } else if (category == BPCategory.notControlled) {
         newNotifications.add(NotificationItem(
           id: 'bp_high_${latest.id}',
-          title: 'High Blood Pressure (Stage 2)',
-          body: 'Your reading of ${latest.systolic}/${latest.diastolic} mmHg indicates Stage 2 hypertension. Take your medication and monitor closely.',
+          title: 'High Blood Pressure',
+          body: 'Your reading of ${latest.systolic}/${latest.diastolic} mmHg is not controlled (140/90 or higher). Take your medication and contact your doctor if readings remain high.',
           type: NotificationType.bpReminder,
           createdAt: latest.recordedAt,
           isRead: false,
           payload: {'readingId': latest.id, 'systolic': latest.systolic, 'diastolic': latest.diastolic},
         ));
-      } else if (category == BPCategory.highStage1 || category == BPCategory.elevated) {
-        newNotifications.add(NotificationItem(
-          id: 'bp_elevated_${latest.id}',
-          title: 'Elevated Blood Pressure',
-          body: 'Your reading of ${latest.systolic}/${latest.diastolic} mmHg is slightly elevated. Continue monitoring and follow your treatment plan.',
-          type: NotificationType.bpReminder,
-          createdAt: latest.recordedAt,
-          isRead: false,
-          payload: {'readingId': latest.id, 'systolic': latest.systolic, 'diastolic': latest.diastolic},
-        ));
-      } else if (category == BPCategory.normal) {
+      } else if (category == BPCategory.controlled) {
         newNotifications.add(NotificationItem(
           id: 'bp_normal_${latest.id}',
           title: 'Great BP Reading! 🎉',

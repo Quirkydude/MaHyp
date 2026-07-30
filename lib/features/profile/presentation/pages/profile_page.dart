@@ -36,6 +36,12 @@ class ProfilePage extends ConsumerWidget {
             ),
             _buildMenuItem(
               context,
+              icon: Icons.emergency,
+              title: 'Emergency Contacts',
+              onTap: () => context.push('/emergency-contacts'),
+            ),
+            _buildMenuItem(
+              context,
               icon: Icons.lock_outline,
               title: 'Privacy Policy',
               onTap: () {
