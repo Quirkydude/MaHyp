@@ -225,7 +225,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
                 CustomTextField(
                   label: 'Full name',
-                  hint: 'example@example.com',
+                  hint: 'John Doe',
                   controller: _fullNameController,
                   keyboardType: TextInputType.name,
                   validator: _validateFullName,
@@ -239,7 +239,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
                 CustomTextField(
                   label: 'Email',
-                  hint: '',
+                  hint: 'example@example.com',
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   validator: _validateEmail,
@@ -253,7 +253,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
                 CustomTextField(
                   label: 'Mobile Number',
-                  hint: 'example@example.com',
+                  hint: '024 123 4567',
                   controller: _mobileController,
                   keyboardType: TextInputType.phone,
                   validator: _validateMobile,
