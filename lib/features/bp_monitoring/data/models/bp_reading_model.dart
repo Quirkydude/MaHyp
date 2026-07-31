@@ -1,10 +1,8 @@
 import 'package:equatable/equatable.dart';
 
 enum BPCategory {
-  normal, // <120 and <80
-  elevated, // 120-129 and <80
-  highStage1, // 130-139 or 80-89
-  highStage2, // ≥140 or ≥90
+  controlled, // < 140/90
+  notControlled, // ≥ 140/90
   crisis, // >180 or >120
 }
 
@@ -36,44 +34,32 @@ class BPReadingModel extends Equatable {
     this.feltNausea = false,
   });
 
-  // Get BP category based on AHA guidelines
+  // Get BP category based on simplified guidelines
+  // < 140/90 = Controlled
+  // ≥ 140/90 = Not Controlled
+  // > 180/120 = Crisis (unchanged)
   BPCategory get category {
-    // Crisis - Seek emergency care
+    // Crisis - Seek emergency care (unchanged)
     if (systolic > 180 || diastolic > 120) {
       return BPCategory.crisis;
     }
 
-    // High Blood Pressure Stage 2
+    // Not Controlled - ≥ 140/90
     if (systolic >= 140 || diastolic >= 90) {
-      return BPCategory.highStage2;
+      return BPCategory.notControlled;
     }
 
-    // High Blood Pressure Stage 1
-    if ((systolic >= 130 && systolic <= 139) ||
-        (diastolic >= 80 && diastolic <= 89)) {
-      return BPCategory.highStage1;
-    }
-
-    // Elevated
-    if (systolic >= 120 && systolic <= 129 && diastolic < 80) {
-      return BPCategory.elevated;
-    }
-
-    // Normal
-    return BPCategory.normal;
+    // Controlled - < 140/90
+    return BPCategory.controlled;
   }
 
   // Get category name
   String get categoryName {
     switch (category) {
-      case BPCategory.normal:
-        return 'Normal';
-      case BPCategory.elevated:
-        return 'Elevated';
-      case BPCategory.highStage1:
-        return 'High (Stage 1)';
-      case BPCategory.highStage2:
-        return 'High (Stage 2)';
+      case BPCategory.controlled:
+        return 'Controlled';
+      case BPCategory.notControlled:
+        return 'Not Controlled';
       case BPCategory.crisis:
         return 'Hypertensive Crisis';
     }
@@ -82,14 +68,10 @@ class BPReadingModel extends Equatable {
   // Get category color
   String get categoryColorHex {
     switch (category) {
-      case BPCategory.normal:
+      case BPCategory.controlled:
         return '4CAF50'; // Green
-      case BPCategory.elevated:
+      case BPCategory.notControlled:
         return 'FF9800'; // Orange
-      case BPCategory.highStage1:
-        return 'FF9800'; // Orange
-      case BPCategory.highStage2:
-        return 'F44336'; // Red
       case BPCategory.crisis:
         return 'D32F2F'; // Dark Red
     }
@@ -100,19 +82,15 @@ class BPReadingModel extends Equatable {
 
   // Check if needs attention
   bool get needsAttention =>
-      category == BPCategory.highStage2 || category == BPCategory.crisis;
+      category == BPCategory.notControlled || category == BPCategory.crisis;
 
   // Get recommendation
   String get recommendation {
     switch (category) {
-      case BPCategory.normal:
-        return 'Your blood pressure is within normal range. Keep up the good work!';
-      case BPCategory.elevated:
-        return 'Elevated blood pressure means your reading is higher than normal but not yet at the high blood pressure stage. Following medical advice can help prevent progression.';
-      case BPCategory.highStage1:
-        return 'Take your prescribed medication regularly and monitor your readings daily. Consult your doctor if readings remain high.';
-      case BPCategory.highStage2:
-        return 'This indicates Stage 2 hypertension. Take your medication as prescribed and contact your doctor for a follow-up appointment.';
+      case BPCategory.controlled:
+        return 'Your blood pressure is controlled (below 140/90). Keep up the good work! Continue taking your medication as prescribed and monitoring regularly.';
+      case BPCategory.notControlled:
+        return 'Your blood pressure is not controlled (140/90 or higher). Take your medication as prescribed and contact your doctor for a follow-up appointment to adjust your treatment plan.';
       case BPCategory.crisis:
         return 'This is a hypertensive crisis. Seek emergency medical attention immediately. Call emergency services or go to the nearest hospital.';
     }
@@ -190,9 +168,8 @@ class BPStatistics {
   final double avgSystolic;
   final double avgDiastolic;
   final int totalReadings;
-  final int normalCount;
-  final int elevatedCount;
-  final int highCount;
+  final int controlledCount;
+  final int notControlledCount;
   final int crisisCount;
   final BPReadingModel? highestReading;
   final BPReadingModel? lowestReading;
@@ -202,9 +179,8 @@ class BPStatistics {
     required this.avgSystolic,
     required this.avgDiastolic,
     required this.totalReadings,
-    required this.normalCount,
-    required this.elevatedCount,
-    required this.highCount,
+    required this.controlledCount,
+    required this.notControlledCount,
     required this.crisisCount,
     this.highestReading,
     this.lowestReading,
@@ -218,9 +194,8 @@ class BPStatistics {
         avgSystolic: 0,
         avgDiastolic: 0,
         totalReadings: 0,
-        normalCount: 0,
-        elevatedCount: 0,
-        highCount: 0,
+        controlledCount: 0,
+        notControlledCount: 0,
         crisisCount: 0,
         recentReadings: [],
       );
@@ -233,18 +208,14 @@ class BPStatistics {
         readings.map((r) => r.diastolic).reduce((a, b) => a + b) /
         readings.length;
 
-    int normal = 0, elevated = 0, high = 0, crisis = 0;
+    int controlled = 0, notControlled = 0, crisis = 0;
     for (final reading in readings) {
       switch (reading.category) {
-        case BPCategory.normal:
-          normal++;
+        case BPCategory.controlled:
+          controlled++;
           break;
-        case BPCategory.elevated:
-          elevated++;
-          break;
-        case BPCategory.highStage1:
-        case BPCategory.highStage2:
-          high++;
+        case BPCategory.notControlled:
+          notControlled++;
           break;
         case BPCategory.crisis:
           crisis++;
@@ -260,9 +231,8 @@ class BPStatistics {
       avgSystolic: avgSys,
       avgDiastolic: avgDia,
       totalReadings: readings.length,
-      normalCount: normal,
-      elevatedCount: elevated,
-      highCount: high,
+      controlledCount: controlled,
+      notControlledCount: notControlled,
       crisisCount: crisis,
       highestReading: sorted.last,
       lowestReading: sorted.first,

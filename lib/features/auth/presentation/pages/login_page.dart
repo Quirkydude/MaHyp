@@ -7,10 +7,13 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
+import '../../../../core/services/auth_access_service.dart';
+import '../../../../core/utils/email_validator.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/widgets/social_login_button.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/user_profile_provider.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -32,16 +35,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     super.dispose();
   }
 
-  String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your email';
-    }
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!emailRegex.hasMatch(value)) {
-      return 'Please enter a valid email';
-    }
-    return null;
-  }
+  String? _validateEmail(String? value) => EmailValidator.validate(value);
 
   String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) {
@@ -53,6 +47,28 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     return null;
   }
 
+  Future<void> _prepareSignedInUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    await AuthAccessService.loadCache(user.uid);
+    final profileService = ref.read(userProfileServiceProvider);
+
+    try {
+      final profile = await profileService.getUserProfile(user.uid);
+      if (profile?.isPhoneVerified == true) {
+        await AuthAccessService.markPhoneVerified(user.uid);
+      }
+    } catch (_) {}
+
+    await profileService.ensureUserProfile(
+      uid: user.uid,
+      fullName: user.displayName ?? '',
+      email: user.email ?? '',
+      avatarUrl: user.photoURL,
+    );
+  }
+
   Future<void> _handleLogin() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
@@ -62,13 +78,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           _emailController.text.trim(),
           _passwordController.text,
         );
-        
+
+        await _prepareSignedInUser();
+
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Login successful!')),
-          );
-          // Navigation is handled by auth state listener or manual push
-          context.go(AppRouter.dashboard); 
+          final user = FirebaseAuth.instance.currentUser;
+          if (AuthAccessService.needsEmailVerification(user)) {
+            context.go(AppRouter.emailVerification);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Login successful!')),
+            );
+            context.go(AppRouter.dashboard);
+          }
         }
       } on FirebaseAuthException catch (e) {
         if (mounted) {
@@ -78,9 +100,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           } else if (e.code == 'wrong-password') {
             message = 'Wrong password provided.';
           } else {
-             message = e.message ?? 'Authentication error';
+            message = e.message ?? 'Authentication error';
           }
-          
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(message),
@@ -112,20 +134,27 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   Future<void> _handleSocialLogin(SocialLoginType type) async {
     setState(() => _isLoading = true);
-    
+
     try {
+      UserCredential? credential;
       if (type == SocialLoginType.google) {
-        await ref.read(authServiceProvider).signInWithGoogle();
+        credential = await ref.read(authServiceProvider).signInWithGoogle();
       } else if (type == SocialLoginType.facebook) {
-        await ref.read(authServiceProvider).signInWithFacebook();
+        credential = await ref.read(authServiceProvider).signInWithFacebook();
       } else if (type == SocialLoginType.apple) {
-        // TODO: Implement Apple Sign In
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Apple Sign In not implemented yet')),
         );
         return;
       }
-      
+
+      if (credential == null) {
+        // User cancelled social sign-in
+        return;
+      }
+
+      await _prepareSignedInUser();
+
       if (mounted) {
         context.go(AppRouter.dashboard);
       }
@@ -199,7 +228,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 const SizedBox(height: AppDimensions.spacing40),
 
                 CustomTextField(
-                  label: 'Email or Mobile Number',
+                  label: 'Email Address',
                   hint: 'example@example.com',
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,

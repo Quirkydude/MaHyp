@@ -122,11 +122,12 @@ class _CalendarWeekViewState extends State<CalendarWeekView> {
               // Week dates
               Expanded(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: weekDates.map((date) {
                     final isSelected = _isSameDay(date, widget.selectedDate);
                     final isToday = _isSameDay(date, DateTime.now());
-                    return _buildDayItem(date, isSelected, isToday);
+                    return Expanded(
+                      child: _buildDayItem(date, isSelected, isToday),
+                    );
                   }).toList(),
                 ),
               ),
@@ -254,11 +255,10 @@ class _CalendarWeekViewState extends State<CalendarWeekView> {
       onTap: () => widget.onDateSelected?.call(date),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        width: 42,
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.calendarSelected : Colors.transparent,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           border: isToday && !isSelected
               ? Border.all(color: AppColors.calendarSelected, width: 1.5)
               : null,
@@ -270,7 +270,7 @@ class _CalendarWeekViewState extends State<CalendarWeekView> {
               dayName,
               style: TextStyle(
                 color: isSelected ? AppColors.white : AppColors.textSecondary,
-                fontSize: 16,
+                fontSize: 11,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.5,
               ),
@@ -282,7 +282,7 @@ class _CalendarWeekViewState extends State<CalendarWeekView> {
                 color: isSelected
                     ? AppColors.white
                     : (isToday ? AppColors.calendarSelected : AppColors.textPrimary),
-                fontSize: 16,
+                fontSize: 17,
                 fontWeight: FontWeight.bold,
               ),
             ),

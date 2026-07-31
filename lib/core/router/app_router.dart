@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import '../services/auth_access_service.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
@@ -9,6 +10,7 @@ import '../../features/auth/presentation/pages/signup_page.dart';
 import '../../features/auth/presentation/pages/set_password_page.dart';
 import '../../features/auth/presentation/pages/forgot_password_page.dart';
 import '../../features/auth/presentation/pages/email_verification_page.dart';
+import '../../features/auth/presentation/pages/phone_verification_page.dart';
 import '../../features/demo/demo_page.dart';
 import '../../features/medication/presentation/pages/medication_list_page.dart';
 import '../../features/medication/presentation/pages/add_medication_page.dart';
@@ -28,6 +30,10 @@ import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/profile/presentation/pages/edit_profile_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/notification/presentation/pages/notifications_page.dart';
+import '../../features/dashboard/presentation/pages/health_insights_page.dart';
+import '../../features/profile/presentation/pages/emergency_contacts_page.dart';
+import '../../features/settings/presentation/pages/privacy_policy_page.dart';
+import '../../features/settings/presentation/pages/account_deletion_page.dart';
 
 class AppRouter {
   static final GlobalKey<NavigatorState> navigatorKey =
@@ -39,6 +45,7 @@ class AppRouter {
   static const String setPassword = '/set-password';
   static const String forgotPassword = '/forgot-password';
   static const String emailVerification = '/email-verification';
+  static const String phoneVerification = '/phone-verification';
   static const String demo = '/demo';
   static const String medicationList = '/medication-list';
   static const String addMedication = '/add-medication';
@@ -55,6 +62,10 @@ class AppRouter {
   static const String editProfile = '/edit-profile';
   static const String settings = '/settings';
   static const String notifications = '/notifications';
+  static const String healthInsights = '/health-insights';
+  static const String emergencyContacts = '/emergency-contacts';
+  static const String privacyPolicy = '/privacy-policy';
+  static const String accountDeletion = '/account-deletion';
 
   // Routes that don't require authentication
   static const List<String> _publicRoutes = [
@@ -64,6 +75,7 @@ class AppRouter {
     signup,
     setPassword,
     forgotPassword,
+    phoneVerification,
     demo,
   ];
 
@@ -89,7 +101,6 @@ class AppRouter {
           currentPath.startsWith('/edit-medication');
       final isUnverifiedRoute = _unverifiedRoutes.contains(currentPath);
       final isLoggedIn = user != null;
-      final isEmailVerified = user?.emailVerified ?? false;
 
       // Not logged in
       if (!isLoggedIn) {
@@ -99,19 +110,10 @@ class AppRouter {
         return login;
       }
 
-      // Logged in but email not verified (skip for social logins)
-      if (isLoggedIn && !isEmailVerified) {
-        // Check if user signed in via email/password (has password provider)
-        final isEmailProvider = user.providerData.any(
-          (info) => info.providerId == 'password',
-        );
-
-        if (isEmailProvider) {
-          // Allow verification page and public routes
-          if (isUnverifiedRoute || isPublicRoute) return null;
-          // Redirect unverified email users to verification
-          return emailVerification;
-        }
+      // Logged in but still needs verification (email or cached phone OTP)
+      if (AuthAccessService.needsEmailVerification(user)) {
+        if (isUnverifiedRoute || isPublicRoute) return null;
+        return emailVerification;
       }
 
       // Logged in and verified — redirect away from auth screens
@@ -121,7 +123,8 @@ class AppRouter {
             currentPath == setPassword ||
             currentPath == forgotPassword ||
             currentPath == onboarding ||
-            currentPath == emailVerification) {
+            currentPath == emailVerification ||
+            currentPath == phoneVerification) {
           return dashboard;
         }
       }
@@ -240,9 +243,11 @@ class AppRouter {
             state: state,
             child: SetPasswordPage(
               email: extras?['email'],
+              phone: extras?['phone'],
               fullName: extras?['name'],
               mobile: extras?['mobile'],
               dob: extras?['dob'] as DateTime?,
+              isPhoneVerified: extras?['isPhoneVerified'] ?? false,
             ),
           );
         },
@@ -268,6 +273,25 @@ class AppRouter {
           state: state,
           child: const EmailVerificationPage(),
         ),
+      ),
+
+      // Phone Verification Screen
+      GoRoute(
+        path: phoneVerification,
+        name: 'phoneVerification',
+        pageBuilder: (context, state) {
+          final extras = state.extra as Map<String, dynamic>?;
+          return _buildPageWithTransition(
+            context: context,
+            state: state,
+            child: PhoneVerificationPage(
+              phoneNumber: extras?['phone'] ?? '',
+              fullName: extras?['name'] ?? '',
+              email: extras?['email'] as String?,
+              dob: extras?['dob'] as DateTime?,
+            ),
+          );
+        },
       ),
 
       // Demo Page (for testing shared components)
@@ -424,6 +448,50 @@ class AppRouter {
           context: context,
           state: state,
           child: const EducationPage(),
+        ),
+      ),
+
+      // Health Insights Page
+      GoRoute(
+        path: healthInsights,
+        name: 'healthInsights',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const HealthInsightsPage(),
+        ),
+      ),
+
+      // Emergency Contacts Page
+      GoRoute(
+        path: emergencyContacts,
+        name: 'emergencyContacts',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const EmergencyContactsPage(),
+        ),
+      ),
+
+      // Privacy Policy Page
+      GoRoute(
+        path: privacyPolicy,
+        name: 'privacyPolicy',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const PrivacyPolicyPage(),
+        ),
+      ),
+
+      // Account Deletion Page
+      GoRoute(
+        path: accountDeletion,
+        name: 'accountDeletion',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const AccountDeletionPage(),
         ),
       ),
 

@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCLoOYuVxzN7FcOzRkG0eTw9JAQDfIuxNg',
-    appId: '1:820250335949:android:471e591efe4c404f402784',
+    appId: '1:820250335949:android:973dd85da0773b11402784',
     messagingSenderId: '820250335949',
     projectId: 'cashzone-7dd34',
     storageBucket: 'cashzone-7dd34.firebasestorage.app',
@@ -63,6 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '820250335949',
     projectId: 'cashzone-7dd34',
     storageBucket: 'cashzone-7dd34.firebasestorage.app',
+    androidClientId: '820250335949-66caidf0e40oias06tgf5mdrblav4ti6.apps.googleusercontent.com',
+    iosClientId: '820250335949-975f60k7bo3ta1b0dk9vmo5lmko47g7s.apps.googleusercontent.com',
     iosBundleId: 'com.example.mahypApp',
   );
 

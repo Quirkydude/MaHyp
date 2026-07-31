@@ -40,7 +40,9 @@ class _SuccessState extends State<SuccessIllustration> with TickerProviderStateM
 
   @override
   void dispose() {
-    for (final c in [_ring, _p1, _p2, _p3, _p4, _p5, _p6, _star1, _star2]) c.dispose();
+    for (final c in [_ring, _p1, _p2, _p3, _p4, _p5, _p6, _star1, _star2]) {
+      c.dispose();
+    }
     super.dispose();
   }
 

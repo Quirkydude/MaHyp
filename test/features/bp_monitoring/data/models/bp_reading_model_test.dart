@@ -1,10 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mahyp_app/features/bp_monitoring/data/models/bp_reading_model.dart';
-import 'package:mahyp_app/features/bp_monitoring/data/models/bp_reading_model.dart' as bp_model;
+import 'package:mahyp_app/features/bp_monitoring/data/models/bp_reading_model.dart'
+    as bp_model;
 
 void main() {
   group('BPReadingModel Category Logic', () {
-    test('category should be normal for 110/70', () {
+    test('category should be controlled for 110/70', () {
       final reading = BPReadingModel(
         id: '1',
         systolic: 110,
@@ -13,11 +14,11 @@ void main() {
         timeOfDay: bp_model.MeasurementTime.morning,
       );
 
-      expect(reading.category, BPCategory.normal);
-      expect(reading.categoryName, 'Normal');
+      expect(reading.category, BPCategory.controlled);
+      expect(reading.categoryName, 'Controlled');
     });
 
-    test('category should be elevated for 125/75', () {
+    test('category should be controlled for 125/75', () {
       final reading = BPReadingModel(
         id: '2',
         systolic: 125,
@@ -26,11 +27,11 @@ void main() {
         timeOfDay: bp_model.MeasurementTime.afternoon,
       );
 
-      expect(reading.category, BPCategory.elevated);
-      expect(reading.categoryName, 'Elevated');
+      expect(reading.category, BPCategory.controlled);
+      expect(reading.categoryName, 'Controlled');
     });
 
-    test('category should be highStage1 for 135/85', () {
+    test('category should be controlled for 135/85', () {
       final reading = BPReadingModel(
         id: '3',
         systolic: 135,
@@ -39,10 +40,10 @@ void main() {
         timeOfDay: bp_model.MeasurementTime.evening,
       );
 
-      expect(reading.category, BPCategory.highStage1);
+      expect(reading.category, BPCategory.controlled);
     });
 
-    test('category should be highStage2 for 145/95', () {
+    test('category should be notControlled for 145/95', () {
       final reading = BPReadingModel(
         id: '4',
         systolic: 145,
@@ -51,7 +52,7 @@ void main() {
         timeOfDay: bp_model.MeasurementTime.night,
       );
 
-      expect(reading.category, BPCategory.highStage2);
+      expect(reading.category, BPCategory.notControlled);
       expect(reading.needsAttention, true);
     });
 

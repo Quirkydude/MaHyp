@@ -1,4 +1,4 @@
-package com.example.mahyp_app
+package com.mahypucc.app
 
 import io.flutter.embedding.android.FlutterActivity
 

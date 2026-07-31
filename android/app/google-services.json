@@ -108,6 +108,78 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:820250335949:android:973dd85da0773b11402784",
+        "android_client_info": {
+          "package_name": "com.mahypucc.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "820250335949-omrm3esdrppcgj3tj4mr7g53cfo9rp3m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLoOYuVxzN7FcOzRkG0eTw9JAQDfIuxNg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "820250335949-omrm3esdrppcgj3tj4mr7g53cfo9rp3m.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "820250335949-975f60k7bo3ta1b0dk9vmo5lmko47g7s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mahypApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:820250335949:android:8f069350cea727f4402784",
+        "android_client_info": {
+          "package_name": "com.mahypucc.com"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "820250335949-omrm3esdrppcgj3tj4mr7g53cfo9rp3m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLoOYuVxzN7FcOzRkG0eTw9JAQDfIuxNg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "820250335949-omrm3esdrppcgj3tj4mr7g53cfo9rp3m.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "820250335949-975f60k7bo3ta1b0dk9vmo5lmko47g7s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mahypApp"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

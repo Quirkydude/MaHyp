@@ -16,22 +16,22 @@ class EducationPage extends StatefulWidget {
 }
 
 class _EducationPageState extends State<EducationPage> {
-  // Track which card is currently pressed for animation feedback
   EducationType? _pressedCard;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
-  // Define topics data for building the list with animations
   final List<_TopicData> _topics = const [
     _TopicData(
       icon: Icons.favorite,
       gradient: LinearGradient(colors: [Color(0xFFFF6B6B), Color(0xFFEE5A6F)]),
-      title: 'Understanding\nHypertension',
+      title: 'Understanding Hypertension',
       subtitle: 'Learn about high blood pressure',
       type: EducationType.hypertension,
     ),
     _TopicData(
       icon: Icons.monitor_heart,
       gradient: LinearGradient(colors: [Color(0xFF4ECDC4), Color(0xFF44A08D)]),
-      title: 'How to Measure\nBlood Pressure',
+      title: 'How to Measure Blood Pressure',
       subtitle: 'Step-by-step guide',
       type: EducationType.measurement,
     ),
@@ -66,7 +66,25 @@ class _EducationPageState extends State<EducationPage> {
   ];
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  List<_TopicData> get _filteredTopics {
+    if (_searchQuery.isEmpty) return _topics;
+    final q = _searchQuery.toLowerCase();
+    return _topics
+        .where((t) =>
+            t.title.toLowerCase().contains(q) ||
+            t.subtitle.toLowerCase().contains(q))
+        .toList();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final filtered = _filteredTopics;
+
     return MainLayout(
       currentIndex: 3,
       child: Scaffold(
@@ -82,12 +100,24 @@ class _EducationPageState extends State<EducationPage> {
 
               // Search Bar
               TextField(
+                controller: _searchController,
+                onChanged: (value) => setState(() => _searchQuery = value),
                 decoration: InputDecoration(
                   hintText: 'Search Health Topics',
                   prefixIcon: const Icon(
                     Icons.search,
                     color: AppColors.primaryTurquoise,
                   ),
+                  suffixIcon: _searchQuery.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.clear,
+                              color: AppColors.textSecondary),
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() => _searchQuery = '');
+                          },
+                        )
+                      : null,
                   filled: true,
                   fillColor: AppColors.inputBackground,
                   border: OutlineInputBorder(
@@ -101,30 +131,44 @@ class _EducationPageState extends State<EducationPage> {
 
               const SizedBox(height: AppDimensions.spacing24),
 
-              // Education Topics with staggered animations
-              ...List.generate(_topics.length, (index) {
-                final topic = _topics[index];
-                return TweenAnimationBuilder<double>(
-                  tween: Tween(begin: 0.0, end: 1.0),
-                  duration: Duration(milliseconds: 400 + (index * 80)),
-                  curve: Curves.easeOutBack,
-                  builder: (context, value, child) {
-                    return Transform.translate(
-                      offset: Offset(0, 20 * (1 - value)),
-                      child: Opacity(opacity: value, child: child),
-                    );
-                  },
-                  child: _buildTopicCard(
-                    icon: topic.icon,
-                    gradient: topic.gradient,
-                    title: topic.title,
-                    subtitle: topic.subtitle,
-                    type: topic.type,
-                  ),
-                );
-              }),
+              if (filtered.isEmpty) ...[
+                const SizedBox(height: 60),
+                const Icon(Icons.search_off,
+                    size: 64, color: AppColors.textSecondary),
+                const SizedBox(height: AppDimensions.spacing16),
+                Text(
+                  'No topics match "$_searchQuery"',
+                  style: AppTextStyles.bodyMedium
+                      .copyWith(color: AppColors.textSecondary),
+                  textAlign: TextAlign.center,
+                ),
+              ] else ...[
+                // Education Topics with staggered animations
+                ...List.generate(filtered.length, (index) {
+                  final topic = filtered[index];
+                  return TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0.0, end: 1.0),
+                    duration: Duration(milliseconds: 400 + (index * 80)),
+                    curve: Curves.easeOutBack,
+                    builder: (context, value, child) {
+                      return Transform.translate(
+                        offset: Offset(0, 20 * (1 - value)),
+                        child: Opacity(opacity: value, child: child),
+                      );
+                    },
+                    child: _buildTopicCard(
+                      icon: topic.icon,
+                      gradient: topic.gradient,
+                      title: topic.title,
+                      subtitle: topic.subtitle,
+                      type: topic.type,
+                    ),
+                  );
+                }),
+              ],
 
-              const SizedBox(height: AppDimensions.spacing64 + AppDimensions.spacing16),
+              const SizedBox(
+                  height: AppDimensions.spacing64 + AppDimensions.spacing16),
             ],
           ),
         ),
@@ -132,7 +176,6 @@ class _EducationPageState extends State<EducationPage> {
     );
   }
 
-  /// Builds a topic card with press animation for elderly-friendly touch feedback.
   Widget _buildTopicCard({
     required IconData icon,
     required Gradient gradient,
@@ -173,7 +216,6 @@ class _EducationPageState extends State<EducationPage> {
             ),
             child: Row(
               children: [
-                // Icon Container
                 Container(
                   width: 70,
                   height: 70,
@@ -185,10 +227,7 @@ class _EducationPageState extends State<EducationPage> {
                   ),
                   child: Icon(icon, size: 36, color: AppColors.white),
                 ),
-
                 const SizedBox(width: AppDimensions.spacing16),
-
-                // Text Content
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,8 +249,6 @@ class _EducationPageState extends State<EducationPage> {
                     ],
                   ),
                 ),
-
-                // Arrow
                 const Icon(
                   Icons.arrow_forward_ios,
                   color: AppColors.textSecondary,
@@ -226,7 +263,6 @@ class _EducationPageState extends State<EducationPage> {
   }
 }
 
-/// Internal data class for topic configuration
 class _TopicData {
   final IconData icon;
   final Gradient gradient;

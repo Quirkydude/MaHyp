@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'auth_access_service.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -127,10 +128,14 @@ class AuthService {
 
   // Sign out
   Future<void> signOut() async {
+    final uid = _auth.currentUser?.uid;
     await Future.wait([
       _auth.signOut(),
       _googleSignIn.signOut(),
       FacebookAuth.instance.logOut(),
     ]);
+    if (uid != null) {
+      await AuthAccessService.clear(uid);
+    }
   }
 }
