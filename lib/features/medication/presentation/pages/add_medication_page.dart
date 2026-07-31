@@ -475,11 +475,14 @@ class _AddMedicationPageState extends ConsumerState<AddMedicationPage>
                   Icons.keyboard_arrow_down,
                   color: AppColors.primaryTurquoise,
                 ),
-                style: AppTextStyles.input,
+                style: AppTextStyles.input.copyWith(color: AppColors.textPrimary),
                 items: TimeOfDay.values.map((time) {
                   return DropdownMenuItem(
                     value: time,
-                    child: Text(_getTimeOfDayLabel(time)),
+                    child: Text(
+                      _getTimeOfDayLabel(time),
+                      style: AppTextStyles.input.copyWith(color: AppColors.textPrimary),
+                    ),
                   );
                 }).toList(),
                 onChanged: (value) {

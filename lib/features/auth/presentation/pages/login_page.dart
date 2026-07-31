@@ -229,8 +229,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 const SizedBox(height: AppDimensions.spacing40),
 
                 CustomTextField(
-                  label: 'Email Address',
-                  hint: 'example@example.com',
+                  label: 'Email or Mobile Number',
+                  hint: 'example@email.com or 0241337983',
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   validator: _validateEmail,
