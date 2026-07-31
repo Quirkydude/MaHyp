@@ -3,7 +3,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../data/models/notification_model.dart';
 
 /// Card widget for displaying a single notification
-/// 
+///
 /// Designed with large touch targets for elderly users
 class NotificationCard extends StatelessWidget {
   final NotificationItem notification;
@@ -30,11 +30,7 @@ class NotificationCard extends StatelessWidget {
           color: AppColors.error.withValues(alpha: 0.9),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: const Icon(
-          Icons.delete_outline,
-          color: Colors.white,
-          size: 28,
-        ),
+        child: const Icon(Icons.delete_outline, color: Colors.white, size: 28),
       ),
       child: GestureDetector(
         onTap: onTap,
@@ -42,13 +38,17 @@ class NotificationCard extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: notification.isRead 
-                ? AppColors.cardBackground 
+            color: notification.isRead
+                ? AppColors.cardBackground
                 : AppColors.primaryTurquoise.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(12),
-            border: notification.isRead 
-                ? Border.all(color: AppColors.inputBorder.withValues(alpha: 0.5))
-                : Border.all(color: AppColors.primaryTurquoise.withValues(alpha: 0.3)),
+            border: notification.isRead
+                ? Border.all(
+                    color: AppColors.inputBorder.withValues(alpha: 0.5),
+                  )
+                : Border.all(
+                    color: AppColors.primaryTurquoise.withValues(alpha: 0.3),
+                  ),
             boxShadow: [
               BoxShadow(
                 color: AppColors.shadow,
@@ -88,8 +88,8 @@ class NotificationCard extends StatelessWidget {
                             style: TextStyle(
                               color: AppColors.textPrimary,
                               fontSize: 16,
-                              fontWeight: notification.isRead 
-                                  ? FontWeight.w500 
+                              fontWeight: notification.isRead
+                                  ? FontWeight.w500
                                   : FontWeight.w600,
                             ),
                             maxLines: 2,
@@ -143,7 +143,9 @@ class NotificationCard extends StatelessWidget {
                             vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            color: _getIconBackgroundColor().withValues(alpha: 0.1),
+                            color: _getIconBackgroundColor().withValues(
+                              alpha: 0.1,
+                            ),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(

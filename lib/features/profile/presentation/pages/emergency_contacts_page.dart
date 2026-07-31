@@ -30,8 +30,7 @@ class EmergencyContactsPage extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline,
-                  size: 48, color: AppColors.error),
+              const Icon(Icons.error_outline, size: 48, color: AppColors.error),
               const SizedBox(height: 16),
               const Text('Could not load contacts'),
               TextButton(
@@ -84,8 +83,9 @@ class EmergencyContactsPage extends ConsumerWidget {
             Text(
               'Add your doctor, family members, or pharmacist so you can reach them quickly in an emergency.',
               textAlign: TextAlign.center,
-              style: AppTextStyles.bodyMedium
-                  .copyWith(color: AppColors.textSecondary),
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(height: 32),
             ElevatedButton.icon(
@@ -96,9 +96,12 @@ class EmergencyContactsPage extends ConsumerWidget {
                 backgroundColor: AppColors.primaryTurquoise,
                 foregroundColor: AppColors.white,
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 24, vertical: 14),
+                  horizontal: 24,
+                  vertical: 14,
+                ),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
           ],
@@ -108,7 +111,10 @@ class EmergencyContactsPage extends ConsumerWidget {
   }
 
   Widget _buildList(
-      BuildContext context, WidgetRef ref, List<EmergencyContactModel> contacts) {
+    BuildContext context,
+    WidgetRef ref,
+    List<EmergencyContactModel> contacts,
+  ) {
     return ListView.builder(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
       itemCount: contacts.length,
@@ -140,12 +146,14 @@ class EmergencyContactsPage extends ConsumerWidget {
   }
 
   void _confirmDelete(
-      BuildContext context, WidgetRef ref, EmergencyContactModel contact) {
+    BuildContext context,
+    WidgetRef ref,
+    EmergencyContactModel contact,
+  ) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Remove Contact?'),
         content: Text('Remove ${contact.name} from your emergency contacts?'),
         actions: [
@@ -284,7 +292,9 @@ class _ContactCard extends StatelessWidget {
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 2),
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: _relationColor.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(8),
@@ -362,12 +372,14 @@ class _AddContactSheetState extends State<_AddContactSheet> {
   void _save() {
     if (!_formKey.currentState!.validate()) return;
     HapticFeedback.mediumImpact();
-    widget.onSave(EmergencyContactModel(
-      id: '',
-      name: _nameCtrl.text.trim(),
-      phone: _phoneCtrl.text.trim(),
-      relation: _relation,
-    ));
+    widget.onSave(
+      EmergencyContactModel(
+        id: '',
+        name: _nameCtrl.text.trim(),
+        phone: _phoneCtrl.text.trim(),
+        relation: _relation,
+      ),
+    );
     Navigator.pop(context);
   }
 
@@ -400,8 +412,7 @@ class _AddContactSheetState extends State<_AddContactSheet> {
             ),
             const SizedBox(height: 20),
 
-            Text('Add Emergency Contact',
-                style: AppTextStyles.h3),
+            Text('Add Emergency Contact', style: AppTextStyles.h3),
             const SizedBox(height: 20),
 
             // Name field
@@ -409,10 +420,13 @@ class _AddContactSheetState extends State<_AddContactSheet> {
               controller: _nameCtrl,
               decoration: InputDecoration(
                 labelText: 'Full Name',
-                prefixIcon: const Icon(Icons.person_outline,
-                    color: AppColors.primaryTurquoise),
+                prefixIcon: const Icon(
+                  Icons.person_outline,
+                  color: AppColors.primaryTurquoise,
+                ),
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               validator: (v) =>
                   v == null || v.trim().isEmpty ? 'Enter a name' : null,
@@ -426,10 +440,13 @@ class _AddContactSheetState extends State<_AddContactSheet> {
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(
                 labelText: 'Phone Number',
-                prefixIcon: const Icon(Icons.phone_outlined,
-                    color: AppColors.primaryTurquoise),
+                prefixIcon: const Icon(
+                  Icons.phone_outlined,
+                  color: AppColors.primaryTurquoise,
+                ),
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               validator: (v) =>
                   v == null || v.trim().isEmpty ? 'Enter a phone number' : null,
@@ -437,15 +454,17 @@ class _AddContactSheetState extends State<_AddContactSheet> {
             const SizedBox(height: 16),
 
             // Relation chips
-            Text('Relation',
-                style: AppTextStyles.inputLabel),
+            Text('Relation', style: AppTextStyles.inputLabel),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
               children: ContactRelation.values.map((r) {
                 final label = EmergencyContactModel(
-                        id: '', name: '', phone: '', relation: r)
-                    .relationLabel;
+                  id: '',
+                  name: '',
+                  phone: '',
+                  relation: r,
+                ).relationLabel;
                 return ChoiceChip(
                   label: Text(label),
                   selected: _relation == r,
@@ -471,10 +490,13 @@ class _AddContactSheetState extends State<_AddContactSheet> {
                   foregroundColor: AppColors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
-                child: const Text('Save Contact',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                child: const Text(
+                  'Save Contact',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
               ),
             ),
           ],

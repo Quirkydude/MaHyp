@@ -124,16 +124,19 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
-      
+
       setState(() => _isLoading = false);
       if (mounted) {
         // Navigate to phone verification page
-        context.push('/phone-verification', extra: {
-          'phone': _mobileController.text.trim(),
-          'email': _emailController.text.trim(),
-          'name': _fullNameController.text.trim(),
-          'dob': _parseDob(),
-        });
+        context.push(
+          '/phone-verification',
+          extra: {
+            'phone': _mobileController.text.trim(),
+            'email': _emailController.text.trim(),
+            'name': _fullNameController.text.trim(),
+            'dob': _parseDob(),
+          },
+        );
       }
     }
   }
@@ -161,12 +164,14 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
       final user = credential.user;
       if (user != null) {
-        await ref.read(userProfileServiceProvider).ensureUserProfile(
-          uid: user.uid,
-          fullName: user.displayName ?? '',
-          email: user.email ?? '',
-          avatarUrl: user.photoURL,
-        );
+        await ref
+            .read(userProfileServiceProvider)
+            .ensureUserProfile(
+              uid: user.uid,
+              fullName: user.displayName ?? '',
+              email: user.email ?? '',
+              avatarUrl: user.photoURL,
+            );
       }
 
       if (mounted) {
@@ -176,7 +181,9 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.message ?? 'Social sign up failed. Please try again.'),
+            content: Text(
+              e.message ?? 'Social sign up failed. Please try again.',
+            ),
             backgroundColor: AppColors.error,
           ),
         );

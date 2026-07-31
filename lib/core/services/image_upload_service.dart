@@ -22,7 +22,7 @@ class ImageUploadService {
 
       // Read file as bytes to avoid path permission issues on Android
       final Uint8List bytes = await imageFile.readAsBytes();
-      
+
       // Upload the file data
       final metadata = SettableMetadata(contentType: 'image/jpeg');
       await ref.putData(bytes, metadata);

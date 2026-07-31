@@ -12,7 +12,6 @@ import '../../../../shared/widgets/frequency_chip.dart';
 import '../providers/medication_provider.dart';
 import '../../data/models/medication_model.dart';
 
-
 /// Add Medication Page with improved time logic
 class AddMedicationPage extends ConsumerStatefulWidget {
   const AddMedicationPage({super.key});
@@ -26,7 +25,7 @@ class _AddMedicationPageState extends ConsumerState<AddMedicationPage>
   final _formKey = GlobalKey<FormState>();
   final _dosageController = TextEditingController();
   final _notesController = TextEditingController();
-  
+
   String? _selectedMedicationId;
   String? _selectedMedicationName;
   String? _selectedMedicationDosage;
@@ -70,10 +69,12 @@ class _AddMedicationPageState extends ConsumerState<AddMedicationPage>
   /// Load available medications from backend
   Future<void> _loadAvailableMedications() async {
     setState(() => _isLoadingMedications = true);
-    
+
     try {
-      final medications = await ref.read(medicationServiceProvider).getAvailableMedications();
-      
+      final medications = await ref
+          .read(medicationServiceProvider)
+          .getAvailableMedications();
+
       if (mounted) {
         setState(() {
           _availableMedications = medications;

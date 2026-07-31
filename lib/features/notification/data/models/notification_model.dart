@@ -1,11 +1,6 @@
 library;
 
-enum NotificationType {
-  medicationReminder,
-  bpReminder,
-  system,
-  healthTip,
-}
+enum NotificationType { medicationReminder, bpReminder, system, healthTip }
 
 class NotificationItem {
   final String id;

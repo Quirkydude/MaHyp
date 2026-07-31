@@ -36,7 +36,9 @@ class UserProfile {
       fullName: data['fullName'] as String? ?? '',
       email: data['email'] as String? ?? '',
       mobile: data['mobile'] as String?,
-      dob: data['dob'] is Timestamp ? (data['dob'] as Timestamp).toDate() : null,
+      dob: data['dob'] is Timestamp
+          ? (data['dob'] as Timestamp).toDate()
+          : null,
       avatarUrl: data['avatarUrl'] as String?,
       isPhoneVerified: data['isPhoneVerified'] as bool? ?? false,
       createdAt: data['createdAt'] is Timestamp
@@ -130,7 +132,7 @@ class UserProfileService {
   }) async {
     final docRef = _usersCollection.doc(uid);
     final docSnap = await docRef.get();
-    
+
     // If the profile document doesn't exist, create it instead of updating
     if (!docSnap.exists) {
       final user = FirebaseAuth.instance.currentUser;

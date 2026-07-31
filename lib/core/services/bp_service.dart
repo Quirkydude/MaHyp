@@ -27,10 +27,8 @@ class BPService {
     final snapshot = await _bpCollection
         .orderBy('recordedAt', descending: true)
         .get();
-    
-    return snapshot.docs
-        .map((doc) => _fromFirestore(doc))
-        .toList();
+
+    return snapshot.docs.map((doc) => _fromFirestore(doc)).toList();
   }
 
   /// Stream of all readings (real-time updates)
@@ -38,8 +36,10 @@ class BPService {
     return _bpCollection
         .orderBy('recordedAt', descending: true)
         .snapshots()
-        .map((snapshot) => 
-            snapshot.docs.map((doc) => _fromFirestore(doc)).toList());
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => _fromFirestore(doc)).toList(),
+        );
   }
 
   /// Get readings for a specific period
@@ -49,10 +49,8 @@ class BPService {
         .where('recordedAt', isGreaterThan: Timestamp.fromDate(cutoff))
         .orderBy('recordedAt', descending: true)
         .get();
-    
-    return snapshot.docs
-        .map((doc) => _fromFirestore(doc))
-        .toList();
+
+    return snapshot.docs.map((doc) => _fromFirestore(doc)).toList();
   }
 
   /// Get latest reading
@@ -61,7 +59,7 @@ class BPService {
         .orderBy('recordedAt', descending: true)
         .limit(1)
         .get();
-    
+
     if (snapshot.docs.isEmpty) return null;
     return _fromFirestore(snapshot.docs.first);
   }

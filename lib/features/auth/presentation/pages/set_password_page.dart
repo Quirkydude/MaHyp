@@ -22,7 +22,7 @@ class SetPasswordPage extends ConsumerStatefulWidget {
   final bool isPhoneVerified;
 
   const SetPasswordPage({
-    super.key, 
+    super.key,
     this.email,
     this.phone,
     this.fullName,
@@ -112,14 +112,16 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
       }
 
       try {
-        await ref.read(userProfileServiceProvider).createUserProfile(
-          uid: user.uid,
-          fullName: widget.fullName ?? '',
-          email: email,
-          mobile: widget.mobile ?? widget.phone,
-          dob: widget.dob,
-          isPhoneVerified: widget.isPhoneVerified,
-        );
+        await ref
+            .read(userProfileServiceProvider)
+            .createUserProfile(
+              uid: user.uid,
+              fullName: widget.fullName ?? '',
+              email: email,
+              mobile: widget.mobile ?? widget.phone,
+              dob: widget.dob,
+              isPhoneVerified: widget.isPhoneVerified,
+            );
       } catch (e) {
         // Roll back Auth user so retry is not blocked by email-already-in-use.
         await user.delete();
@@ -166,10 +168,7 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
         }
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(message),
-            backgroundColor: AppColors.error,
-          ),
+          SnackBar(content: Text(message), backgroundColor: AppColors.error),
         );
       }
     } catch (e) {

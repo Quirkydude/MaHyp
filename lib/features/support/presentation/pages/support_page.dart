@@ -9,7 +9,6 @@ import '../../../../shared/widgets/main_layout.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
 
-
 /// Support & Help Page with FAQs and contact options
 class SupportPage extends StatefulWidget {
   const SupportPage({super.key});
@@ -64,9 +63,7 @@ class _SupportPageState extends State<SupportPage> {
             children: [
               const SizedBox(height: AppDimensions.spacing16),
 
-              Center(
-                child: DoctorConsultIllustration(size: 200),
-              ),
+              Center(child: DoctorConsultIllustration(size: 200)),
               const SizedBox(height: AppDimensions.spacing24),
 
               // FAQs Section
@@ -316,7 +313,10 @@ class _SupportPageState extends State<SupportPage> {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              _showSuccessDialog('Message Sent!', 'Your clinician will respond soon.');
+              _showSuccessDialog(
+                'Message Sent!',
+                'Your clinician will respond soon.',
+              );
             },
             child: const Text('Send'),
           ),
@@ -390,7 +390,10 @@ class _SupportPageState extends State<SupportPage> {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              _showSuccessDialog('Request Sent!', 'A pharmacist will contact you shortly.');
+              _showSuccessDialog(
+                'Request Sent!',
+                'A pharmacist will contact you shortly.',
+              );
             },
             child: const Text('Connect'),
           ),
@@ -444,9 +447,14 @@ class _SupportPageState extends State<SupportPage> {
               onPressed: () => Navigator.pop(context),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryTurquoise,
-                padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacing16),
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppDimensions.spacing16,
+                ),
               ),
-              child: const Text('Done', style: TextStyle(color: AppColors.white)),
+              child: const Text(
+                'Done',
+                style: TextStyle(color: AppColors.white),
+              ),
             ),
           ),
         ],

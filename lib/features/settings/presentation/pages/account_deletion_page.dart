@@ -13,7 +13,8 @@ class AccountDeletionPage extends ConsumerStatefulWidget {
   const AccountDeletionPage({super.key});
 
   @override
-  ConsumerState<AccountDeletionPage> createState() => _AccountDeletionPageState();
+  ConsumerState<AccountDeletionPage> createState() =>
+      _AccountDeletionPageState();
 }
 
 class _AccountDeletionPageState extends ConsumerState<AccountDeletionPage> {
@@ -32,7 +33,9 @@ class _AccountDeletionPageState extends ConsumerState<AccountDeletionPage> {
     if (!_isConfirmed) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please confirm that you understand this action is irreversible'),
+          content: Text(
+            'Please confirm that you understand this action is irreversible',
+          ),
           backgroundColor: AppColors.error,
         ),
       );
@@ -71,9 +74,7 @@ class _AccountDeletionPageState extends ConsumerState<AccountDeletionPage> {
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              style: TextButton.styleFrom(
-                foregroundColor: AppColors.error,
-              ),
+              style: TextButton.styleFrom(foregroundColor: AppColors.error),
               child: const Text('Delete'),
             ),
           ],
@@ -98,11 +99,7 @@ class _AccountDeletionPageState extends ConsumerState<AccountDeletionPage> {
           context: context,
           barrierDismissible: false,
           builder: (context) => AlertDialog(
-            icon: Icon(
-              Icons.check_circle,
-              color: AppColors.success,
-              size: 64,
-            ),
+            icon: Icon(Icons.check_circle, color: AppColors.success, size: 64),
             title: const Text('Account Deleted'),
             content: const Text(
               'Your account and all associated data have been permanently deleted.\n\n'
@@ -123,10 +120,11 @@ class _AccountDeletionPageState extends ConsumerState<AccountDeletionPage> {
       }
     } on FirebaseAuthException catch (e) {
       setState(() => _isLoading = false);
-      
+
       String message = 'Failed to delete account';
       if (e.code == 'requires-recent-login') {
-        message = 'Please re-login to delete your account. This is a security measure.';
+        message =
+            'Please re-login to delete your account. This is a security measure.';
       } else if (e.code == 'network-request-failed') {
         message = 'Network error. Please check your connection and try again.';
       } else {
@@ -135,10 +133,7 @@ class _AccountDeletionPageState extends ConsumerState<AccountDeletionPage> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(message),
-            backgroundColor: AppColors.error,
-          ),
+          SnackBar(content: Text(message), backgroundColor: AppColors.error),
         );
       }
     } catch (e) {
@@ -208,9 +203,7 @@ class _AccountDeletionPageState extends ConsumerState<AccountDeletionPage> {
                 // Warning Title
                 Text(
                   'Delete Your Account',
-                  style: AppTextStyles.h2.copyWith(
-                    color: AppColors.error,
-                  ),
+                  style: AppTextStyles.h2.copyWith(color: AppColors.error),
                   textAlign: TextAlign.center,
                 ),
 
@@ -221,8 +214,12 @@ class _AccountDeletionPageState extends ConsumerState<AccountDeletionPage> {
                   padding: const EdgeInsets.all(AppDimensions.spacing16),
                   decoration: BoxDecoration(
                     color: AppColors.error.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-                    border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
+                    borderRadius: BorderRadius.circular(
+                      AppDimensions.radiusMedium,
+                    ),
+                    border: Border.all(
+                      color: AppColors.error.withValues(alpha: 0.3),
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -256,9 +253,7 @@ class _AccountDeletionPageState extends ConsumerState<AccountDeletionPage> {
                         '✓ Your profile information\n'
                         '✓ Health insights and reports\n'
                         '✓ All reminders and notifications',
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          height: 1.6,
-                        ),
+                        style: AppTextStyles.bodyMedium.copyWith(height: 1.6),
                       ),
                     ],
                   ),
@@ -284,10 +279,7 @@ class _AccountDeletionPageState extends ConsumerState<AccountDeletionPage> {
                 const SizedBox(height: AppDimensions.spacing24),
 
                 // Phone Verification
-                Text(
-                  'Verify your identity',
-                  style: AppTextStyles.inputLabel,
-                ),
+                Text('Verify your identity', style: AppTextStyles.inputLabel),
                 const SizedBox(height: AppDimensions.spacing8),
                 Text(
                   'Enter your phone number to confirm account deletion',
@@ -303,9 +295,7 @@ class _AccountDeletionPageState extends ConsumerState<AccountDeletionPage> {
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
                   validator: _validatePhone,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   prefixIcon: const Icon(
                     Icons.phone_outlined,
                     color: AppColors.error,

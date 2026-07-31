@@ -52,19 +52,19 @@ class _BPHistoryPageState extends ConsumerState<BPHistoryPage> {
         ),
         body: readingsAsync.when(
           loading: () => const Center(
-            child: CircularProgressIndicator(
-              color: AppColors.primaryTurquoise,
-            ),
+            child: CircularProgressIndicator(color: AppColors.primaryTurquoise),
           ),
           error: (error, _) => Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline,
-                    size: 48, color: AppColors.error),
+                const Icon(
+                  Icons.error_outline,
+                  size: 48,
+                  color: AppColors.error,
+                ),
                 const SizedBox(height: AppDimensions.spacing16),
-                Text('Error loading readings',
-                    style: AppTextStyles.bodyMedium),
+                Text('Error loading readings', style: AppTextStyles.bodyMedium),
                 const SizedBox(height: AppDimensions.spacing8),
                 TextButton(
                   onPressed: () => ref.read(bpProvider.notifier).refresh(),
@@ -115,8 +115,7 @@ class _BPHistoryPageState extends ConsumerState<BPHistoryPage> {
                     children: [
                       Text('Readings', style: AppTextStyles.h3),
                       TextButton(
-                        onPressed: () =>
-                            setState(() => _showAll = !_showAll),
+                        onPressed: () => setState(() => _showAll = !_showAll),
                         child: Text(_showAll ? 'Show Less' : 'View All'),
                       ),
                     ],
@@ -124,8 +123,9 @@ class _BPHistoryPageState extends ConsumerState<BPHistoryPage> {
                   const SizedBox(height: AppDimensions.spacing8),
 
                   // Readings List
-                  ...(_showAll ? allReadings : allReadings.take(10))
-                      .map((r) => _buildReadingCard(context, ref, r)),
+                  ...(_showAll ? allReadings : allReadings.take(10)).map(
+                    (r) => _buildReadingCard(context, ref, r),
+                  ),
 
                   const SizedBox(height: AppDimensions.spacing80),
                 ],
@@ -158,8 +158,9 @@ class _BPHistoryPageState extends ConsumerState<BPHistoryPage> {
           Text(
             'Start tracking your blood pressure\nby recording your first reading',
             textAlign: TextAlign.center,
-            style: AppTextStyles.bodyMedium
-                .copyWith(color: AppColors.textSecondary),
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.textSecondary,
+            ),
           ),
         ],
       ),
@@ -178,10 +179,7 @@ class _BPHistoryPageState extends ConsumerState<BPHistoryPage> {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-        border: Border.all(
-          color: catColor.withValues(alpha: 0.3),
-          width: 1.5,
-        ),
+        border: Border.all(color: catColor.withValues(alpha: 0.3), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,8 +191,9 @@ class _BPHistoryPageState extends ConsumerState<BPHistoryPage> {
                 height: 40,
                 decoration: BoxDecoration(
                   color: catColor.withValues(alpha: 0.1),
-                  borderRadius:
-                      BorderRadius.circular(AppDimensions.radiusSmall),
+                  borderRadius: BorderRadius.circular(
+                    AppDimensions.radiusSmall,
+                  ),
                 ),
                 child: Icon(Icons.favorite, color: catColor, size: 20),
               ),
@@ -206,8 +205,7 @@ class _BPHistoryPageState extends ConsumerState<BPHistoryPage> {
                     Text(reading.formattedReading, style: AppTextStyles.h4),
                     Text(
                       reading.categoryName,
-                      style: AppTextStyles.bodySmall
-                          .copyWith(color: catColor),
+                      style: AppTextStyles.bodySmall.copyWith(color: catColor),
                     ),
                   ],
                 ),
@@ -221,8 +219,9 @@ class _BPHistoryPageState extends ConsumerState<BPHistoryPage> {
                   ),
                   Text(
                     DateFormat('h:mm a').format(reading.recordedAt),
-                    style: AppTextStyles.caption
-                        .copyWith(color: AppColors.textSecondary),
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                 ],
               ),
@@ -236,8 +235,9 @@ class _BPHistoryPageState extends ConsumerState<BPHistoryPage> {
             const SizedBox(height: AppDimensions.spacing8),
             Text(
               reading.notes!,
-              style: AppTextStyles.bodySmall
-                  .copyWith(color: AppColors.textSecondary),
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
           ],
         ],
@@ -321,18 +321,18 @@ class _TimeRangeSelector extends StatelessWidget {
             onTap: () => onChanged(range),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               decoration: BoxDecoration(
-                color: isActive ? AppColors.primaryTurquoise : Colors.transparent,
+                color: isActive
+                    ? AppColors.primaryTurquoise
+                    : Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 label,
                 style: TextStyle(
                   color: isActive ? AppColors.white : AppColors.textSecondary,
-                  fontWeight:
-                      isActive ? FontWeight.w700 : FontWeight.normal,
+                  fontWeight: isActive ? FontWeight.w700 : FontWeight.normal,
                   fontSize: 14,
                 ),
               ),
@@ -384,10 +384,14 @@ class _BPLineChart extends StatelessWidget {
     final allValues = sorted
         .expand((r) => [r.systolic.toDouble(), r.diastolic.toDouble()])
         .toList();
-    final minY = (allValues.reduce((a, b) => a < b ? a : b) - 10)
-        .clamp(40.0, 200.0);
-    final maxY = (allValues.reduce((a, b) => a > b ? a : b) + 10)
-        .clamp(60.0, 220.0);
+    final minY = (allValues.reduce((a, b) => a < b ? a : b) - 10).clamp(
+      40.0,
+      200.0,
+    );
+    final maxY = (allValues.reduce((a, b) => a > b ? a : b) + 10).clamp(
+      60.0,
+      220.0,
+    );
 
     return Container(
       height: 220,
@@ -422,14 +426,18 @@ class _BPLineChart extends StatelessWidget {
                 getTitlesWidget: (value, meta) => Text(
                   value.toInt().toString(),
                   style: const TextStyle(
-                      fontSize: 10, color: AppColors.textSecondary),
+                    fontSize: 10,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ),
             ),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
-                interval: sorted.length > 7 ? (sorted.length / 4).ceilToDouble() : 1,
+                interval: sorted.length > 7
+                    ? (sorted.length / 4).ceilToDouble()
+                    : 1,
                 getTitlesWidget: (value, meta) {
                   final idx = value.toInt();
                   if (idx < 0 || idx >= sorted.length) {
@@ -440,16 +448,20 @@ class _BPLineChart extends StatelessWidget {
                     child: Text(
                       DateFormat('d/M').format(sorted[idx].recordedAt),
                       style: const TextStyle(
-                          fontSize: 9, color: AppColors.textSecondary),
+                        fontSize: 9,
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                   );
                 },
               ),
             ),
             rightTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false)),
+              sideTitles: SideTitles(showTitles: false),
+            ),
             topTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false)),
+              sideTitles: SideTitles(showTitles: false),
+            ),
           ),
           // Reference lines at 120 and 140
           extraLinesData: ExtraLinesData(
@@ -463,9 +475,10 @@ class _BPLineChart extends StatelessWidget {
                   show: true,
                   alignment: Alignment.topRight,
                   style: const TextStyle(
-                      fontSize: 9,
-                      color: AppColors.warning,
-                      fontWeight: FontWeight.w600),
+                    fontSize: 9,
+                    color: AppColors.warning,
+                    fontWeight: FontWeight.w600,
+                  ),
                   labelResolver: (_) => '120',
                 ),
               ),
@@ -478,9 +491,10 @@ class _BPLineChart extends StatelessWidget {
                   show: true,
                   alignment: Alignment.topRight,
                   style: const TextStyle(
-                      fontSize: 9,
-                      color: AppColors.error,
-                      fontWeight: FontWeight.w600),
+                    fontSize: 9,
+                    color: AppColors.error,
+                    fontWeight: FontWeight.w600,
+                  ),
                   labelResolver: (_) => '140',
                 ),
               ),
@@ -498,11 +512,11 @@ class _BPLineChart extends StatelessWidget {
                 show: true,
                 getDotPainter: (spot, percent, bar, index) =>
                     FlDotCirclePainter(
-                  radius: 3,
-                  color: AppColors.white,
-                  strokeWidth: 2,
-                  strokeColor: AppColors.error,
-                ),
+                      radius: 3,
+                      color: AppColors.white,
+                      strokeWidth: 2,
+                      strokeColor: AppColors.error,
+                    ),
               ),
               belowBarData: BarAreaData(
                 show: true,
@@ -520,11 +534,11 @@ class _BPLineChart extends StatelessWidget {
                 show: true,
                 getDotPainter: (spot, percent, bar, index) =>
                     FlDotCirclePainter(
-                  radius: 3,
-                  color: AppColors.white,
-                  strokeWidth: 2,
-                  strokeColor: AppColors.primaryTurquoise,
-                ),
+                      radius: 3,
+                      color: AppColors.white,
+                      strokeWidth: 2,
+                      strokeColor: AppColors.primaryTurquoise,
+                    ),
               ),
               belowBarData: BarAreaData(
                 show: true,
@@ -534,7 +548,8 @@ class _BPLineChart extends StatelessWidget {
           ],
           lineTouchData: LineTouchData(
             touchTooltipData: LineTouchTooltipData(
-              getTooltipColor: (_) => AppColors.textPrimary.withValues(alpha: 0.9),
+              getTooltipColor: (_) =>
+                  AppColors.textPrimary.withValues(alpha: 0.9),
               getTooltipItems: (spots) => spots.map((s) {
                 final isSystemic = s.barIndex == 0;
                 return LineTooltipItem(
@@ -567,11 +582,12 @@ class _StatsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     if (readings.isEmpty) return const SizedBox.shrink();
 
-    final avgSys = readings.map((r) => r.systolic).reduce((a, b) => a + b) /
+    final avgSys =
+        readings.map((r) => r.systolic).reduce((a, b) => a + b) /
         readings.length;
     final avgDia =
         readings.map((r) => r.diastolic).reduce((a, b) => a + b) /
-            readings.length;
+        readings.length;
 
     return Row(
       children: [
@@ -608,8 +624,11 @@ class _StatChip extends StatelessWidget {
   final String value;
   final Color color;
 
-  const _StatChip(
-      {required this.label, required this.value, required this.color});
+  const _StatChip({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {

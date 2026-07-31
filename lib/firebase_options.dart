@@ -63,8 +63,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '820250335949',
     projectId: 'cashzone-7dd34',
     storageBucket: 'cashzone-7dd34.firebasestorage.app',
-    androidClientId: '820250335949-66caidf0e40oias06tgf5mdrblav4ti6.apps.googleusercontent.com',
-    iosClientId: '820250335949-975f60k7bo3ta1b0dk9vmo5lmko47g7s.apps.googleusercontent.com',
+    androidClientId:
+        '820250335949-66caidf0e40oias06tgf5mdrblav4ti6.apps.googleusercontent.com',
+    iosClientId:
+        '820250335949-975f60k7bo3ta1b0dk9vmo5lmko47g7s.apps.googleusercontent.com',
     iosBundleId: 'com.example.mahypApp',
   );
 

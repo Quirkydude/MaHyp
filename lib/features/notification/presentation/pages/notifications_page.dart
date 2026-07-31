@@ -10,7 +10,7 @@ import '../providers/notification_provider.dart';
 import '../widgets/notification_card.dart';
 
 /// Notifications page showing all in-app notifications
-/// 
+///
 /// Features:
 /// - Grouped by date (Today, Yesterday, Earlier)
 /// - Mark all as read action
@@ -73,8 +73,8 @@ class NotificationsPage extends ConsumerWidget {
       body: notificationState.isLoading
           ? const Center(child: CircularProgressIndicator())
           : notifications.isEmpty
-              ? _buildEmptyState(context)
-              : _buildNotificationList(context, ref, notifications),
+          ? _buildEmptyState(context)
+          : _buildNotificationList(context, ref, notifications),
     );
   }
 
@@ -144,31 +144,36 @@ class NotificationsPage extends ConsumerWidget {
                 ),
               ),
               // Notifications for this date
-              ...group.notifications.map((notification) => NotificationCard(
-                    notification: notification,
-                    onTap: () => _handleNotificationTap(context, ref, notification),
-                    onDismiss: () {
-                      ref.read(notificationProvider.notifier)
-                          .deleteNotification(notification.id);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Text('Notification removed'),
-                          action: SnackBarAction(
-                            label: 'Undo',
-                            onPressed: () {
-                              // Re-add notification
-                              ref.read(notificationProvider.notifier)
-                                  .addNotification(notification);
-                            },
-                          ),
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+              ...group.notifications.map(
+                (notification) => NotificationCard(
+                  notification: notification,
+                  onTap: () =>
+                      _handleNotificationTap(context, ref, notification),
+                  onDismiss: () {
+                    ref
+                        .read(notificationProvider.notifier)
+                        .deleteNotification(notification.id);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('Notification removed'),
+                        action: SnackBarAction(
+                          label: 'Undo',
+                          onPressed: () {
+                            // Re-add notification
+                            ref
+                                .read(notificationProvider.notifier)
+                                .addNotification(notification);
+                          },
                         ),
-                      );
-                    },
-                  )),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ],
           );
         },
@@ -205,13 +210,22 @@ class NotificationsPage extends ConsumerWidget {
 
     final groups = <_NotificationGroup>[];
     if (todayList.isNotEmpty) {
-      groups.add(_NotificationGroup(dateLabel: 'TODAY', notifications: todayList));
+      groups.add(
+        _NotificationGroup(dateLabel: 'TODAY', notifications: todayList),
+      );
     }
     if (yesterdayList.isNotEmpty) {
-      groups.add(_NotificationGroup(dateLabel: 'YESTERDAY', notifications: yesterdayList));
+      groups.add(
+        _NotificationGroup(
+          dateLabel: 'YESTERDAY',
+          notifications: yesterdayList,
+        ),
+      );
     }
     if (earlierList.isNotEmpty) {
-      groups.add(_NotificationGroup(dateLabel: 'EARLIER', notifications: earlierList));
+      groups.add(
+        _NotificationGroup(dateLabel: 'EARLIER', notifications: earlierList),
+      );
     }
 
     return groups;
@@ -246,9 +260,7 @@ class NotificationsPage extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Clear All Notifications?'),
         content: const Text(
           'This will remove all notifications. This action cannot be undone.',
@@ -275,10 +287,7 @@ class NotificationsPage extends ConsumerWidget {
                 ),
               );
             },
-            child: Text(
-              'Clear All',
-              style: TextStyle(color: AppColors.error),
-            ),
+            child: Text('Clear All', style: TextStyle(color: AppColors.error)),
           ),
         ],
       ),
@@ -291,8 +300,5 @@ class _NotificationGroup {
   final String dateLabel;
   final List<NotificationItem> notifications;
 
-  _NotificationGroup({
-    required this.dateLabel,
-    required this.notifications,
-  });
+  _NotificationGroup({required this.dateLabel, required this.notifications});
 }

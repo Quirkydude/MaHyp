@@ -221,18 +221,9 @@ class AppTheme {
           fontWeight: FontWeight.w600,
           color: AppColors.white,
         ),
-        bodyLarge: TextStyle(
-          fontSize: 16,
-          color: AppColors.white,
-        ),
-        bodyMedium: TextStyle(
-          fontSize: 14,
-          color: Color(0xFFB0B0B0),
-        ),
-        bodySmall: TextStyle(
-          fontSize: 12,
-          color: Color(0xFF909090),
-        ),
+        bodyLarge: TextStyle(fontSize: 16, color: AppColors.white),
+        bodyMedium: TextStyle(fontSize: 14, color: Color(0xFFB0B0B0)),
+        bodySmall: TextStyle(fontSize: 12, color: Color(0xFF909090)),
       ),
 
       // Input Decoration Theme

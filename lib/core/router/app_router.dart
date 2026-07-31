@@ -16,7 +16,8 @@ import '../../features/medication/presentation/pages/medication_list_page.dart';
 import '../../features/medication/presentation/pages/add_medication_page.dart';
 import '../../features/medication/presentation/pages/edit_medication_page.dart';
 import '../../features/medication/presentation/pages/medication_report_page.dart';
-import '../../features/medication/data/models/medication_model.dart' as med_model;
+import '../../features/medication/data/models/medication_model.dart'
+    as med_model;
 import '../../features/bp_monitoring/presentation/pages/record_bp_page.dart';
 import '../../features/bp_monitoring/presentation/pages/bp_history_page.dart';
 import '../../features/bp_monitoring/presentation/pages/bp_analysis_page.dart';
@@ -80,9 +81,7 @@ class AppRouter {
   ];
 
   // Routes accessible while authenticated but not yet verified
-  static const List<String> _unverifiedRoutes = [
-    emailVerification,
-  ];
+  static const List<String> _unverifiedRoutes = [emailVerification];
 
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
@@ -97,7 +96,8 @@ class AppRouter {
       final user = FirebaseAuth.instance.currentUser;
       final currentPath = state.matchedLocation;
 
-      final isPublicRoute = _publicRoutes.contains(currentPath) ||
+      final isPublicRoute =
+          _publicRoutes.contains(currentPath) ||
           currentPath.startsWith('/edit-medication');
       final isUnverifiedRoute = _unverifiedRoutes.contains(currentPath);
       final isLoggedIn = user != null;

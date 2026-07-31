@@ -5,11 +5,7 @@ class DashboardHeader extends StatelessWidget {
   final String title;
   final VoidCallback? onBackPressed;
 
-  const DashboardHeader({
-    super.key,
-    required this.title,
-    this.onBackPressed,
-  });
+  const DashboardHeader({super.key, required this.title, this.onBackPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -54,4 +50,3 @@ class DashboardHeader extends StatelessWidget {
     );
   }
 }
-

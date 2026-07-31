@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-enum SvgAnimationType {
-  pulse,
-  float,
-  wiggle,
-  bounce 
-}
+enum SvgAnimationType { pulse, float, wiggle, bounce }
 
 class AnimatedSvgWrapper extends StatefulWidget {
   final String assetPath;
@@ -24,7 +19,8 @@ class AnimatedSvgWrapper extends StatefulWidget {
   State<AnimatedSvgWrapper> createState() => _AnimatedSvgWrapperState();
 }
 
-class _AnimatedSvgWrapperState extends State<AnimatedSvgWrapper> with SingleTickerProviderStateMixin {
+class _AnimatedSvgWrapperState extends State<AnimatedSvgWrapper>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _animation;
 
@@ -32,12 +28,24 @@ class _AnimatedSvgWrapperState extends State<AnimatedSvgWrapper> with SingleTick
   void initState() {
     super.initState();
     if (widget.animationType == SvgAnimationType.bounce) {
-      _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
-      _animation = CurvedAnimation(parent: _controller, curve: Curves.elasticOut);
+      _controller = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 600),
+      );
+      _animation = CurvedAnimation(
+        parent: _controller,
+        curve: Curves.elasticOut,
+      );
       _controller.forward();
     } else {
-      _controller = AnimationController(vsync: this, duration: const Duration(seconds: 2));
-      _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+      _controller = AnimationController(
+        vsync: this,
+        duration: const Duration(seconds: 2),
+      );
+      _animation = CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      );
       _controller.repeat(reverse: true);
     }
   }
@@ -61,7 +69,7 @@ class _AnimatedSvgWrapperState extends State<AnimatedSvgWrapper> with SingleTick
 
         if (widget.animationType == SvgAnimationType.pulse) {
           return Transform.scale(
-            scale: 0.95 + (_animation.value * 0.1), 
+            scale: 0.95 + (_animation.value * 0.1),
             child: svgWidget,
           );
         } else if (widget.animationType == SvgAnimationType.float) {
@@ -75,10 +83,7 @@ class _AnimatedSvgWrapperState extends State<AnimatedSvgWrapper> with SingleTick
             child: svgWidget,
           );
         } else if (widget.animationType == SvgAnimationType.bounce) {
-          return Transform.scale(
-            scale: _animation.value,
-            child: svgWidget,
-          );
+          return Transform.scale(scale: _animation.value, child: svgWidget);
         }
         return svgWidget;
       },

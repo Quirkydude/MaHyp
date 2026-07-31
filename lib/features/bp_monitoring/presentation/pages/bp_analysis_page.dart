@@ -47,8 +47,7 @@ class _BPAnalysisPageState extends State<BPAnalysisPage>
 
   @override
   Widget build(BuildContext context) {
-    final isHigh =
-        widget.reading.category == BPCategory.notControlled;
+    final isHigh = widget.reading.category == BPCategory.notControlled;
 
     return Scaffold(
       appBar: const CustomAppBar(title: 'Blood Pressure Analysis'),
@@ -59,9 +58,7 @@ class _BPAnalysisPageState extends State<BPAnalysisPage>
             const SizedBox(height: AppDimensions.spacing24),
 
             // Health Data SVG
-            Center(
-              child: HealthDataIllustration(size: 200),
-            ),
+            Center(child: HealthDataIllustration(size: 200)),
             const SizedBox(height: AppDimensions.spacing24),
 
             // Alert Card

@@ -15,9 +15,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Pass all uncaught "fatal" errors from the framework to Crashlytics
   FlutterError.onError = (errorDetails) {
@@ -65,8 +63,10 @@ class MaHypApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Watch theme setting
     final settings = ref.watch(settingsProvider);
-    final theme = settings.darkModeEnabled ? AppTheme.darkTheme : AppTheme.lightTheme;
-    
+    final theme = settings.darkModeEnabled
+        ? AppTheme.darkTheme
+        : AppTheme.lightTheme;
+
     // Calculate text scale factor from font size setting
     double textScaleFactor = 1.0;
     switch (settings.fontSize) {
@@ -97,9 +97,9 @@ class MaHypApp extends ConsumerWidget {
       // Builder for text scaling
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            textScaler: TextScaler.linear(textScaleFactor),
-          ),
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: TextScaler.linear(textScaleFactor)),
           child: child!,
         );
       },

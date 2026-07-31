@@ -67,28 +67,38 @@ class _MedicationListPageState extends ConsumerState<MedicationListPage>
         ),
         body: medicationsAsync.when(
           loading: () => const Center(
-            child: CircularProgressIndicator(
-              color: AppColors.primaryTurquoise,
-            ),
+            child: CircularProgressIndicator(color: AppColors.primaryTurquoise),
           ),
           error: (error, _) => Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline, size: 48, color: AppColors.error),
+                const Icon(
+                  Icons.error_outline,
+                  size: 48,
+                  color: AppColors.error,
+                ),
                 const SizedBox(height: AppDimensions.spacing16),
-                Text('Error loading medications', style: AppTextStyles.bodyMedium),
+                Text(
+                  'Error loading medications',
+                  style: AppTextStyles.bodyMedium,
+                ),
                 const SizedBox(height: AppDimensions.spacing8),
                 TextButton(
-                  onPressed: () => ref.read(medicationProvider.notifier).refresh(),
+                  onPressed: () =>
+                      ref.read(medicationProvider.notifier).refresh(),
                   child: const Text('Retry'),
                 ),
               ],
             ),
           ),
           data: (medications) {
-            final todayMeds = medications.where((med) => med.todayDoses.isNotEmpty).toList();
-            final upcomingMeds = medications.where((med) => med.nextDose != null).toList();
+            final todayMeds = medications
+                .where((med) => med.todayDoses.isNotEmpty)
+                .toList();
+            final upcomingMeds = medications
+                .where((med) => med.nextDose != null)
+                .toList();
 
             return Column(
               children: [
@@ -118,7 +128,8 @@ class _MedicationListPageState extends ConsumerState<MedicationListPage>
                           dosesTaken: stats['taken'] ?? 0,
                           totalDoses: stats['total'] ?? 0,
                           missedDoses: stats['missed'] ?? 0,
-                          onViewReport: () => context.push('/medication-report'),
+                          onViewReport: () =>
+                              context.push('/medication-report'),
                         ),
                       ],
                     ],

@@ -52,7 +52,9 @@ class _ActionCardState extends State<ActionCard> {
             gradient: widget.type == ActionCardType.nextMedication
                 ? AppColors.nextMedCardGradient
                 : null,
-            color: widget.type == ActionCardType.recordBp ? AppColors.white : null,
+            color: widget.type == ActionCardType.recordBp
+                ? AppColors.white
+                : null,
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
@@ -161,4 +163,3 @@ class _ActionCardState extends State<ActionCard> {
     );
   }
 }
-

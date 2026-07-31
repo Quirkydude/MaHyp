@@ -370,7 +370,9 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
         }
       } on FirebaseException catch (e) {
         if (mounted) {
-          debugPrint('Firebase error updating profile: ${e.code} - ${e.message}');
+          debugPrint(
+            'Firebase error updating profile: ${e.code} - ${e.message}',
+          );
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Failed to update profile. Please try again.'),
@@ -383,7 +385,9 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
           debugPrint('Unexpected error updating profile: $e');
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Something went wrong. Please check your connection and try again.'),
+              content: Text(
+                'Something went wrong. Please check your connection and try again.',
+              ),
               backgroundColor: AppColors.error,
             ),
           );
@@ -468,8 +472,14 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                       child: ClipOval(
                         child: _selectedImage != null
                             ? (kIsWeb
-                                ? Image.network(_selectedImage!.path, fit: BoxFit.cover)
-                                : Image.file(File(_selectedImage!.path), fit: BoxFit.cover))
+                                  ? Image.network(
+                                      _selectedImage!.path,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.file(
+                                      File(_selectedImage!.path),
+                                      fit: BoxFit.cover,
+                                    ))
                             : userProfileAsync.when(
                                 data: (profile) {
                                   if (profile?.avatarUrl != null &&

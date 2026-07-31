@@ -36,10 +36,12 @@ class BPNotifier extends StateNotifier<AsyncValue<List<BPReadingModel>>> {
     try {
       final id = await _bpService.addReading(reading);
       final newReading = reading.copyWith(id: id);
-      
+
       state.whenData((readings) {
-        state = AsyncValue.data([newReading, ...readings]
-          ..sort((a, b) => b.recordedAt.compareTo(a.recordedAt)));
+        state = AsyncValue.data(
+          [newReading, ...readings]
+            ..sort((a, b) => b.recordedAt.compareTo(a.recordedAt)),
+        );
       });
     } catch (e, st) {
       state = AsyncValue.error(e, st);
@@ -61,21 +63,23 @@ class BPNotifier extends StateNotifier<AsyncValue<List<BPReadingModel>>> {
   /// Get readings for specific period from current state
   List<BPReadingModel> getReadingsForPeriod(Duration period) {
     final cutoff = DateTime.now().subtract(period);
-    return state.value?.where((r) => r.recordedAt.isAfter(cutoff)).toList() ?? [];
+    return state.value?.where((r) => r.recordedAt.isAfter(cutoff)).toList() ??
+        [];
   }
 
   /// Get today's readings from current state
   List<BPReadingModel> get todayReadings {
     final now = DateTime.now();
     return state.value?.where((r) {
-      return r.recordedAt.year == now.year &&
-          r.recordedAt.month == now.month &&
-          r.recordedAt.day == now.day;
-    }).toList() ?? [];
+          return r.recordedAt.year == now.year &&
+              r.recordedAt.month == now.month &&
+              r.recordedAt.day == now.day;
+        }).toList() ??
+        [];
   }
 
   /// Get latest reading from current state
-  BPReadingModel? get latestReading => 
+  BPReadingModel? get latestReading =>
       state.value?.isNotEmpty == true ? state.value!.first : null;
 
   /// Check if last reading is emergency
@@ -83,17 +87,16 @@ class BPNotifier extends StateNotifier<AsyncValue<List<BPReadingModel>>> {
 }
 
 /// BP Provider - now async-aware
-final bpProvider = StateNotifierProvider<BPNotifier, AsyncValue<List<BPReadingModel>>>((
-  ref,
-) {
-  final bpService = ref.watch(bpServiceProvider);
-  return BPNotifier(bpService);
-});
+final bpProvider =
+    StateNotifierProvider<BPNotifier, AsyncValue<List<BPReadingModel>>>((ref) {
+      final bpService = ref.watch(bpServiceProvider);
+      return BPNotifier(bpService);
+    });
 
 /// Statistics Provider - derives from bp readings
 final bpStatisticsProvider = Provider<BPStatistics>((ref) {
   final readingsAsync = ref.watch(bpProvider);
-  
+
   return readingsAsync.when(
     data: (readings) {
       final weekReadings = readings.where((r) {
@@ -123,4 +126,3 @@ final bpReadingsStreamProvider = StreamProvider<List<BPReadingModel>>((ref) {
   final bpService = ref.watch(bpServiceProvider);
   return bpService.readingsStream();
 });
-

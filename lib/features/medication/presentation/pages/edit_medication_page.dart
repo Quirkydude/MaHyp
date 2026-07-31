@@ -12,19 +12,14 @@ import '../../../../shared/widgets/frequency_chip.dart';
 import '../providers/medication_provider.dart';
 import '../../data/models/medication_model.dart';
 
-
 /// Edit Medication Page - Allows users to modify existing medications
 class EditMedicationPage extends ConsumerStatefulWidget {
   final MedicationModel medication;
 
-  const EditMedicationPage({
-    super.key,
-    required this.medication,
-  });
+  const EditMedicationPage({super.key, required this.medication});
 
   @override
-  ConsumerState<EditMedicationPage> createState() =>
-      _EditMedicationPageState();
+  ConsumerState<EditMedicationPage> createState() => _EditMedicationPageState();
 }
 
 class _EditMedicationPageState extends ConsumerState<EditMedicationPage>
@@ -46,10 +41,10 @@ class _EditMedicationPageState extends ConsumerState<EditMedicationPage>
     super.initState();
     // Initialize controllers with existing medication data
     _nameController = TextEditingController(text: widget.medication.name);
-    _dosageController =
-        TextEditingController(text: widget.medication.dosage);
-    _notesController =
-        TextEditingController(text: widget.medication.notes ?? '');
+    _dosageController = TextEditingController(text: widget.medication.dosage);
+    _notesController = TextEditingController(
+      text: widget.medication.notes ?? '',
+    );
 
     _selectedFrequency = widget.medication.frequency;
     _selectedTimesOfDay = List.from(widget.medication.timesOfDay);

@@ -15,11 +15,31 @@ class BottomNavBar extends StatelessWidget {
   });
 
   static const _items = [
-    _NavItemData(label: 'Home', icon: Icons.home_outlined, activeIcon: Icons.home),
-    _NavItemData(label: 'Health', icon: Icons.favorite_outline, activeIcon: Icons.favorite),
-    _NavItemData(label: 'Medication', icon: Icons.medication_outlined, activeIcon: Icons.medication),
-    _NavItemData(label: 'Education', icon: Icons.school_outlined, activeIcon: Icons.school),
-    _NavItemData(label: 'Support', icon: Icons.help_outline, activeIcon: Icons.help),
+    _NavItemData(
+      label: 'Home',
+      icon: Icons.home_outlined,
+      activeIcon: Icons.home,
+    ),
+    _NavItemData(
+      label: 'Health',
+      icon: Icons.favorite_outline,
+      activeIcon: Icons.favorite,
+    ),
+    _NavItemData(
+      label: 'Medication',
+      icon: Icons.medication_outlined,
+      activeIcon: Icons.medication,
+    ),
+    _NavItemData(
+      label: 'Education',
+      icon: Icons.school_outlined,
+      activeIcon: Icons.school,
+    ),
+    _NavItemData(
+      label: 'Support',
+      icon: Icons.help_outline,
+      activeIcon: Icons.help,
+    ),
   ];
 
   @override
@@ -94,7 +114,11 @@ class _NavItemData {
   final String label;
   final IconData icon;
   final IconData activeIcon;
-  const _NavItemData({required this.label, required this.icon, required this.activeIcon});
+  const _NavItemData({
+    required this.label,
+    required this.icon,
+    required this.activeIcon,
+  });
 }
 
 /// A nav item that shows an animated teal pill behind it when active.
@@ -119,7 +143,10 @@ class _PillNavItem extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
-        padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacing8, horizontal: 8),
+        padding: const EdgeInsets.symmetric(
+          vertical: AppDimensions.spacing8,
+          horizontal: 8,
+        ),
         decoration: BoxDecoration(
           color: isActive
               ? AppColors.primaryTurquoise.withValues(alpha: 0.12)
