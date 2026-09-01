@@ -102,7 +102,7 @@ class PrivacyPolicyPage extends ConsumerWidget {
                 'We MAY share your data with:\n'
                 '1. Service Providers:\n'
                 '   • Firebase (Google) - for database and authentication\n'
-                '   • Arkesel SMS - for OTP verification only\n'
+                '   • Moolre SMS - for OTP verification only\n'
                 '   • Analytics services (anonymized data)\n\n'
                 '2. Legal Requirements:\n'
                 '   • If required by law or legal process\n'

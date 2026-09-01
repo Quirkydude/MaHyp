@@ -1,0 +1,94 @@
+# Codemagic CI/CD — MaHyp Android release APK
+#
+# Setup in Codemagic (Team settings → Environment variables):
+#
+#   Signing (mark as Secure):
+#     CM_KEYSTORE              Base64-encoded upload keystore (.jks)
+#     CM_KEYSTORE_PASSWORD     Keystore password
+#     CM_KEY_ALIAS             e.g. mahyp-key
+#     CM_KEY_PASSWORD          Key password
+#
+#   App secrets (mark as Secure):
+#     MOOLRE_VAS_KEY           Moolre SMS VAS key
+#
+#   Optional:
+#     MOOLRE_SENDER_ID         Defaults to KamarTec if unset
+#
+# Encode keystore (run locally):
+#   base64 -i android/app/mahyp-upload-key.jks | pbcopy   # macOS
+#   certutil -encode android\app\mahyp-upload-key.jks tmp.b64 && type tmp.b64  # Windows
+
+workflows:
+  android-release-apk:
+    name: MaHyp Android Release APK
+    max_build_duration: 60
+    instance_type: linux_x2
+
+    environment:
+      flutter: stable
+      java: 17
+      vars:
+        PACKAGE_NAME: com.mahypucc.app
+        MOOLRE_SENDER_ID: KamarTec
+      # Uncomment and create this group in Codemagic if you prefer grouped secrets:
+      # groups:
+      #   - mahyp_secrets
+
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+          source: true
+        - pattern: release/*
+          include: true
+          source: true
+      cancel_previous_builds: true
+
+    scripts:
+      - name: Install dependencies
+        script: |
+          flutter pub get
+
+      - name: Configure Android release signing
+        script: |
+          set -e
+          if [ -z "$CM_KEYSTORE" ]; then
+            echo "CM_KEYSTORE is not set. Add your upload keystore in Codemagic environment variables."
+            exit 1
+          fi
+          echo "$CM_KEYSTORE" | base64 --decode > "$CM_BUILD_DIR/android/app/mahyp-upload-key.jks"
+          cat > "$CM_BUILD_DIR/android/key.properties" <<EOF
+          storePassword=$CM_KEYSTORE_PASSWORD
+          keyPassword=$CM_KEY_PASSWORD
+          keyAlias=$CM_KEY_ALIAS
+          storeFile=mahyp-upload-key.jks
+          EOF
+
+      - name: Build release APK
+        script: |
+          set -e
+          if [ -z "$MOOLRE_VAS_KEY" ]; then
+            echo "Warning: MOOLRE_VAS_KEY is not set. OTP SMS may not work in this build."
+          fi
+          flutter build apk --release \
+            --dart-define=MOOLRE_VAS_KEY="${MOOLRE_VAS_KEY:-}" \
+            --dart-define=MOOLRE_SENDER_ID="${MOOLRE_SENDER_ID:-KamarTec}"
+
+      - name: Print build info
+        script: |
+          flutter --version
+          ls -lh build/app/outputs/flutter-apk/
+
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
+      - build/app/outputs/flutter-apk/*.apk
+
+    publishing:
+      email:
+        recipients:
+          - stepperdek1212@gmail.com
+        notify:
+          success: true
+          failure: true

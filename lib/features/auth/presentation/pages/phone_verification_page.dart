@@ -6,8 +6,8 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../../../core/constants/app_text_styles.dart';
-import '../../../../core/config/arkesel_config.dart';
-import '../../../../core/services/arkesel_otp_service.dart';
+import '../../../../core/config/moolre_config.dart';
+import '../../../../core/services/moolre_otp_service.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 
@@ -34,9 +34,10 @@ class _PhoneVerificationPageState extends ConsumerState<PhoneVerificationPage> {
   final _formKey = GlobalKey<FormState>();
   final _otpController = TextEditingController();
 
-  final ArkeselOTPService _otpService = ArkeselOTPService(
-    apiKey: ArkeselConfig.apiKey,
-    senderId: ArkeselConfig.senderId,
+  final MoolreOtpService _otpService = MoolreOtpService(
+    vasKey: MoolreConfig.vasKey,
+    senderId: MoolreConfig.senderId,
+    baseUrl: MoolreConfig.baseUrl,
   );
 
   bool _isLoading = false;
@@ -73,8 +74,7 @@ class _PhoneVerificationPageState extends ConsumerState<PhoneVerificationPage> {
         ),
       );
     } else {
-      // Show Arkesel's actual reason (e.g. bad sender ID, insufficient
-      // balance, invalid number) instead of a generic failure message.
+      // Show Moolre's actual reason (e.g. unapproved sender ID, auth error).
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
