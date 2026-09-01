@@ -55,7 +55,10 @@ class _CalendarWeekViewState extends State<CalendarWeekView> {
               GestureDetector(
                 onTap: () => _showMonthPicker(context),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.white,
                     borderRadius: BorderRadius.circular(12),
@@ -167,7 +170,7 @@ class _CalendarWeekViewState extends State<CalendarWeekView> {
     final now = DateTime.now();
     final months = <String>[];
     final monthDates = <DateTime>[];
-    
+
     // Generate 12 months (6 past + current + 5 future)
     for (int i = -6; i <= 5; i++) {
       final date = DateTime(now.year, now.month + i, 1);
@@ -213,18 +216,26 @@ class _CalendarWeekViewState extends State<CalendarWeekView> {
                 shrinkWrap: true,
                 itemCount: months.length,
                 itemBuilder: (context, index) {
-                  final isSelected = widget.selectedDate.month == monthDates[index].month &&
+                  final isSelected =
+                      widget.selectedDate.month == monthDates[index].month &&
                       widget.selectedDate.year == monthDates[index].year;
                   return ListTile(
                     title: Text(
                       months[index],
                       style: TextStyle(
-                        color: isSelected ? AppColors.primaryTurquoise : AppColors.textPrimary,
-                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                        color: isSelected
+                            ? AppColors.primaryTurquoise
+                            : AppColors.textPrimary,
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.normal,
                       ),
                     ),
                     trailing: isSelected
-                        ? const Icon(Icons.check_circle, color: AppColors.primaryTurquoise)
+                        ? const Icon(
+                            Icons.check_circle,
+                            color: AppColors.primaryTurquoise,
+                          )
                         : null,
                     onTap: () {
                       Navigator.pop(context);
@@ -281,7 +292,9 @@ class _CalendarWeekViewState extends State<CalendarWeekView> {
               style: TextStyle(
                 color: isSelected
                     ? AppColors.white
-                    : (isToday ? AppColors.calendarSelected : AppColors.textPrimary),
+                    : (isToday
+                          ? AppColors.calendarSelected
+                          : AppColors.textPrimary),
                 fontSize: 17,
                 fontWeight: FontWeight.bold,
               ),

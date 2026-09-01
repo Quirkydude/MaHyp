@@ -73,8 +73,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 alignment: Alignment.topRight,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: AppDimensions.screenPaddingHorizontal,
-                      vertical: AppDimensions.spacing8),
+                    horizontal: AppDimensions.screenPaddingHorizontal,
+                    vertical: AppDimensions.spacing8,
+                  ),
                   child: AnimatedOpacity(
                     opacity: isLast ? 0 : 1,
                     duration: const Duration(milliseconds: 200),
@@ -120,7 +121,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
               // Buttons
               Padding(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimensions.screenPaddingHorizontal),
+                  horizontal: AppDimensions.screenPaddingHorizontal,
+                ),
                 child: Column(
                   children: [
                     if (isLast) ...[
@@ -135,10 +137,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         isOutlined: true,
                       ),
                     ] else ...[
-                      CustomButton(
-                        text: 'Next',
-                        onPressed: _next,
-                      ),
+                      CustomButton(text: 'Next', onPressed: _next),
                     ],
                   ],
                 ),
@@ -181,7 +180,8 @@ class _OnboardingSlide extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-          horizontal: AppDimensions.screenPaddingHorizontal),
+        horizontal: AppDimensions.screenPaddingHorizontal,
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

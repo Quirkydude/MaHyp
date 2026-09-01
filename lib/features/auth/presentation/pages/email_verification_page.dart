@@ -14,7 +14,8 @@ class EmailVerificationPage extends ConsumerStatefulWidget {
   const EmailVerificationPage({super.key});
 
   @override
-  ConsumerState<EmailVerificationPage> createState() => _EmailVerificationPageState();
+  ConsumerState<EmailVerificationPage> createState() =>
+      _EmailVerificationPageState();
 }
 
 class _EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {

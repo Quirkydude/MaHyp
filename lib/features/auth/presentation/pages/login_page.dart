@@ -74,10 +74,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       setState(() => _isLoading = true);
 
       try {
-        await ref.read(authServiceProvider).signInWithEmailAndPassword(
-          _emailController.text.trim(),
-          _passwordController.text,
-        );
+        await ref
+            .read(authServiceProvider)
+            .signInWithEmailAndPassword(
+              _emailController.text.trim(),
+              _passwordController.text,
+            );
 
         await _prepareSignedInUser();
 
@@ -86,9 +88,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           if (AuthAccessService.needsEmailVerification(user)) {
             context.go(AppRouter.emailVerification);
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Login successful!')),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Login successful!')));
             context.go(AppRouter.dashboard);
           }
         }
@@ -104,10 +106,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           }
 
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(message),
-              backgroundColor: AppColors.error,
-            ),
+            SnackBar(content: Text(message), backgroundColor: AppColors.error),
           );
         }
       } catch (e) {
@@ -162,7 +161,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.message ?? 'Social login failed. Please try again.'),
+            content: Text(
+              e.message ?? 'Social login failed. Please try again.',
+            ),
             backgroundColor: AppColors.error,
           ),
         );
@@ -228,8 +229,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 const SizedBox(height: AppDimensions.spacing40),
 
                 CustomTextField(
-                  label: 'Email Address',
-                  hint: 'example@example.com',
+                  label: 'Email or Mobile Number',
+                  hint: 'example@email.com or 0241337983',
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   validator: _validateEmail,

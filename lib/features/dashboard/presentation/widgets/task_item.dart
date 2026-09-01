@@ -28,7 +28,8 @@ class TaskItem extends StatefulWidget {
   State<TaskItem> createState() => _TaskItemState();
 }
 
-class _TaskItemState extends State<TaskItem> with SingleTickerProviderStateMixin {
+class _TaskItemState extends State<TaskItem>
+    with SingleTickerProviderStateMixin {
   bool _isPressed = false;
   late AnimationController _checkAnimationController;
   late Animation<double> _checkScaleAnimation;

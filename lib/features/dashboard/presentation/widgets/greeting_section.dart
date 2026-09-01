@@ -40,10 +40,7 @@ class GreetingSection extends StatelessWidget {
             children: [
               Text(
                 'Hi, Welcome Back',
-                style: TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
               ),
               Text(
                 userName,
@@ -63,10 +60,17 @@ class GreetingSection extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 22,
-                  backgroundColor: AppColors.primaryTurquoise.withValues(alpha: 0.2),
-                  backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl!) : null,
+                  backgroundColor: AppColors.primaryTurquoise.withValues(
+                    alpha: 0.2,
+                  ),
+                  backgroundImage: avatarUrl != null
+                      ? NetworkImage(avatarUrl!)
+                      : null,
                   child: avatarUrl == null
-                      ? const Icon(Icons.person, color: AppColors.primaryTurquoise)
+                      ? const Icon(
+                          Icons.person,
+                          color: AppColors.primaryTurquoise,
+                        )
                       : null,
                 ),
                 Positioned(
@@ -119,12 +123,11 @@ class GreetingSection extends StatelessWidget {
                   color: AppColors.error,
                   shape: BoxShape.circle,
                 ),
-                constraints: const BoxConstraints(
-                  minWidth: 16,
-                  minHeight: 16,
-                ),
+                constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
                 child: Text(
-                  unreadNotificationCount > 9 ? '9+' : '$unreadNotificationCount',
+                  unreadNotificationCount > 9
+                      ? '9+'
+                      : '$unreadNotificationCount',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -139,10 +142,7 @@ class GreetingSection extends StatelessWidget {
     );
   }
 
-  Widget _buildIconButton({
-    required IconData icon,
-    VoidCallback? onPressed,
-  }) {
+  Widget _buildIconButton({required IconData icon, VoidCallback? onPressed}) {
     return Container(
       width: 40,
       height: 40,

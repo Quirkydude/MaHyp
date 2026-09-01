@@ -12,8 +12,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   final SettingsService _settingsService;
   final NotificationService? _notificationService;
 
-  SettingsNotifier(this._settingsService, this._notificationService) 
-      : super(const SettingsState()) {
+  SettingsNotifier(this._settingsService, this._notificationService)
+    : super(const SettingsState()) {
     _loadSettings();
   }
 
@@ -23,11 +23,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   // ============ Notifications ============
-  
+
   Future<void> setNotificationsEnabled(bool value) async {
     await _settingsService.setNotificationsEnabled(value);
     state = state.copyWith(notificationsEnabled: value);
-    
+
     // Wire up actual notification functionality
     final notificationService = _notificationService;
     if (notificationService != null) {
@@ -40,11 +40,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   // ============ Reminders ============
-  
+
   Future<void> setRemindersEnabled(bool value) async {
     await _settingsService.setRemindersEnabled(value);
     state = state.copyWith(remindersEnabled: value);
-    
+
     // Wire up reminder scheduling
     final notificationService = _notificationService;
     if (notificationService != null) {
@@ -62,16 +62,16 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   Future<void> _scheduleBpReminders() async {
     final notificationService = _notificationService;
     if (notificationService == null) return;
-    
+
     // Parse reminder times
     final morningParts = state.morningReminderTime.split(':');
     final eveningParts = state.eveningReminderTime.split(':');
-    
+
     final morningHour = int.tryParse(morningParts[0]) ?? 8;
     final morningMinute = int.tryParse(morningParts[1]) ?? 0;
     final eveningHour = int.tryParse(eveningParts[0]) ?? 20;
     final eveningMinute = int.tryParse(eveningParts[1]) ?? 0;
-    
+
     // Schedule morning reminder
     await notificationService.scheduleDailyReminder(
       id: 100,
@@ -80,7 +80,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       hour: morningHour,
       minute: morningMinute,
     );
-    
+
     // Schedule evening reminder
     await notificationService.scheduleDailyReminder(
       id: 101,
@@ -92,7 +92,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   // ============ Appearance ============
-  
+
   Future<void> setDarkModeEnabled(bool value) async {
     await _settingsService.setDarkModeEnabled(value);
     state = state.copyWith(darkModeEnabled: value);
@@ -105,12 +105,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   // ============ Health Settings ============
-  
 
   Future<void> setMorningReminderTime(String value) async {
     await _settingsService.setMorningReminderTime(value);
     state = state.copyWith(morningReminderTime: value);
-    
+
     // Reschedule reminders if enabled
     if (state.remindersEnabled) {
       await _scheduleBpReminders();
@@ -120,7 +119,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   Future<void> setEveningReminderTime(String value) async {
     await _settingsService.setEveningReminderTime(value);
     state = state.copyWith(eveningReminderTime: value);
-    
+
     // Reschedule reminders if enabled
     if (state.remindersEnabled) {
       await _scheduleBpReminders();
@@ -129,17 +128,19 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
 }
 
 /// Main settings provider
-final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>((ref) {
-  final settingsService = ref.watch(settingsServiceProvider);
-  // NotificationService is optional - may not be initialized
-  NotificationService? notificationService;
-  try {
-    notificationService = NotificationService();
-  } catch (_) {
-    // Notification service not available
-  }
-  return SettingsNotifier(settingsService, notificationService);
-});
+final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(
+  (ref) {
+    final settingsService = ref.watch(settingsServiceProvider);
+    // NotificationService is optional - may not be initialized
+    NotificationService? notificationService;
+    try {
+      notificationService = NotificationService();
+    } catch (_) {
+      // Notification service not available
+    }
+    return SettingsNotifier(settingsService, notificationService);
+  },
+);
 
 // Convenience providers for individual settings
 final notificationsEnabledProvider = Provider<bool>((ref) {
@@ -157,4 +158,3 @@ final darkModeEnabledProvider = Provider<bool>((ref) {
 final fontSizeProvider = Provider<String>((ref) {
   return ref.watch(settingsProvider).fontSize;
 });
-

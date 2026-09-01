@@ -54,14 +54,15 @@ class _MedicationReportPageState extends ConsumerState<MedicationReportPage>
           loading: () => const Center(
             child: CircularProgressIndicator(color: AppColors.primaryTurquoise),
           ),
-          error: (error, _) => Center(
-            child: Text('Error: $error', style: AppTextStyles.error),
-          ),
+          error: (error, _) =>
+              Center(child: Text('Error: $error', style: AppTextStyles.error)),
           data: (medications) {
             final stats = _calculateStats(medications);
-            
+
             return SingleChildScrollView(
-              padding: const EdgeInsets.all(AppDimensions.screenPaddingHorizontal),
+              padding: const EdgeInsets.all(
+                AppDimensions.screenPaddingHorizontal,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

@@ -4,10 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Connectivity status enum
-enum ConnectivityStatus {
-  online,
-  offline,
-}
+enum ConnectivityStatus { online, offline }
 
 /// Service for monitoring network connectivity
 class ConnectivityService {
@@ -16,10 +13,10 @@ class ConnectivityService {
   ConnectivityService._internal();
 
   final _connectivity = Connectivity();
-  
+
   final _statusController = StreamController<ConnectivityStatus>.broadcast();
   Stream<ConnectivityStatus> get statusStream => _statusController.stream;
-  
+
   ConnectivityStatus _currentStatus = ConnectivityStatus.online;
   ConnectivityStatus get currentStatus => _currentStatus;
 
@@ -33,18 +30,19 @@ class ConnectivityService {
 
     // Listen for changes
     _subscription = _connectivity.onConnectivityChanged.listen(_updateStatus);
-    
+
     debugPrint('ConnectivityService initialized: $_currentStatus');
   }
 
   void _updateStatus(List<ConnectivityResult> results) {
-    final hasConnection = results.any((result) => 
-        result != ConnectivityResult.none);
-    
-    final newStatus = hasConnection 
-        ? ConnectivityStatus.online 
+    final hasConnection = results.any(
+      (result) => result != ConnectivityResult.none,
+    );
+
+    final newStatus = hasConnection
+        ? ConnectivityStatus.online
         : ConnectivityStatus.offline;
-    
+
     if (newStatus != _currentStatus) {
       _currentStatus = newStatus;
       _statusController.add(_currentStatus);
@@ -76,5 +74,8 @@ final connectivityStatusProvider = StreamProvider<ConnectivityStatus>((ref) {
 /// Simple provider for current connectivity status
 final isOnlineProvider = Provider<bool>((ref) {
   final asyncStatus = ref.watch(connectivityStatusProvider);
-  return asyncStatus.whenOrNull(data: (status) => status == ConnectivityStatus.online) ?? true;
+  return asyncStatus.whenOrNull(
+        data: (status) => status == ConnectivityStatus.online,
+      ) ??
+      true;
 });

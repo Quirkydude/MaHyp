@@ -7,7 +7,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 class AnimatedSvgIllustration extends StatefulWidget {
   final String assetPath;
   final double size;
-  final Widget Function(BuildContext context, List<double> pulseValues) overlayBuilder;
+  final Widget Function(BuildContext context, List<double> pulseValues)
+  overlayBuilder;
   final List<double> pulseDurations; // seconds per animation
 
   const AnimatedSvgIllustration({
@@ -56,7 +57,11 @@ class _AnimatedSvgState extends State<AnimatedSvgIllustration>
           final values = _controllers.map((c) => c.value).toList();
           return Stack(
             children: [
-              SvgPicture.asset(widget.assetPath, width: widget.size, height: widget.size),
+              SvgPicture.asset(
+                widget.assetPath,
+                width: widget.size,
+                height: widget.size,
+              ),
               widget.overlayBuilder(ctx, values),
             ],
           );

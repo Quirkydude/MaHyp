@@ -16,12 +16,17 @@ class MedicationService {
 
   CollectionReference<Map<String, dynamic>> get _doseLogsCollection {
     if (_uid == null) throw Exception('User not authenticated');
-    return _firestore.collection('users').doc(_uid).collection('medication_logs');
+    return _firestore
+        .collection('users')
+        .doc(_uid)
+        .collection('medication_logs');
   }
 
   /// Add a new medication
   Future<String> addMedication(MedicationModel medication) async {
-    final docRef = await _medicationsCollection.add(_medicationToFirestore(medication));
+    final docRef = await _medicationsCollection.add(
+      _medicationToFirestore(medication),
+    );
     return docRef.id;
   }
 
@@ -30,10 +35,8 @@ class MedicationService {
     final snapshot = await _medicationsCollection
         .orderBy('createdAt', descending: true)
         .get();
-    
-    return snapshot.docs
-        .map((doc) => _medicationFromFirestore(doc))
-        .toList();
+
+    return snapshot.docs.map((doc) => _medicationFromFirestore(doc)).toList();
   }
 
   /// Get all available medications from master list (for dropdown)
@@ -44,13 +47,15 @@ class MedicationService {
           .collection('master_medications')
           .orderBy('name')
           .get();
-      
+
       return snapshot.docs
-          .map((doc) => {
-                'id': doc.id,
-                'name': doc.data()['name'] as String? ?? '',
-                'dosage': doc.data()['dosage'] as String? ?? '',
-              })
+          .map(
+            (doc) => {
+              'id': doc.id,
+              'name': doc.data()['name'] as String? ?? '',
+              'dosage': doc.data()['dosage'] as String? ?? '',
+            },
+          )
           .toList();
     } catch (e) {
       // If master collection doesn't exist, return empty list
@@ -72,13 +77,18 @@ class MedicationService {
     return _medicationsCollection
         .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) => 
-            snapshot.docs.map((doc) => _medicationFromFirestore(doc)).toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => _medicationFromFirestore(doc))
+              .toList(),
+        );
   }
 
   /// Update medication
   Future<void> updateMedication(String id, MedicationModel medication) async {
-    await _medicationsCollection.doc(id).update(_medicationToFirestore(medication));
+    await _medicationsCollection
+        .doc(id)
+        .update(_medicationToFirestore(medication));
   }
 
   /// Delete medication
@@ -105,14 +115,17 @@ class MedicationService {
   }
 
   /// Get dose logs for a medication
-  Future<List<Map<String, dynamic>>> getDoseLogs(String medicationId, {int days = 7}) async {
+  Future<List<Map<String, dynamic>>> getDoseLogs(
+    String medicationId, {
+    int days = 7,
+  }) async {
     final cutoff = DateTime.now().subtract(Duration(days: days));
     final snapshot = await _doseLogsCollection
         .where('medicationId', isEqualTo: medicationId)
         .where('scheduledTime', isGreaterThan: Timestamp.fromDate(cutoff))
         .orderBy('scheduledTime', descending: true)
         .get();
-    
+
     return snapshot.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
   }
 
@@ -122,12 +135,18 @@ class MedicationService {
     final snapshot = await _doseLogsCollection
         .where('scheduledTime', isGreaterThan: Timestamp.fromDate(cutoff))
         .get();
-    
+
     int total = snapshot.docs.length;
-    int taken = snapshot.docs.where((doc) => doc.data()['status'] == 'taken').length;
-    int missed = snapshot.docs.where((doc) => doc.data()['status'] == 'missed').length;
-    int skipped = snapshot.docs.where((doc) => doc.data()['status'] == 'skipped').length;
-    
+    int taken = snapshot.docs
+        .where((doc) => doc.data()['status'] == 'taken')
+        .length;
+    int missed = snapshot.docs
+        .where((doc) => doc.data()['status'] == 'missed')
+        .length;
+    int skipped = snapshot.docs
+        .where((doc) => doc.data()['status'] == 'skipped')
+        .length;
+
     return {
       'total': total,
       'taken': taken,
@@ -151,7 +170,9 @@ class MedicationService {
   }
 
   /// Convert Firestore document to MedicationModel
-  MedicationModel _medicationFromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
+  MedicationModel _medicationFromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> doc,
+  ) {
     final data = doc.data();
     if (data == null) {
       throw StateError('Medication document ${doc.id} has no data');
@@ -164,12 +185,16 @@ class MedicationService {
         (e) => e.name == data['frequency'],
         orElse: () => MedicationFrequency.onceDaily,
       ),
-      timesOfDay: (data['timesOfDay'] as List<dynamic>?)
-          ?.map((t) => TimeOfDay.values.firstWhere(
-                (e) => e.name == t,
-                orElse: () => TimeOfDay.morning,
-              ))
-          .toList() ?? [TimeOfDay.morning],
+      timesOfDay:
+          (data['timesOfDay'] as List<dynamic>?)
+              ?.map(
+                (t) => TimeOfDay.values.firstWhere(
+                  (e) => e.name == t,
+                  orElse: () => TimeOfDay.morning,
+                ),
+              )
+              .toList() ??
+          [TimeOfDay.morning],
       doses: [],
       reminderEnabled: data['reminderEnabled'] as bool? ?? true,
       notes: data['notes'] as String?,

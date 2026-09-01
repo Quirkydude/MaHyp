@@ -27,20 +27,20 @@ class NotificationService {
 
   static const AndroidNotificationChannel _medicationChannel =
       AndroidNotificationChannel(
-    'medication_reminders',
-    'Medication Reminders',
-    description: 'Notifications for medication reminders',
-    importance: Importance.high,
-    playSound: true,
-  );
+        'medication_reminders',
+        'Medication Reminders',
+        description: 'Notifications for medication reminders',
+        importance: Importance.high,
+        playSound: true,
+      );
 
   static const AndroidNotificationChannel _generalChannel =
       AndroidNotificationChannel(
-    'general_notifications',
-    'General Notifications',
-    description: 'General app notifications',
-    importance: Importance.defaultImportance,
-  );
+        'general_notifications',
+        'General Notifications',
+        description: 'General app notifications',
+        importance: Importance.defaultImportance,
+      );
 
   Future<void> initialize() async {
     if (_isInitialized) return;
@@ -58,7 +58,8 @@ class NotificationService {
 
     try {
       FirebaseMessaging.onBackgroundMessage(
-          _firebaseMessagingBackgroundHandler);
+        _firebaseMessagingBackgroundHandler,
+      );
     } catch (e) {
       debugPrint('Error setting background handler: $e');
     }
@@ -72,7 +73,8 @@ class NotificationService {
     if (!kIsWeb && Platform.isAndroid) {
       final androidPlugin = _localNotifications
           .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>();
+            AndroidFlutterLocalNotificationsPlugin
+          >();
       await androidPlugin?.requestExactAlarmsPermission();
     }
 
@@ -103,8 +105,7 @@ class NotificationService {
 
       final granted =
           settings.authorizationStatus == AuthorizationStatus.authorized;
-      debugPrint(
-          'Notification permission: ${settings.authorizationStatus}');
+      debugPrint('Notification permission: ${settings.authorizationStatus}');
       return granted;
     } catch (e) {
       debugPrint('Error requesting permission: $e');
@@ -113,8 +114,9 @@ class NotificationService {
   }
 
   Future<void> _initializeLocalNotifications() async {
-    const androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
 
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
@@ -137,7 +139,8 @@ class NotificationService {
     if (!kIsWeb && Platform.isAndroid) {
       final androidPlugin = _localNotifications
           .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>();
+            AndroidFlutterLocalNotificationsPlugin
+          >();
 
       await androidPlugin?.createNotificationChannel(_medicationChannel);
       await androidPlugin?.createNotificationChannel(_generalChannel);
@@ -228,17 +231,14 @@ class NotificationService {
   }) async {
     final androidDetails = AndroidNotificationDetails(
       isMedicationReminder ? _medicationChannel.id : _generalChannel.id,
-      isMedicationReminder
-          ? _medicationChannel.name
-          : _generalChannel.name,
+      isMedicationReminder ? _medicationChannel.name : _generalChannel.name,
       channelDescription: isMedicationReminder
           ? _medicationChannel.description
           : _generalChannel.description,
       importance: isMedicationReminder
           ? Importance.high
           : Importance.defaultImportance,
-      priority:
-          isMedicationReminder ? Priority.high : Priority.defaultPriority,
+      priority: isMedicationReminder ? Priority.high : Priority.defaultPriority,
       icon: '@mipmap/ic_launcher',
     );
 
@@ -313,7 +313,8 @@ class NotificationService {
       tzScheduledTime,
       details,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
       payload: 'medication:$id',
     );
 
@@ -376,7 +377,8 @@ class NotificationService {
       scheduledDate,
       details,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
       payload: 'bp_reminder:$id',
     );

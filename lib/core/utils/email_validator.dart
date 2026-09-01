@@ -3,14 +3,22 @@ class EmailValidator {
   static final RegExp _emailRegex = RegExp(
     r'^[\w\.\+\-]+@([\w\-]+\.)+[\w\-]{2,}$',
   );
+  
+  static final RegExp _phoneRegex = RegExp(
+    r'^\+?[0-9]{7,15}$',
+  );
 
   static String? validate(String? value) {
-    final email = value?.trim() ?? '';
-    if (email.isEmpty) {
-      return 'Please enter your email';
+    final input = value?.trim() ?? '';
+    if (input.isEmpty) {
+      return 'Please enter your email or mobile number';
     }
-    if (!_emailRegex.hasMatch(email)) {
-      return 'Please enter a valid email';
+    
+    final isEmail = _emailRegex.hasMatch(input);
+    final isPhone = _phoneRegex.hasMatch(input);
+    
+    if (!isEmail && !isPhone) {
+      return 'Please enter a valid email or mobile number';
     }
     return null;
   }

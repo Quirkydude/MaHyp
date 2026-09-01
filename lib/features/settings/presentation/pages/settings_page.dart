@@ -20,16 +20,13 @@ class SettingsPage extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: const CustomAppBar(
-        title: 'Settings',
-        showBackButton: true,
-      ),
+      appBar: const CustomAppBar(title: 'Settings', showBackButton: true),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: AppDimensions.spacing16),
-            
+
             Center(
               child: SvgPicture.asset(
                 'assets/logos/mahyp_logo.svg',
@@ -37,7 +34,7 @@ class SettingsPage extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppDimensions.spacing24),
-            
+
             // Notifications Section
             _buildSectionHeader(context, 'Notifications'),
             _buildSwitchTile(
@@ -47,7 +44,9 @@ class SettingsPage extends ConsumerWidget {
               title: 'Push Notifications',
               subtitle: 'Receive medication reminders',
               value: settings.notificationsEnabled,
-              onChanged: (value) => ref.read(settingsProvider.notifier).setNotificationsEnabled(value),
+              onChanged: (value) => ref
+                  .read(settingsProvider.notifier)
+                  .setNotificationsEnabled(value),
             ),
             _buildSwitchTile(
               context,
@@ -56,11 +55,13 @@ class SettingsPage extends ConsumerWidget {
               title: 'BP Reminders',
               subtitle: 'Daily BP measurement reminders',
               value: settings.remindersEnabled,
-              onChanged: (value) => ref.read(settingsProvider.notifier).setRemindersEnabled(value),
+              onChanged: (value) => ref
+                  .read(settingsProvider.notifier)
+                  .setRemindersEnabled(value),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Appearance Section
             _buildSectionHeader(context, 'Appearance'),
             _buildSwitchTile(
@@ -70,7 +71,8 @@ class SettingsPage extends ConsumerWidget {
               title: 'Dark Mode',
               subtitle: 'Enable dark theme',
               value: settings.darkModeEnabled,
-              onChanged: (value) => ref.read(settingsProvider.notifier).setDarkModeEnabled(value),
+              onChanged: (value) =>
+                  ref.read(settingsProvider.notifier).setDarkModeEnabled(value),
             ),
             _buildNavigationTile(
               context,
@@ -79,21 +81,22 @@ class SettingsPage extends ConsumerWidget {
               subtitle: settings.fontSize,
               onTap: () => _showFontSizeDialog(context, ref, settings.fontSize),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Health Settings Section
             _buildSectionHeader(context, 'Health Settings'),
             _buildNavigationTile(
               context,
               icon: Icons.timer_outlined,
               title: 'Reminder Schedule',
-              subtitle: '${settings.morningReminderTime}, ${settings.eveningReminderTime}',
+              subtitle:
+                  '${settings.morningReminderTime}, ${settings.eveningReminderTime}',
               onTap: () => _showReminderScheduleDialog(context, ref, settings),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // App Info Section
             _buildSectionHeader(context, 'About'),
             _buildNavigationTile(
@@ -108,15 +111,21 @@ class SettingsPage extends ConsumerWidget {
               context,
               icon: Icons.description_outlined,
               title: 'Terms of Service',
-              onTap: () => _showInfoDialog(context, 'Terms of Service', 
-                  'Terms of service content coming soon.'),
+              onTap: () => _showInfoDialog(
+                context,
+                'Terms of Service',
+                'Terms of service content coming soon.',
+              ),
             ),
             _buildNavigationTile(
               context,
               icon: Icons.privacy_tip_outlined,
               title: 'Privacy Policy',
-              onTap: () => _showInfoDialog(context, 'Privacy Policy', 
-                  'Privacy policy content coming soon.'),
+              onTap: () => _showInfoDialog(
+                context,
+                'Privacy Policy',
+                'Privacy policy content coming soon.',
+              ),
             ),
             _buildNavigationTile(
               context,
@@ -124,7 +133,7 @@ class SettingsPage extends ConsumerWidget {
               title: 'Send Feedback',
               onTap: () => _showFeedbackDialog(context),
             ),
-            
+
             const SizedBox(height: 40),
           ],
         ),
@@ -167,13 +176,15 @@ class SettingsPage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: cardColor,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: isDark ? [] : [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: isDark
+            ? []
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -184,11 +195,7 @@ class SettingsPage extends ConsumerWidget {
             color: AppColors.primaryTurquoise.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(
-            icon,
-            color: AppColors.primaryTurquoise,
-            size: 24,
-          ),
+          child: Icon(icon, color: AppColors.primaryTurquoise, size: 24),
         ),
         title: Text(
           title,
@@ -201,10 +208,7 @@ class SettingsPage extends ConsumerWidget {
         subtitle: subtitle != null
             ? Text(
                 subtitle,
-                style: TextStyle(
-                  color: subtitleColor,
-                  fontSize: 13,
-                ),
+                style: TextStyle(color: subtitleColor, fontSize: 13),
               )
             : null,
         trailing: Switch(
@@ -235,13 +239,15 @@ class SettingsPage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: cardColor,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: isDark ? [] : [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: isDark
+            ? []
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -253,11 +259,7 @@ class SettingsPage extends ConsumerWidget {
             color: AppColors.primaryTurquoise.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(
-            icon,
-            color: AppColors.primaryTurquoise,
-            size: 24,
-          ),
+          child: Icon(icon, color: AppColors.primaryTurquoise, size: 24),
         ),
         title: Text(
           title,
@@ -270,23 +272,21 @@ class SettingsPage extends ConsumerWidget {
         subtitle: subtitle != null
             ? Text(
                 subtitle,
-                style: TextStyle(
-                  color: subtitleColor,
-                  fontSize: 13,
-                ),
+                style: TextStyle(color: subtitleColor, fontSize: 13),
               )
             : null,
         trailing: showArrow
-            ? Icon(
-                Icons.chevron_right,
-                color: AppColors.primaryTurquoise,
-              )
+            ? Icon(Icons.chevron_right, color: AppColors.primaryTurquoise)
             : null,
       ),
     );
   }
 
-  void _showFontSizeDialog(BuildContext context, WidgetRef ref, String currentSize) {
+  void _showFontSizeDialog(
+    BuildContext context,
+    WidgetRef ref,
+    String currentSize,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -311,8 +311,11 @@ class SettingsPage extends ConsumerWidget {
     );
   }
 
-
-  void _showReminderScheduleDialog(BuildContext context, WidgetRef ref, SettingsState settings) {
+  void _showReminderScheduleDialog(
+    BuildContext context,
+    WidgetRef ref,
+    SettingsState settings,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -327,9 +330,14 @@ class SettingsPage extends ConsumerWidget {
               subtitle: Text(settings.morningReminderTime),
               onTap: () async {
                 Navigator.pop(context);
-                final time = await _showTimePicker(context, settings.morningReminderTime);
+                final time = await _showTimePicker(
+                  context,
+                  settings.morningReminderTime,
+                );
                 if (time != null) {
-                  ref.read(settingsProvider.notifier).setMorningReminderTime(time);
+                  ref
+                      .read(settingsProvider.notifier)
+                      .setMorningReminderTime(time);
                 }
               },
             ),
@@ -339,9 +347,14 @@ class SettingsPage extends ConsumerWidget {
               subtitle: Text(settings.eveningReminderTime),
               onTap: () async {
                 Navigator.pop(context);
-                final time = await _showTimePicker(context, settings.eveningReminderTime);
+                final time = await _showTimePicker(
+                  context,
+                  settings.eveningReminderTime,
+                );
                 if (time != null) {
-                  ref.read(settingsProvider.notifier).setEveningReminderTime(time);
+                  ref
+                      .read(settingsProvider.notifier)
+                      .setEveningReminderTime(time);
                 }
               },
             ),
@@ -357,16 +370,19 @@ class SettingsPage extends ConsumerWidget {
     );
   }
 
-  Future<String?> _showTimePicker(BuildContext context, String currentTime) async {
+  Future<String?> _showTimePicker(
+    BuildContext context,
+    String currentTime,
+  ) async {
     final parts = currentTime.split(':');
     final hour = int.tryParse(parts[0]) ?? 8;
     final minute = int.tryParse(parts[1]) ?? 0;
-    
+
     final picked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay(hour: hour, minute: minute),
     );
-    
+
     if (picked != null) {
       return '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
     }
@@ -398,7 +414,9 @@ class SettingsPage extends ConsumerWidget {
         var isSending = false;
         return StatefulBuilder(
           builder: (context, setDialogState) => AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             title: const Text('Send Feedback'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -434,11 +452,11 @@ class SettingsPage extends ConsumerWidget {
                           await FirebaseFirestore.instance
                               .collection('feedback')
                               .add({
-                            'uid': uid,
-                            'message': text,
-                            'createdAt': FieldValue.serverTimestamp(),
-                            'appVersion': '1.0.0',
-                          });
+                                'uid': uid,
+                                'message': text,
+                                'createdAt': FieldValue.serverTimestamp(),
+                                'appVersion': '1.0.0',
+                              });
                           if (context.mounted) {
                             Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -453,7 +471,9 @@ class SettingsPage extends ConsumerWidget {
                             setDialogState(() => isSending = false);
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Failed to send. Please try again.'),
+                                content: Text(
+                                  'Failed to send. Please try again.',
+                                ),
                                 backgroundColor: AppColors.error,
                               ),
                             );

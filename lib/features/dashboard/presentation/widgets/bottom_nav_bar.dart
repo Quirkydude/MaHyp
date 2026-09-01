@@ -21,13 +21,15 @@ class BottomNavBar extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: bgColor,
-        boxShadow: isDark ? [] : [
-          BoxShadow(
-            color: AppColors.shadow.withValues(alpha: 0.1),
-            blurRadius: 20,
-            offset: const Offset(0, -5),
-          ),
-        ],
+        boxShadow: isDark
+            ? []
+            : [
+                BoxShadow(
+                  color: AppColors.shadow.withValues(alpha: 0.1),
+                  blurRadius: 20,
+                  offset: const Offset(0, -5),
+                ),
+              ],
       ),
       child: SafeArea(
         top: false,
@@ -40,9 +42,24 @@ class BottomNavBar extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _buildNavItem(0, Icons.home, 'Home', unselectedColor),
-                  _buildNavItem(1, Icons.favorite_outline, 'BP', unselectedColor),
-                  _buildNavItem(2, Icons.medication_outlined, 'Meds', unselectedColor),
-                  _buildNavItem(3, Icons.menu_book_outlined, 'Learn', unselectedColor),
+                  _buildNavItem(
+                    1,
+                    Icons.favorite_outline,
+                    'BP',
+                    unselectedColor,
+                  ),
+                  _buildNavItem(
+                    2,
+                    Icons.medication_outlined,
+                    'Meds',
+                    unselectedColor,
+                  ),
+                  _buildNavItem(
+                    3,
+                    Icons.menu_book_outlined,
+                    'Learn',
+                    unselectedColor,
+                  ),
                   _buildNavItem(4, Icons.menu, 'More', unselectedColor),
                 ],
               ),
@@ -63,7 +80,12 @@ class BottomNavBar extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, String label, Color? unselectedColor) {
+  Widget _buildNavItem(
+    int index,
+    IconData icon,
+    String label,
+    Color? unselectedColor,
+  ) {
     final isSelected = currentIndex == index;
     return GestureDetector(
       onTap: () => onTap(index),
@@ -82,7 +104,9 @@ class BottomNavBar extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? AppColors.primaryTurquoise : unselectedColor,
+                color: isSelected
+                    ? AppColors.primaryTurquoise
+                    : unselectedColor,
                 fontSize: 14,
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
               ),

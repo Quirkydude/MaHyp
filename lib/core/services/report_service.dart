@@ -19,7 +19,10 @@ class ReportService {
   final _timeFormat = DateFormat('HH:mm');
 
   /// Generate and share BP readings PDF report
-  Future<void> generateBPReport(List<BPReadingModel> readings, {String? userName}) async {
+  Future<void> generateBPReport(
+    List<BPReadingModel> readings, {
+    String? userName,
+  }) async {
     final pdf = pw.Document();
 
     pdf.addPage(
@@ -39,12 +42,12 @@ class ReportService {
     await _saveAndSharePdf(pdf, 'bp_report');
   }
 
-  /// Generate and share medication adherence PDF report  
+  /// Generate and share medication adherence PDF report
   Future<void> generateMedicationReport(
-    List<MedicationModel> medications, 
-    Map<String, int> adherenceStats,
-    {String? userName}
-  ) async {
+    List<MedicationModel> medications,
+    Map<String, int> adherenceStats, {
+    String? userName,
+  }) async {
     final pdf = pw.Document();
 
     pdf.addPage(
@@ -67,10 +70,10 @@ class ReportService {
   /// Export BP readings as CSV
   Future<void> exportBPAsCSV(List<BPReadingModel> readings) async {
     final buffer = StringBuffer();
-    
+
     // Header row
     buffer.writeln('Date,Time,Systolic,Diastolic,Heart Rate,Category,Notes');
-    
+
     // Data rows
     for (final reading in readings) {
       buffer.writeln(
@@ -80,7 +83,7 @@ class ReportService {
         '${reading.diastolic},'
         '${reading.heartRate},'
         '${reading.categoryName},'
-        '"${reading.notes ?? ""}"'
+        '"${reading.notes ?? ""}"',
       );
     }
 
@@ -90,10 +93,10 @@ class ReportService {
   /// Export medications as CSV
   Future<void> exportMedicationsAsCSV(List<MedicationModel> medications) async {
     final buffer = StringBuffer();
-    
+
     // Header row
     buffer.writeln('Name,Dosage,Frequency,Times,Reminder,Notes,Created');
-    
+
     // Data rows
     for (final med in medications) {
       buffer.writeln(
@@ -103,7 +106,7 @@ class ReportService {
         '"${med.timesOfDay.map((t) => t.name).join(", ")}",'
         '${med.reminderEnabled ? "Yes" : "No"},'
         '"${med.notes ?? ""}",'
-        '${_dateFormat.format(med.createdAt)}'
+        '${_dateFormat.format(med.createdAt)}',
       );
     }
 
@@ -131,7 +134,10 @@ class ReportService {
         ),
         if (userName != null) ...[
           pw.SizedBox(height: 4),
-          pw.Text('Patient: $userName', style: const pw.TextStyle(fontSize: 12)),
+          pw.Text(
+            'Patient: $userName',
+            style: const pw.TextStyle(fontSize: 12),
+          ),
         ],
         pw.Text(
           'Generated: ${_dateFormat.format(DateTime.now())}',
@@ -160,7 +166,7 @@ class ReportService {
     }
 
     final stats = BPStatistics.fromReadings(readings);
-    
+
     return pw.Container(
       padding: const pw.EdgeInsets.all(16),
       decoration: pw.BoxDecoration(
@@ -170,15 +176,29 @@ class ReportService {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          pw.Text('Summary (Last ${readings.length} readings)', 
-            style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+          pw.Text(
+            'Summary (Last ${readings.length} readings)',
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+          ),
           pw.SizedBox(height: 10),
           pw.Row(
             mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
             children: [
-              _buildStatBox('Average', '${stats.avgSystolic}/${stats.avgDiastolic}', 'mmHg'),
-              _buildStatBox('Highest', '${stats.highestReading?.systolic ?? 0}/${stats.highestReading?.diastolic ?? 0}', 'mmHg'),
-              _buildStatBox('Lowest', '${stats.lowestReading?.systolic ?? 0}/${stats.lowestReading?.diastolic ?? 0}', 'mmHg'),
+              _buildStatBox(
+                'Average',
+                '${stats.avgSystolic}/${stats.avgDiastolic}',
+                'mmHg',
+              ),
+              _buildStatBox(
+                'Highest',
+                '${stats.highestReading?.systolic ?? 0}/${stats.highestReading?.diastolic ?? 0}',
+                'mmHg',
+              ),
+              _buildStatBox(
+                'Lowest',
+                '${stats.lowestReading?.systolic ?? 0}/${stats.lowestReading?.diastolic ?? 0}',
+                'mmHg',
+              ),
             ],
           ),
         ],
@@ -190,8 +210,14 @@ class ReportService {
     return pw.Column(
       children: [
         pw.Text(label, style: const pw.TextStyle(fontSize: 10)),
-        pw.Text(value, style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
-        pw.Text(unit, style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey)),
+        pw.Text(
+          value,
+          style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
+        ),
+        pw.Text(
+          unit,
+          style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey),
+        ),
       ],
     );
   }
@@ -210,35 +236,58 @@ class ReportService {
         // Header
         pw.TableRow(
           decoration: const pw.BoxDecoration(color: PdfColors.grey200),
-          children: ['Date', 'BP (mmHg)', 'Pulse', 'Category'].map((text) => 
-            pw.Padding(
-              padding: const pw.EdgeInsets.all(8),
-              child: pw.Text(text, style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10)),
-            ),
-          ).toList(),
+          children: ['Date', 'BP (mmHg)', 'Pulse', 'Category']
+              .map(
+                (text) => pw.Padding(
+                  padding: const pw.EdgeInsets.all(8),
+                  child: pw.Text(
+                    text,
+                    style: pw.TextStyle(
+                      fontWeight: pw.FontWeight.bold,
+                      fontSize: 10,
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
         ),
         // Data rows
-        ...readings.take(50).map((reading) => pw.TableRow(
-          children: [
-            pw.Padding(
-              padding: const pw.EdgeInsets.all(6),
-              child: pw.Text('${_dateFormat.format(reading.recordedAt)}\n${_timeFormat.format(reading.recordedAt)}', 
-                style: const pw.TextStyle(fontSize: 9)),
+        ...readings
+            .take(50)
+            .map(
+              (reading) => pw.TableRow(
+                children: [
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.all(6),
+                    child: pw.Text(
+                      '${_dateFormat.format(reading.recordedAt)}\n${_timeFormat.format(reading.recordedAt)}',
+                      style: const pw.TextStyle(fontSize: 9),
+                    ),
+                  ),
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.all(6),
+                    child: pw.Text(
+                      '${reading.systolic}/${reading.diastolic}',
+                      style: const pw.TextStyle(fontSize: 9),
+                    ),
+                  ),
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.all(6),
+                    child: pw.Text(
+                      '${reading.heartRate} bpm',
+                      style: const pw.TextStyle(fontSize: 9),
+                    ),
+                  ),
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.all(6),
+                    child: pw.Text(
+                      reading.categoryName,
+                      style: const pw.TextStyle(fontSize: 8),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            pw.Padding(
-              padding: const pw.EdgeInsets.all(6),
-              child: pw.Text('${reading.systolic}/${reading.diastolic}', style: const pw.TextStyle(fontSize: 9)),
-            ),
-            pw.Padding(
-              padding: const pw.EdgeInsets.all(6),
-              child: pw.Text('${reading.heartRate} bpm', style: const pw.TextStyle(fontSize: 9)),
-            ),
-            pw.Padding(
-              padding: const pw.EdgeInsets.all(6),
-              child: pw.Text(reading.categoryName, style: const pw.TextStyle(fontSize: 8)),
-            ),
-          ],
-        )),
       ],
     );
   }
@@ -253,8 +302,10 @@ class ReportService {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          pw.Text('Adherence Summary (Last 7 days)', 
-            style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+          pw.Text(
+            'Adherence Summary (Last 7 days)',
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+          ),
           pw.SizedBox(height: 10),
           pw.Row(
             mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
@@ -273,27 +324,42 @@ class ReportService {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text('Medications', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 14)),
+        pw.Text(
+          'Medications',
+          style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 14),
+        ),
         pw.SizedBox(height: 10),
-        ...medications.map((med) => pw.Container(
-          margin: const pw.EdgeInsets.only(bottom: 8),
-          padding: const pw.EdgeInsets.all(12),
-          decoration: pw.BoxDecoration(
-            border: pw.Border.all(color: PdfColors.grey300),
-            borderRadius: pw.BorderRadius.circular(4),
+        ...medications.map(
+          (med) => pw.Container(
+            margin: const pw.EdgeInsets.only(bottom: 8),
+            padding: const pw.EdgeInsets.all(12),
+            decoration: pw.BoxDecoration(
+              border: pw.Border.all(color: PdfColors.grey300),
+              borderRadius: pw.BorderRadius.circular(4),
+            ),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(
+                  med.name,
+                  style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                ),
+                pw.Text(
+                  '${med.dosage} • ${med.frequencyString}',
+                  style: const pw.TextStyle(fontSize: 10),
+                ),
+                if (med.notes != null)
+                  pw.Text(
+                    'Notes: ${med.notes}',
+                    style: const pw.TextStyle(
+                      fontSize: 9,
+                      color: PdfColors.grey600,
+                    ),
+                  ),
+              ],
+            ),
           ),
-          child: pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Text(med.name, style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-              pw.Text('${med.dosage} • ${med.frequencyString}', 
-                style: const pw.TextStyle(fontSize: 10)),
-              if (med.notes != null)
-                pw.Text('Notes: ${med.notes}', 
-                  style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey600)),
-            ],
-          ),
-        )),
+        ),
       ],
     );
   }
@@ -301,13 +367,14 @@ class ReportService {
   Future<void> _saveAndSharePdf(pw.Document pdf, String filename) async {
     try {
       final directory = await getTemporaryDirectory();
-      final file = File('${directory.path}/${filename}_${DateTime.now().millisecondsSinceEpoch}.pdf');
-      await file.writeAsBytes(await pdf.save());
-      
-      await Share.shareXFiles(
-        [XFile(file.path)],
-        subject: 'MaHyp Health Report',
+      final file = File(
+        '${directory.path}/${filename}_${DateTime.now().millisecondsSinceEpoch}.pdf',
       );
+      await file.writeAsBytes(await pdf.save());
+
+      await Share.shareXFiles([
+        XFile(file.path),
+      ], subject: 'MaHyp Health Report');
     } catch (e) {
       debugPrint('Error saving/sharing PDF');
       rethrow;
@@ -317,13 +384,14 @@ class ReportService {
   Future<void> _saveAndShareCSV(String content, String filename) async {
     try {
       final directory = await getTemporaryDirectory();
-      final file = File('${directory.path}/${filename}_${DateTime.now().millisecondsSinceEpoch}.csv');
-      await file.writeAsString(content);
-      
-      await Share.shareXFiles(
-        [XFile(file.path)],
-        subject: 'MaHyp Health Data Export',
+      final file = File(
+        '${directory.path}/${filename}_${DateTime.now().millisecondsSinceEpoch}.csv',
       );
+      await file.writeAsString(content);
+
+      await Share.shareXFiles([
+        XFile(file.path),
+      ], subject: 'MaHyp Health Data Export');
     } catch (e) {
       debugPrint('Error saving/sharing CSV');
       rethrow;

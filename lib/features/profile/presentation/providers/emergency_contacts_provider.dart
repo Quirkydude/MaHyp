@@ -2,12 +2,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/services/emergency_contacts_service.dart';
 import '../../data/models/emergency_contact_model.dart';
 
-final emergencyContactsServiceProvider =
-    Provider<EmergencyContactsService>((ref) => EmergencyContactsService());
+final emergencyContactsServiceProvider = Provider<EmergencyContactsService>(
+  (ref) => EmergencyContactsService(),
+);
 
-final emergencyContactsProvider = AsyncNotifierProvider<
-    EmergencyContactsNotifier,
-    List<EmergencyContactModel>>(EmergencyContactsNotifier.new);
+final emergencyContactsProvider =
+    AsyncNotifierProvider<
+      EmergencyContactsNotifier,
+      List<EmergencyContactModel>
+    >(EmergencyContactsNotifier.new);
 
 class EmergencyContactsNotifier
     extends AsyncNotifier<List<EmergencyContactModel>> {
@@ -24,9 +27,7 @@ class EmergencyContactsNotifier
 
   Future<void> deleteContact(String id) async {
     await _service.deleteContact(id);
-    state = AsyncData(
-      state.value?.where((c) => c.id != id).toList() ?? [],
-    );
+    state = AsyncData(state.value?.where((c) => c.id != id).toList() ?? []);
   }
 
   Future<void> refresh() async {

@@ -18,6 +18,8 @@ import '../widgets/action_card.dart';
 import '../widgets/calendar_week_view.dart';
 import '../widgets/task_item.dart';
 import '../../../notification/presentation/providers/notification_provider.dart';
+import '../../../../core/services/update_service.dart';
+import '../widgets/update_dialog.dart';
 
 class DashboardPage extends ConsumerStatefulWidget {
   const DashboardPage({super.key});
@@ -28,6 +30,29 @@ class DashboardPage extends ConsumerStatefulWidget {
 
 class _DashboardPageState extends ConsumerState<DashboardPage> {
   DateTime _selectedDate = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkForUpdates();
+  }
+
+  Future<void> _checkForUpdates() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final updateService = ref.read(updateServiceProvider);
+      final updateInfo = await updateService.checkForUpdate();
+
+      if (updateInfo != null && updateInfo.isUpdateAvailable && mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => UpdateDialog(
+            latestVersion: updateInfo.latestVersion,
+            downloadUrl: updateInfo.downloadUrl,
+          ),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,15 +117,17 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                                   if (readings.isEmpty) return 'Tap to measure';
                                   final latest = readings.first;
                                   final now = DateTime.now();
-                                  final diff =
-                                      now.difference(latest.recordedAt);
+                                  final diff = now.difference(
+                                    latest.recordedAt,
+                                  );
                                   if (diff.inDays == 0) {
                                     return 'Today, ${DateFormat('h:mm a').format(latest.recordedAt)}';
                                   } else if (diff.inDays == 1) {
                                     return 'Yesterday';
                                   }
-                                  return DateFormat('MMM d')
-                                      .format(latest.recordedAt);
+                                  return DateFormat(
+                                    'MMM d',
+                                  ).format(latest.recordedAt);
                                 },
                                 loading: () => 'Loading...',
                                 error: (_, __) => 'Error',
@@ -114,8 +141,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                               type: StatCardType.medication,
                               title: 'Adherence',
                               value: medicationsAsync.when(
-                                data: (meds) =>
-                                    '${_calculateAdherence(meds)}%',
+                                data: (meds) => '${_calculateAdherence(meds)}%',
                                 loading: () => '...',
                                 error: (_, __) => '--',
                               ),
@@ -135,8 +161,11 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                         alignment: Alignment.centerRight,
                         child: TextButton.icon(
                           onPressed: () => context.push('/health-insights'),
-                          icon: const Icon(Icons.insights,
-                              size: 16, color: AppColors.primaryTurquoise),
+                          icon: const Icon(
+                            Icons.insights,
+                            size: 16,
+                            color: AppColors.primaryTurquoise,
+                          ),
                           label: Text(
                             'View Insights',
                             style: TextStyle(
@@ -147,7 +176,9 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                           ),
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                           ),
                         ),
                       ),
@@ -169,8 +200,8 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                                     type: ActionCardType.nextMedication,
                                     medicationName: 'No upcoming',
                                     medicationTime: 'medications',
-                                    onTap: () => context
-                                        .push(AppRouter.addMedication),
+                                    onTap: () =>
+                                        context.push(AppRouter.addMedication),
                                   );
                                 }
                                 return ActionCard(
@@ -228,8 +259,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () =>
-                                context.push(AppRouter.medicationList),
+                            onTap: () => context.push(AppRouter.medicationList),
                             child: Text(
                               'See all',
                               style: TextStyle(
@@ -256,16 +286,18 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                             child: Center(
                               child: Text(
                                 'No tasks for this day',
-                                style:
-                                    TextStyle(color: AppColors.textSecondary),
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                ),
                               ),
                             ),
                           );
                         }
 
                         tasks.sort(
-                          (a, b) => a.dose.scheduledTime
-                              .compareTo(b.dose.scheduledTime),
+                          (a, b) => a.dose.scheduledTime.compareTo(
+                            b.dose.scheduledTime,
+                          ),
                         );
 
                         return ListView.builder(
@@ -297,7 +329,9 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                                   await ref
                                       .read(medicationProvider.notifier)
                                       .undoTaken(
-                                          task.medicationId, task.dose.id);
+                                        task.medicationId,
+                                        task.dose.id,
+                                      );
                                 }
                               },
                             );
@@ -311,13 +345,17 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                         child: Center(
                           child: Column(
                             children: [
-                              const Icon(Icons.error_outline,
-                                  color: AppColors.error, size: 40),
+                              const Icon(
+                                Icons.error_outline,
+                                color: AppColors.error,
+                                size: 40,
+                              ),
                               const SizedBox(height: 8),
                               const Text(
                                 'Unable to load tasks',
-                                style:
-                                    TextStyle(color: AppColors.textSecondary),
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                ),
                               ),
                               const SizedBox(height: 8),
                               TextButton(
@@ -362,15 +400,17 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
     MedicationDose dose,
     String dosage,
   })?
-      _getNextMedication(List<MedicationModel> meds) {
+  _getNextMedication(List<MedicationModel> meds) {
     final now = DateTime.now();
-    final allDoses = <
-        ({
-          String medicationName,
-          String medicationId,
-          MedicationDose dose,
-          String dosage,
-        })>[];
+    final allDoses =
+        <
+          ({
+            String medicationName,
+            String medicationId,
+            MedicationDose dose,
+            String dosage,
+          })
+        >[];
 
     for (final med in meds) {
       for (final dose in med.doses) {
@@ -388,32 +428,38 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
 
     if (allDoses.isEmpty) return null;
     allDoses.sort(
-        (a, b) => a.dose.scheduledTime.compareTo(b.dose.scheduledTime));
+      (a, b) => a.dose.scheduledTime.compareTo(b.dose.scheduledTime),
+    );
     return allDoses.first;
   }
 
   List<
-      ({
-        String medicationName,
-        String medicationId,
-        MedicationDose dose,
-        String dosage,
-      })> _getTasksForDate(List<MedicationModel> meds, DateTime date) {
+    ({
+      String medicationName,
+      String medicationId,
+      MedicationDose dose,
+      String dosage,
+    })
+  >
+  _getTasksForDate(List<MedicationModel> meds, DateTime date) {
     final dayStart = DateTime(date.year, date.month, date.day);
     final dayEnd = dayStart.add(const Duration(days: 1));
 
-    final tasks = <
-        ({
-          String medicationName,
-          String medicationId,
-          MedicationDose dose,
-          String dosage,
-        })>[];
+    final tasks =
+        <
+          ({
+            String medicationName,
+            String medicationId,
+            MedicationDose dose,
+            String dosage,
+          })
+        >[];
 
     for (final med in meds) {
       for (final dose in med.doses) {
-        if (dose.scheduledTime
-                .isAfter(dayStart.subtract(const Duration(milliseconds: 1))) &&
+        if (dose.scheduledTime.isAfter(
+              dayStart.subtract(const Duration(milliseconds: 1)),
+            ) &&
             dose.scheduledTime.isBefore(dayEnd)) {
           tasks.add((
             medicationName: med.name,
@@ -518,8 +564,8 @@ class _HealthSummaryStrip extends StatelessWidget {
                   final color = adherence >= 80
                       ? AppColors.success
                       : adherence >= 50
-                          ? AppColors.warning
-                          : AppColors.error;
+                      ? AppColors.warning
+                      : AppColors.error;
                   return _SummaryItem(
                     icon: Icons.medication,
                     color: color,
@@ -551,7 +597,9 @@ class _HealthSummaryStrip extends StatelessWidget {
                   final streak = _calcStreak(meds);
                   return _SummaryItem(
                     icon: Icons.local_fire_department,
-                    color: streak > 0 ? const Color(0xFFFF6B35) : AppColors.textSecondary,
+                    color: streak > 0
+                        ? const Color(0xFFFF6B35)
+                        : AppColors.textSecondary,
                     label: 'Day Streak',
                     value: '$streak',
                   );
@@ -653,10 +701,7 @@ class _SummaryItem extends StatelessWidget {
         ),
         Text(
           label,
-          style: const TextStyle(
-            color: AppColors.textSecondary,
-            fontSize: 11,
-          ),
+          style: const TextStyle(color: AppColors.textSecondary, fontSize: 11),
           textAlign: TextAlign.center,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,

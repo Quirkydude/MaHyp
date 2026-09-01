@@ -11,11 +11,11 @@ final userProfileServiceProvider = Provider<UserProfileService>((ref) {
 final userProfileStreamProvider = StreamProvider<UserProfile?>((ref) {
   final auth = FirebaseAuth.instance;
   final user = auth.currentUser;
-  
+
   if (user == null) {
     return Stream.value(null);
   }
-  
+
   final profileService = ref.watch(userProfileServiceProvider);
   return profileService.userProfileStream(user.uid);
 });
@@ -24,9 +24,9 @@ final userProfileStreamProvider = StreamProvider<UserProfile?>((ref) {
 final userProfileProvider = FutureProvider<UserProfile?>((ref) async {
   final auth = FirebaseAuth.instance;
   final user = auth.currentUser;
-  
+
   if (user == null) return null;
-  
+
   final profileService = ref.watch(userProfileServiceProvider);
   return profileService.getUserProfile(user.uid);
 });

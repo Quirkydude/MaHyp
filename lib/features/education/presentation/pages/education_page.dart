@@ -75,9 +75,11 @@ class _EducationPageState extends State<EducationPage> {
     if (_searchQuery.isEmpty) return _topics;
     final q = _searchQuery.toLowerCase();
     return _topics
-        .where((t) =>
-            t.title.toLowerCase().contains(q) ||
-            t.subtitle.toLowerCase().contains(q))
+        .where(
+          (t) =>
+              t.title.toLowerCase().contains(q) ||
+              t.subtitle.toLowerCase().contains(q),
+        )
         .toList();
   }
 
@@ -110,8 +112,10 @@ class _EducationPageState extends State<EducationPage> {
                   ),
                   suffixIcon: _searchQuery.isNotEmpty
                       ? IconButton(
-                          icon: const Icon(Icons.clear,
-                              color: AppColors.textSecondary),
+                          icon: const Icon(
+                            Icons.clear,
+                            color: AppColors.textSecondary,
+                          ),
                           onPressed: () {
                             _searchController.clear();
                             setState(() => _searchQuery = '');
@@ -133,13 +137,17 @@ class _EducationPageState extends State<EducationPage> {
 
               if (filtered.isEmpty) ...[
                 const SizedBox(height: 60),
-                const Icon(Icons.search_off,
-                    size: 64, color: AppColors.textSecondary),
+                const Icon(
+                  Icons.search_off,
+                  size: 64,
+                  color: AppColors.textSecondary,
+                ),
                 const SizedBox(height: AppDimensions.spacing16),
                 Text(
                   'No topics match "$_searchQuery"',
-                  style: AppTextStyles.bodyMedium
-                      .copyWith(color: AppColors.textSecondary),
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ] else ...[
@@ -168,7 +176,8 @@ class _EducationPageState extends State<EducationPage> {
               ],
 
               const SizedBox(
-                  height: AppDimensions.spacing64 + AppDimensions.spacing16),
+                height: AppDimensions.spacing64 + AppDimensions.spacing16,
+              ),
             ],
           ),
         ),

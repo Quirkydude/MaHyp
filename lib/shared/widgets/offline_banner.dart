@@ -11,9 +11,9 @@ class OfflineBanner extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isOnline = ref.watch(isOnlineProvider);
-    
+
     if (isOnline) return const SizedBox.shrink();
-    
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -21,11 +21,7 @@ class OfflineBanner extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.wifi_off,
-            color: Colors.white,
-            size: 18,
-          ),
+          const Icon(Icons.wifi_off, color: Colors.white, size: 18),
           const SizedBox(width: 8),
           Text(
             'You are offline',
@@ -43,12 +39,9 @@ class OfflineBanner extends ConsumerWidget {
 /// Wrapper widget that adds offline banner to any screen
 class OfflineAwareWrapper extends StatelessWidget {
   final Widget child;
-  
-  const OfflineAwareWrapper({
-    super.key,
-    required this.child,
-  });
-  
+
+  const OfflineAwareWrapper({super.key, required this.child});
+
   @override
   Widget build(BuildContext context) {
     return Column(

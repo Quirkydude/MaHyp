@@ -55,10 +55,11 @@ class _StatCardState extends State<StatCard> {
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: (widget.type == StatCardType.bp
-                        ? AppColors.cardTeal
-                        : AppColors.cardBlue)
-                    .withValues(alpha: 0.25),
+                color:
+                    (widget.type == StatCardType.bp
+                            ? AppColors.cardTeal
+                            : AppColors.cardBlue)
+                        .withValues(alpha: 0.25),
                 blurRadius: 16,
                 offset: const Offset(0, 8),
                 spreadRadius: 0,
@@ -134,11 +135,12 @@ class _StatCardState extends State<StatCard> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Icon(
-        widget.type == StatCardType.bp ? Icons.favorite_rounded : Icons.pie_chart_rounded,
+        widget.type == StatCardType.bp
+            ? Icons.favorite_rounded
+            : Icons.pie_chart_rounded,
         color: AppColors.white,
         size: 20,
       ),
     );
   }
 }
-

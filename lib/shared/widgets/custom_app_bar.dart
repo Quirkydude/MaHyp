@@ -29,9 +29,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     // Use dark gradient in dark mode, primary gradient in light mode
-    final gradient = isDark 
+    final gradient = isDark
         ? const LinearGradient(
             colors: [Color(0xFF1E1E1E), Color(0xFF2C2C2C)],
             begin: Alignment.topLeft,
@@ -64,7 +64,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     padding: const EdgeInsets.all(12.0),
                     child: SvgPicture.asset(
                       'assets/logos/mahyp_icon.svg',
-                      colorFilter: ColorFilter.mode(titleColor ?? AppColors.white, BlendMode.srcIn),
+                      colorFilter: ColorFilter.mode(
+                        titleColor ?? AppColors.white,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   )),
         title: Text(

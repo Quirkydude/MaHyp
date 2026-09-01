@@ -55,69 +55,69 @@ class _MedicationCardState extends State<MedicationCard> {
             border: Border.all(color: AppColors.inputBorder, width: 1),
           ),
           child: Padding(
-          padding: const EdgeInsets.all(AppDimensions.spacing16),
-          child: Row(
-            children: [
-              // Medication Icon
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryTurquoise.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(
-                    AppDimensions.radiusSmall,
+            padding: const EdgeInsets.all(AppDimensions.spacing16),
+            child: Row(
+              children: [
+                // Medication Icon
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryTurquoise.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(
+                      AppDimensions.radiusSmall,
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.medication,
+                    color: AppColors.primaryTurquoise,
+                    size: AppDimensions.iconMedium,
                   ),
                 ),
-                child: const Icon(
-                  Icons.medication,
-                  color: AppColors.primaryTurquoise,
-                  size: AppDimensions.iconMedium,
-                ),
-              ),
 
-              const SizedBox(width: AppDimensions.spacing16),
+                const SizedBox(width: AppDimensions.spacing16),
 
-              // Medication Info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Name
-                    Text(
-                      widget.name,
-                      style: AppTextStyles.bodyLarge.copyWith(
-                        fontWeight: FontWeight.w600,
+                // Medication Info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Name
+                      Text(
+                        widget.name,
+                        style: AppTextStyles.bodyLarge.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: AppDimensions.spacing4),
+                      const SizedBox(height: AppDimensions.spacing4),
 
-                    // Dosage and Frequency
-                    Text(
-                      '${widget.dosage} • ${widget.frequency}',
-                      style: AppTextStyles.bodySmall,
-                    ),
-                    const SizedBox(height: AppDimensions.spacing4),
-
-                    // Next Dose
-                    Text(
-                      'Next dose: ${widget.nextDose}',
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
+                      // Dosage and Frequency
+                      Text(
+                        '${widget.dosage} • ${widget.frequency}',
+                        style: AppTextStyles.bodySmall,
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: AppDimensions.spacing4),
+
+                      // Next Dose
+                      Text(
+                        'Next dose: ${widget.nextDose}',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
 
-              const SizedBox(width: AppDimensions.spacing12),
+                const SizedBox(width: AppDimensions.spacing12),
 
-              // Status Badge or Action Button
-              _buildStatusWidget(),
-            ],
+                // Status Badge or Action Button
+                _buildStatusWidget(),
+              ],
+            ),
           ),
         ),
       ),
-    ),
     );
   }
 
@@ -151,11 +151,7 @@ class _MedicationCardState extends State<MedicationCard> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
-                Icons.schedule,
-                color: AppColors.white,
-                size: 14,
-              ),
+              const Icon(Icons.schedule, color: AppColors.white, size: 14),
               const SizedBox(width: 4),
               Text(
                 'Upcoming',
@@ -181,11 +177,7 @@ class _MedicationCardState extends State<MedicationCard> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
-                Icons.check_circle,
-                color: AppColors.white,
-                size: 14,
-              ),
+              const Icon(Icons.check_circle, color: AppColors.white, size: 14),
               const SizedBox(width: 4),
               Text(
                 'Taken',
@@ -271,11 +263,7 @@ class _MedicationCardState extends State<MedicationCard> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
-                Icons.skip_next,
-                color: AppColors.white,
-                size: 14,
-              ),
+              const Icon(Icons.skip_next, color: AppColors.white, size: 14),
               const SizedBox(width: 4),
               Text(
                 'Skipped',

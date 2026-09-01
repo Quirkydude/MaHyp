@@ -3,7 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mahyp_app/features/dashboard/presentation/widgets/stat_card.dart';
 
 void main() {
-  testWidgets('StatCard renders correctly with provided data', (WidgetTester tester) async {
+  testWidgets('StatCard renders correctly with provided data', (
+    WidgetTester tester,
+  ) async {
     bool wasTapped = false;
 
     await tester.pumpWidget(

@@ -20,7 +20,8 @@ class EmergencyContactsService {
   }
 
   Future<EmergencyContactModel> addContact(
-      EmergencyContactModel contact) async {
+    EmergencyContactModel contact,
+  ) async {
     final ref = await _collection.add(contact.toFirestore());
     return contact.copyWith(id: ref.id);
   }

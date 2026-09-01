@@ -48,14 +48,15 @@ class AuthService {
     try {
       // Trigger the authentication flow
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      
+
       if (googleUser == null) {
         // User canceled the sign-in
         return null;
       }
 
       // Obtain the auth details from the request
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
       // Create a new credential
       final OAuthCredential credential = GoogleAuthProvider.credential(
@@ -91,8 +92,8 @@ class AuthService {
         return null; // User cancelled
       } else {
         throw FirebaseAuthException(
-          code: 'facebook-sign-in-failed', 
-          message: result.message ?? 'Facebook sign in failed'
+          code: 'facebook-sign-in-failed',
+          message: result.message ?? 'Facebook sign in failed',
         );
       }
     } catch (e) {

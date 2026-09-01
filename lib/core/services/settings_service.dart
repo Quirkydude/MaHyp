@@ -18,51 +18,54 @@ class SettingsService {
   }
 
   // ============ Notifications ============
-  
-  bool get notificationsEnabled => _prefs?.getBool(_keyNotificationsEnabled) ?? true;
-  
+
+  bool get notificationsEnabled =>
+      _prefs?.getBool(_keyNotificationsEnabled) ?? true;
+
   Future<void> setNotificationsEnabled(bool value) async {
     await _prefs?.setBool(_keyNotificationsEnabled, value);
   }
 
   // ============ Reminders ============
-  
+
   bool get remindersEnabled => _prefs?.getBool(_keyRemindersEnabled) ?? true;
-  
+
   Future<void> setRemindersEnabled(bool value) async {
     await _prefs?.setBool(_keyRemindersEnabled, value);
   }
 
   // ============ Appearance ============
-  
+
   bool get darkModeEnabled => _prefs?.getBool(_keyDarkModeEnabled) ?? false;
-  
+
   Future<void> setDarkModeEnabled(bool value) async {
     await _prefs?.setBool(_keyDarkModeEnabled, value);
   }
 
   String get fontSize => _prefs?.getString(_keyFontSize) ?? 'Medium';
-  
+
   Future<void> setFontSize(String value) async {
     await _prefs?.setString(_keyFontSize, value);
   }
 
   // ============ Health Settings ============
-  
-  String get morningReminderTime => _prefs?.getString(_keyMorningReminderTime) ?? '08:00';
-  
+
+  String get morningReminderTime =>
+      _prefs?.getString(_keyMorningReminderTime) ?? '08:00';
+
   Future<void> setMorningReminderTime(String value) async {
     await _prefs?.setString(_keyMorningReminderTime, value);
   }
 
-  String get eveningReminderTime => _prefs?.getString(_keyEveningReminderTime) ?? '20:00';
-  
+  String get eveningReminderTime =>
+      _prefs?.getString(_keyEveningReminderTime) ?? '20:00';
+
   Future<void> setEveningReminderTime(String value) async {
     await _prefs?.setString(_keyEveningReminderTime, value);
   }
 
   // ============ Load All Settings ============
-  
+
   SettingsState loadAll() {
     return SettingsState(
       notificationsEnabled: notificationsEnabled,

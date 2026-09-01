@@ -35,10 +35,12 @@ class HealthInsightsPage extends ConsumerWidget {
             // Health Score Card
             bpAsync.when(
               data: (readings) => medAsync.when(
-                data: (meds) => _HealthScoreCard(
-                    readings: readings, medications: meds),
-                loading: () => _HealthScoreCard(readings: readings, medications: const []),
-                error: (_, __) => _HealthScoreCard(readings: readings, medications: const []),
+                data: (meds) =>
+                    _HealthScoreCard(readings: readings, medications: meds),
+                loading: () =>
+                    _HealthScoreCard(readings: readings, medications: const []),
+                error: (_, __) =>
+                    _HealthScoreCard(readings: readings, medications: const []),
               ),
               loading: () => const _LoadingCard(height: 140),
               error: (_, __) => const SizedBox.shrink(),
@@ -73,8 +75,9 @@ class HealthInsightsPage extends ConsumerWidget {
             const SizedBox(height: AppDimensions.spacing8),
             Text(
               'Average systolic pressure by time of day',
-              style: AppTextStyles.bodySmall
-                  .copyWith(color: AppColors.textSecondary),
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(height: AppDimensions.spacing12),
             bpAsync.when(
@@ -106,17 +109,22 @@ class _HealthScoreCard extends StatelessWidget {
   final List<BPReadingModel> readings;
   final List<MedicationModel> medications;
 
-  const _HealthScoreCard(
-      {required this.readings, required this.medications});
+  const _HealthScoreCard({required this.readings, required this.medications});
 
   int _score() {
-    final last30 = readings.where((r) => r.recordedAt.isAfter(
-        DateTime.now().subtract(const Duration(days: 30)))).toList();
+    final last30 = readings
+        .where(
+          (r) => r.recordedAt.isAfter(
+            DateTime.now().subtract(const Duration(days: 30)),
+          ),
+        )
+        .toList();
 
     double bpScore = 0;
     if (last30.isNotEmpty) {
-      final controlledCount =
-          last30.where((r) => r.category == BPCategory.controlled).length;
+      final controlledCount = last30
+          .where((r) => r.category == BPCategory.controlled)
+          .length;
       bpScore = (controlledCount / last30.length) * 50;
     }
 
@@ -206,8 +214,10 @@ class _HealthScoreCard extends StatelessWidget {
                 Text('Health Score', style: AppTextStyles.h4),
                 const SizedBox(height: 4),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: color.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
@@ -224,8 +234,9 @@ class _HealthScoreCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   'Based on your BP readings and medication adherence over the past 30 days.',
-                  style: AppTextStyles.caption
-                      .copyWith(color: AppColors.textSecondary),
+                  style: AppTextStyles.caption.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
@@ -245,8 +256,13 @@ class _AverageRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final last30 = readings.where((r) => r.recordedAt.isAfter(
-        DateTime.now().subtract(const Duration(days: 30)))).toList();
+    final last30 = readings
+        .where(
+          (r) => r.recordedAt.isAfter(
+            DateTime.now().subtract(const Duration(days: 30)),
+          ),
+        )
+        .toList();
 
     if (last30.isEmpty) {
       return _emptyCard('No readings in the last 30 days');
@@ -290,15 +306,17 @@ class _AverageRow extends StatelessWidget {
   }
 
   Widget _emptyCard(String msg) => Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.inputBackground,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Text(msg,
-            style: const TextStyle(color: AppColors.textSecondary),
-            textAlign: TextAlign.center),
-      );
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: AppColors.inputBackground,
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Text(
+      msg,
+      style: const TextStyle(color: AppColors.textSecondary),
+      textAlign: TextAlign.center,
+    ),
+  );
 }
 
 class _StatTile extends StatelessWidget {
@@ -307,11 +325,12 @@ class _StatTile extends StatelessWidget {
   final String unit;
   final Color color;
 
-  const _StatTile(
-      {required this.label,
-      required this.value,
-      required this.unit,
-      required this.color});
+  const _StatTile({
+    required this.label,
+    required this.value,
+    required this.unit,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -324,17 +343,30 @@ class _StatTile extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(value,
-              style: TextStyle(
-                  color: color, fontSize: 22, fontWeight: FontWeight.w800)),
-          Text(unit,
-              style: const TextStyle(
-                  color: AppColors.textSecondary, fontSize: 10)),
+          Text(
+            value,
+            style: TextStyle(
+              color: color,
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          Text(
+            unit,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 10,
+            ),
+          ),
           const SizedBox(height: 4),
-          Text(label,
-              style: const TextStyle(
-                  color: AppColors.textSecondary, fontSize: 11),
-              textAlign: TextAlign.center),
+          Text(
+            label,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 11,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
     );
@@ -426,7 +458,9 @@ class _CategoryPieChart extends StatelessWidget {
                   Text(
                     '${labels[cat]} (${counts[cat]})',
                     style: const TextStyle(
-                        fontSize: 11, color: AppColors.textSecondary),
+                      fontSize: 11,
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                 ],
               );
@@ -438,16 +472,14 @@ class _CategoryPieChart extends StatelessWidget {
   }
 
   Widget _emptyCard(String msg) => Container(
-        height: 100,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: AppColors.inputBackground,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Text(msg,
-            style:
-                const TextStyle(color: AppColors.textSecondary)),
-      );
+    height: 100,
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+      color: AppColors.inputBackground,
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Text(msg, style: const TextStyle(color: AppColors.textSecondary)),
+  );
 }
 
 // ── Time of Day Bar Chart ─────────────────────────────────────────────────────
@@ -472,8 +504,7 @@ class _TimeOfDayChart extends StatelessWidget {
 
     final avgs = buckets.map((time, vals) {
       if (vals.isEmpty) return MapEntry(time, 0.0);
-      return MapEntry(
-          time, vals.reduce((a, b) => a + b) / vals.length);
+      return MapEntry(time, vals.reduce((a, b) => a + b) / vals.length);
     });
 
     final labels = ['Morning', 'Afternoon', 'Evening', 'Night'];
@@ -494,10 +525,10 @@ class _TimeOfDayChart extends StatelessWidget {
       final color = val == 0
           ? AppColors.inputBorder
           : val < 120
-              ? AppColors.success
-              : val < 140
-                  ? AppColors.warning
-                  : AppColors.error;
+          ? AppColors.success
+          : val < 140
+          ? AppColors.warning
+          : AppColors.error;
       return BarChartGroupData(
         x: i,
         barRods: [
@@ -540,7 +571,9 @@ class _TimeOfDayChart extends StatelessWidget {
                   child: Text(
                     labels[value.toInt()],
                     style: const TextStyle(
-                        fontSize: 10, color: AppColors.textSecondary),
+                      fontSize: 10,
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                 ),
               ),
@@ -553,14 +586,18 @@ class _TimeOfDayChart extends StatelessWidget {
                 getTitlesWidget: (value, meta) => Text(
                   value.toInt().toString(),
                   style: const TextStyle(
-                      fontSize: 10, color: AppColors.textSecondary),
+                    fontSize: 10,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ),
             ),
             rightTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false)),
+              sideTitles: SideTitles(showTitles: false),
+            ),
             topTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false)),
+              sideTitles: SideTitles(showTitles: false),
+            ),
           ),
           barTouchData: BarTouchData(
             touchTooltipData: BarTouchTooltipData(

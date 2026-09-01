@@ -13,7 +13,6 @@ import '../../../../shared/widgets/custom_button.dart';
 import '../providers/bp_provider.dart';
 import '../../data/models/bp_reading_model.dart';
 
-
 /// Record Blood Pressure Page
 class RecordBPPage extends ConsumerStatefulWidget {
   const RecordBPPage({super.key});
@@ -224,9 +223,7 @@ class _RecordBPPageState extends ConsumerState<RecordBPPage>
               children: [
                 const SizedBox(height: AppDimensions.spacing16),
 
-                Center(
-                  child: BloodPressureCheckIllustration(size: 200),
-                ),
+                Center(child: BloodPressureCheckIllustration(size: 200)),
                 const SizedBox(height: AppDimensions.spacing24),
 
                 // Systolic Input

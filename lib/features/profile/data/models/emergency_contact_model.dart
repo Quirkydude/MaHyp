@@ -43,23 +43,22 @@ class EmergencyContactModel extends Equatable {
   }
 
   Map<String, dynamic> toFirestore() => {
-        'name': name,
-        'phone': phone,
-        'relation': relation.name,
-      };
+    'name': name,
+    'phone': phone,
+    'relation': relation.name,
+  };
 
   EmergencyContactModel copyWith({
     String? id,
     String? name,
     String? phone,
     ContactRelation? relation,
-  }) =>
-      EmergencyContactModel(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        phone: phone ?? this.phone,
-        relation: relation ?? this.relation,
-      );
+  }) => EmergencyContactModel(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    phone: phone ?? this.phone,
+    relation: relation ?? this.relation,
+  );
 
   @override
   List<Object?> get props => [id, name, phone, relation];

@@ -37,9 +37,9 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
       setState(() => _isLoading = true);
 
       try {
-        await ref.read(authServiceProvider).sendPasswordResetEmail(
-          _emailController.text.trim(),
-        );
+        await ref
+            .read(authServiceProvider)
+            .sendPasswordResetEmail(_emailController.text.trim());
 
         if (mounted) {
           setState(() {
@@ -59,10 +59,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
           }
 
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(message),
-              backgroundColor: AppColors.error,
-            ),
+            SnackBar(content: Text(message), backgroundColor: AppColors.error),
           );
           setState(() => _isLoading = false);
         }
@@ -198,7 +195,9 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
         ),
         const SizedBox(height: AppDimensions.spacing16),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimensions.spacing16,
+          ),
           child: Text(
             'We\'ve sent a password reset link to:',
             style: AppTextStyles.bodySmall,
@@ -216,7 +215,9 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
         ),
         const SizedBox(height: AppDimensions.spacing16),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimensions.spacing16,
+          ),
           child: Text(
             'Please check your inbox and follow the instructions in the email to reset your password.',
             style: AppTextStyles.bodySmall,
@@ -240,9 +241,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
           },
           child: Text(
             'Didn\'t receive the email? Try again',
-            style: AppTextStyles.link.copyWith(
-              decoration: TextDecoration.none,
-            ),
+            style: AppTextStyles.link.copyWith(decoration: TextDecoration.none),
           ),
         ),
       ],
