@@ -25,14 +25,21 @@ subprojects {
 
 // Align Java/Kotlin JVM targets across all Flutter plugins (e.g. flutter_facebook_auth).
 subprojects {
-    afterEvaluate {
+    fun configureAndroidJvmTarget() {
         extensions.findByType<BaseExtension>()?.compileOptions {
             sourceCompatibility = JavaVersion.VERSION_17
             targetCompatibility = JavaVersion.VERSION_17
         }
-        tasks.withType<KotlinCompile>().configureEach {
-            compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
-        }
+    }
+
+    pluginManager.withPlugin("com.android.application") {
+        configureAndroidJvmTarget()
+    }
+    pluginManager.withPlugin("com.android.library") {
+        configureAndroidJvmTarget()
+    }
+    tasks.withType<KotlinCompile>().configureEach {
+        compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 
