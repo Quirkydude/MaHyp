@@ -32,6 +32,7 @@ workflows:
       - name: Build release APK
         script: |
           flutter build apk --release \
+            --android-skip-build-dependency-validation \
             --dart-define=MOOLRE_VAS_KEY="${MOOLRE_VAS_KEY:-}" \
             --dart-define=MOOLRE_SENDER_ID="${MOOLRE_SENDER_ID:-KamarTec}"
 
