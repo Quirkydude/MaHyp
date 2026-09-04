@@ -31,10 +31,16 @@ workflows:
 
       - name: Build release APK
         script: |
+          DEFINES=""
+          if [ -n "$MOOLRE_VAS_KEY" ]; then
+            DEFINES="$DEFINES --dart-define=MOOLRE_VAS_KEY=$MOOLRE_VAS_KEY"
+          fi
+          if [ -n "$MOOLRE_SENDER_ID" ]; then
+            DEFINES="$DEFINES --dart-define=MOOLRE_SENDER_ID=$MOOLRE_SENDER_ID"
+          fi
           flutter build apk --release \
             --android-skip-build-dependency-validation \
-            --dart-define=MOOLRE_VAS_KEY="${MOOLRE_VAS_KEY:-}" \
-            --dart-define=MOOLRE_SENDER_ID="${MOOLRE_SENDER_ID:-KamarTec}"
+            $DEFINES
 
     artifacts:
       - build/app/outputs/flutter-apk/app-release.apk

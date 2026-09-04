@@ -8,7 +8,7 @@ class MoolreConfig {
   /// SMS API VAS key (sent as `X-API-VASKEY` header).
   static const String vasKey = String.fromEnvironment(
     'MOOLRE_VAS_KEY',
-    defaultValue: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2YXNpZCI6MTI3MzcsImV4cCI6MTk1NjUyNzk5OX0.5CDqB2PJ45TEm3sHm4jmP8K93DCvEgDH-PpVCdNzvvI',
+    defaultValue: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2YXNpZCI6MTI3MzcsImV4cCI6MTk1NjUyNzk5OX0.yLQPpAh0mYw3VmXe3oRB4LLix3Ksk-sin_Z4wgAtNmo',
   );
 
   /// Registered and approved Sender ID (max 11 characters).
