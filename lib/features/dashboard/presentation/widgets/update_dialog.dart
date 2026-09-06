@@ -16,16 +16,33 @@ class UpdateDialog extends StatelessWidget {
 
   Future<void> _launchDownloadUrl(BuildContext context) async {
     final uri = Uri.parse(downloadUrl);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-      if (context.mounted) {
-        Navigator.of(context).pop();
+    try {
+      bool launched = false;
+      if (await canLaunchUrl(uri)) {
+        launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
       }
-    } else {
+      if (!launched) {
+        launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      }
+      if (!launched) {
+        launched = await launchUrl(uri, mode: LaunchMode.platformDefault);
+      }
+
+      if (launched && context.mounted) {
+        Navigator.of(context).pop();
+      } else if (!launched && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Could not open the download link.'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Could not open the download link.'),
+            content: Text('Error opening link: $e'),
             backgroundColor: AppColors.error,
           ),
         );
