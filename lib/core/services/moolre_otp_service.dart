@@ -111,6 +111,7 @@ class MoolreOtpService {
           headers: {
             'X-API-VASKEY': _vasKey,
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
           },
         ),
         data: {
@@ -125,12 +126,26 @@ class MoolreOtpService {
         },
       );
 
-      final data = response.data;
+      dynamic data = response.data;
+      if (data is String) {
+        try {
+          data = jsonDecode(data);
+        } catch (e) {
+          log('Failed to parse Moolre response JSON: $e');
+        }
+      }
+
       final status = data is Map ? data['status'] : null;
       final respCode = data is Map ? data['code']?.toString() : null;
       final respMessage = data is Map ? data['message']?.toString() : null;
 
-      final ok = response.statusCode == 200 && status == 1 && respCode == 'SMS01';
+      final isStatusOk = status == 1 || status == '1';
+      final isCodeOk = respCode != null && respCode.toUpperCase() == 'SMS01';
+      final isMessageOk =
+          respMessage != null && respMessage.toLowerCase() == 'success';
+
+      final ok = (response.statusCode == 200 || response.statusCode == 201) &&
+          (isStatusOk || isCodeOk || isMessageOk);
 
       if (!ok) {
         log(
@@ -144,7 +159,12 @@ class MoolreOtpService {
         message: respMessage ?? (ok ? 'Success' : 'Failed to send SMS'),
       );
     } on DioException catch (e) {
-      final respData = e.response?.data;
+      dynamic respData = e.response?.data;
+      if (respData is String) {
+        try {
+          respData = jsonDecode(respData);
+        } catch (_) {}
+      }
       log(
         'DioException sending SMS to $recipient: '
         'status=${e.response?.statusCode} body=$respData error=${e.message}',
@@ -199,6 +219,13 @@ class MoolreOtpService {
   }
 
   String? _extractErrorMessage(dynamic respData) {
+    if (respData is String) {
+      try {
+        respData = jsonDecode(respData);
+      } catch (_) {
+        return respData.trim().isNotEmpty ? respData.trim() : null;
+      }
+    }
     if (respData is Map) {
       return respData['message']?.toString();
     }
