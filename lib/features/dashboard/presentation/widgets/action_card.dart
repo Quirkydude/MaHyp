@@ -82,25 +82,31 @@ class _ActionCardState extends State<ActionCard> {
         Row(
           children: [
             Container(
-              width: 36,
-              height: 36,
+              width: 34,
+              height: 34,
               decoration: BoxDecoration(
                 color: AppColors.white.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: const Icon(
                 Icons.access_time_rounded,
                 color: AppColors.white,
-                size: 20,
+                size: 18,
               ),
             ),
-            const SizedBox(width: 10),
-            Text(
-              'Next Medication',
-              style: TextStyle(
-                color: AppColors.white.withValues(alpha: 0.95),
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
+            const SizedBox(width: 8),
+            Expanded(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Next Medication',
+                  style: TextStyle(
+                    color: AppColors.white.withValues(alpha: 0.95),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ),
           ],
@@ -108,6 +114,8 @@ class _ActionCardState extends State<ActionCard> {
         const Spacer(),
         Text(
           widget.medicationName ?? 'Amlodipine',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: const TextStyle(
             color: AppColors.white,
             fontSize: 18,
@@ -117,9 +125,11 @@ class _ActionCardState extends State<ActionCard> {
         const SizedBox(height: 4),
         Text(
           widget.medicationTime ?? 'Today At 6:00 PM',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color: AppColors.white.withValues(alpha: 0.85),
-            fontSize: 16,
+            fontSize: 14,
           ),
         ),
       ],

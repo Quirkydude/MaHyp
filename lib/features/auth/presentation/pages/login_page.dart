@@ -14,6 +14,8 @@ import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/widgets/social_login_button.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/user_profile_provider.dart';
+import '../../../../core/services/update_service.dart';
+import '../../../dashboard/presentation/widgets/update_dialog.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -27,6 +29,29 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkForUpdates();
+  }
+
+  Future<void> _checkForUpdates() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final updateService = ref.read(updateServiceProvider);
+      final updateInfo = await updateService.checkForUpdate();
+
+      if (updateInfo != null && updateInfo.isUpdateAvailable && mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => UpdateDialog(
+            latestVersion: updateInfo.latestVersion,
+            downloadUrl: updateInfo.downloadUrl,
+          ),
+        );
+      }
+    });
+  }
 
   @override
   void dispose() {

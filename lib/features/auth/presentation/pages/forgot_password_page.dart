@@ -225,7 +225,38 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
           ),
         ),
 
-        const SizedBox(height: AppDimensions.spacing40),
+        const SizedBox(height: AppDimensions.spacing24),
+
+        // Spam folder info box
+        Container(
+          padding: const EdgeInsets.all(AppDimensions.spacing16),
+          decoration: BoxDecoration(
+            color: AppColors.info.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(
+              AppDimensions.radiusMedium,
+            ),
+          ),
+          child: Row(
+            children: [
+              const Icon(
+                Icons.info_outline,
+                color: AppColors.info,
+                size: 24,
+              ),
+              const SizedBox(width: AppDimensions.spacing12),
+              Expanded(
+                child: Text(
+                  'Can\'t find the email? Please check your Spam, Junk, or Promotions folder. Reset emails may occasionally be filtered there.',
+                  style: AppTextStyles.caption.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: AppDimensions.spacing32),
 
         CustomButton(
           text: 'Back to Login',
