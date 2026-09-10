@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../features/medication/data/models/medication_model.dart';
+import '../../../features/medication/data/medication_data.dart';
 
 /// Service for managing medications in Firestore
 class MedicationService {
@@ -48,19 +49,30 @@ class MedicationService {
           .orderBy('name')
           .get();
 
-      return snapshot.docs
-          .map(
-            (doc) => {
-              'id': doc.id,
-              'name': doc.data()['name'] as String? ?? '',
-              'dosage': doc.data()['dosage'] as String? ?? '',
-            },
-          )
-          .toList();
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs
+            .map(
+              (doc) => {
+                'id': doc.id,
+                'name': doc.data()['name'] as String? ?? '',
+                'dosage': doc.data()['dosage'] as String? ?? '',
+              },
+            )
+            .toList();
+      }
     } catch (e) {
-      // If master collection doesn't exist, return empty list
-      return [];
+      // If master collection doesn't exist, offline, or permissions denied, fall back
     }
+
+    // Fallback to centralized list from Prof. Biney's team
+    return MedicationData.allMedications.map((med) {
+      final parsed = MedicationData.parseMedication(med);
+      return {
+        'id': med,
+        'name': parsed.name,
+        'dosage': parsed.dosage,
+      };
+    }).toList();
   }
 
   /// Add medication to master list (admin function)

@@ -338,7 +338,7 @@ class _EditMedicationPageState extends ConsumerState<EditMedicationPage>
                           onChanged: (value) {
                             setState(() => _reminderEnabled = value);
                           },
-                          activeColor: AppColors.primaryTurquoise,
+                          activeThumbColor: AppColors.primaryTurquoise,
                         ),
                       ],
                     ),
@@ -414,11 +414,14 @@ class _EditMedicationPageState extends ConsumerState<EditMedicationPage>
                   Icons.keyboard_arrow_down,
                   color: AppColors.primaryTurquoise,
                 ),
-                style: AppTextStyles.input,
+                style: AppTextStyles.input.copyWith(color: AppColors.textPrimary),
                 items: TimeOfDay.values.map((time) {
                   return DropdownMenuItem(
                     value: time,
-                    child: Text(_getTimeOfDayLabel(time)),
+                    child: Text(
+                      _getTimeOfDayLabel(time),
+                      style: AppTextStyles.input.copyWith(color: AppColors.textPrimary),
+                    ),
                   );
                 }).toList(),
                 onChanged: (value) {

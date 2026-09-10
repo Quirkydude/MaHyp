@@ -67,6 +67,12 @@ service cloud.firestore {
       }
     }
     
+    // Master medications collection (read-only for authenticated users)
+    match /master_medications/{medicationId} {
+      allow read: if isAuthenticated();
+      allow write: if false;
+    }
+    
     // Default deny all other access
     match /{document=**} {
       allow read, write: if false;
